@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ | FINFUR</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- เชื่อม CSS -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar 
+     <%- include('partials/navbar') %>
+    -->
+    
+
+    <!-- Login Form -->
+    <div class="flex justify-center items-center h-screen">
+        <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-2xl font-semibold text-center mb-4">เข้าสู่ระบบ</h3>
+            <form action="/login" method="POST" class="space-y-4">
+                <div>
+                    <label class="block font-medium">อีเมล หรือ เบอร์โทรศัพท์*</label>
+                    <input type="text" name="username" class="w-full border rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+
+                <div>
+                    <label class="block font-medium">รหัสผ่าน*</label>
+                    <input type="password" name="password" class="w-full border rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="remember" class="form-checkbox text-blue-600">
+                        <span class="ml-2">จดจำฉัน</span>
+                    </label>
+                    <a href="#" class="text-blue-600 hover:underline">ลืมรหัสผ่าน?</a>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                    เข้าสู่ระบบ
+                </button>
+            </form>
+
+            <p class="text-center mt-4">
+                ยังไม่มีบัญชี? <a href="/register" class="text-blue-600 hover:underline">สมัครสมาชิก</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
