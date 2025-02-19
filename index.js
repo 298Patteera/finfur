@@ -27,6 +27,34 @@ app.get("/signin-customer", (req, res) => {
 app.get("/signin-provider", (req, res) => {
     res.render("signin-provider");
 });
+// เสิร์ฟหน้า home
+app.get("/", (req, res) => {
+    res.render("home");
+});
+// เสิร์ฟหน้า สินค้าทั้งหมด
+app.get("/all-product", (req, res) => {
+    res.send("🛍 หน้ากลุ่มสินค้าทั้งหมด");
+});
+// เสิร์ฟหน้า ห้องนอน
+app.get("/bed-room", (req, res) => {
+    res.send("🛏 หน้าห้องนอน");
+});
+// เสิร์ฟหน้า ห้องนั่งเล่น
+app.get("/living-room", (req, res) => {
+    res.send("🛋 หน้าห้องนั่งเล่น");
+});
+// เสิร์ฟหน้า ห้องครัว
+app.get("/kitchen", (req, res) => {
+    res.send("🍳 หน้าห้องครัว");
+});
+// เสิร์ฟหน้า ห้องรับประทานอาหาร
+app.get("/dining-room", (req, res) => {
+    res.send("🍽 หน้าห้องรับประทานอาหาร");
+});
+// เสิร์ฟหน้า ห้องทำงาน
+app.get("/working-room", (req, res) => {
+    res.send("💻 หน้าห้องทำงาน");
+});
 
 
 // ตรวจสอบการเข้าสู่ระบบ

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าแรก | FINFUR</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Swiper.js CSS (สำหรับ Carousel) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="bg-white">
+
+    <!-- Carousel Section -->
+    <div class="flex justify-center mt-8">
+        <div class="swiper mySwiper w-full max-w-screen-lg h-[350px]">
+            <div class="swiper-wrapper">
+                <!-- Slide 1 -->
+                <div class="swiper-slide">
+                    <img src="/images/slide1.jpg" alt="Slide 1" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <!-- Slide 2 -->
+                <div class="swiper-slide">
+                    <img src="/images/slide2.jpg" alt="Slide 2" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <!-- Slide 3 -->
+                <div class="swiper-slide">
+                    <img src="/images/slide3.jpg" alt="Slide 3" class="w-full h-full object-cover rounded-lg">
+                </div>
+            </div>
+
+            <!-- ลูกศรเลื่อน -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+
+            <!-- จุดแสดงสถานะ -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+
+    <!-- หมวดหมู่สินค้า -->
+    <div class="text-center mt-10">
+        <h2 class="text-xl font-semibold text-black">หมวดหมู่สินค้า</h2>
+        <a href="/all-product" class="text-gray-600 hover:text-blue-600 text-sm">กลุ่มสินค้าทั้งหมด &gt;</a>
+    </div>
+
+    <!-- แถวหมวดหมู่ -->
+    <div class="grid grid-cols-5 gap-6 text-center mt-6 max-w-4xl mx-auto">
+
+        <!-- ห้องนอน -->
+        <a href="/bed-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+            <img src="/images/bedroom.png" alt="ห้องนอน" class="w-12 h-12">
+            <span>ห้องนอน</span>
+        </a>
+
+        <!-- ห้องนั่งเล่น -->
+        <a href="/living-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+            <img src="/images/livingroom.png" alt="ห้องนั่งเล่น" class="w-12 h-12">
+            <span>ห้องนั่งเล่น</span>
+        </a>
+
+        <!-- ห้องครัว -->
+        <a href="/kitchen" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+            <img src="/images/kitchen.png" alt="ห้องครัว" class="w-12 h-12">
+            <span>ห้องครัว</span>
+        </a>
+
+        <!-- ห้องรับประทานอาหาร -->
+        <a href="/dining-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+            <img src="/images/diningroom.png" alt="ห้องรับประทานอาหาร" class="w-12 h-12">
+            <span>ห้องรับประทานอาหาร</span>
+        </a>
+
+        <!-- ห้องทำงาน -->
+        <a href="/working-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+            <img src="/images/workingroom.png" alt="ห้องทำงาน" class="w-12 h-12">
+            <span>ห้องทำงาน</span>
+        </a>
+
+    </div>
+    <!-- Recommend Deal Section -->
+    <div class="text-center mt-10">
+        <h2 class="text-xl font-semibold text-black">Recommend Deal</h2>
+        <p class="text-gray-500">สินค้าราคาพิเศษที่คุณไม่ควรพลาด!</p>
+
+        <!-- สินค้าจะถูกโหลดจากฐานข้อมูลภายหลัง -->
+        <div id="deal-container" class="grid grid-cols-5 gap-6 mt-6 max-w-6xl mx-auto">
+            <!-- สินค้าจะถูกดึงจากฐานข้อมูลมาที่นี่ -->
+        </div>
+    </div>
+    <!-- Information Section -->
+    <div class="grid grid-cols-4 gap-4 text-center mt-10 max-w-6xl mx-auto">
+
+        <!-- บริการ 24 ชั่วโมง -->
+        <div class="bg-blue-600 text-white p-4 flex items-center space-x-4 rounded-lg">
+            <img src="/images/Last 24 Hours.png" alt="24 ชม." class="w-10 h-10">
+            <div>
+                <p class="text-sm font-semibold">ช้อปออนไลน์ 24 ชม.</p>
+                <p class="text-lg font-bold">ซื้อง่าย ซื้อสะดวก!</p>
+            </div>
+        </div>
+
+        <!-- จัดส่งฟรีทั่วประเทศ -->
+        <div class="bg-blue-600 text-white p-4 flex items-center space-x-4 rounded-lg">
+            <img src="/images/Delivery.png" alt="จัดส่งฟรี" class="w-10 h-10">
+            <div>
+                <p class="text-sm font-semibold">จัดส่งฟรี!</p>
+                <p class="text-lg font-bold">ทั่วประเทศ</p>
+            </div>
+        </div>
+
+        <!-- ส่งด่วน ทันใจ -->
+        <div class="bg-blue-600 text-white p-4 flex items-center space-x-4 rounded-lg">
+            <img src="/images/Retro Alarm Clock.png" alt="ส่งด่วน" class="w-10 h-10">
+            <div>
+                <p class="text-sm font-semibold">ส่งด่วน ทันใจ</p>
+                <p class="text-lg font-bold">ภายใน 2-5 วัน</p>
+            </div>
+        </div>
+
+        <!-- ติดต่อสอบถาม -->
+        <div class="bg-blue-600 text-white p-4 flex items-center space-x-4 rounded-lg">
+            <img src="/images/Headset.png" alt="ติดต่อ" class="w-10 h-10">
+            <div>
+                <p class="text-sm font-semibold">ติดต่อสอบถาม</p>
+                <p class="text-lg font-bold">XXX-XXX-XXXXX</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-blue-600 text-white text-center py-6 mt-10">
+        <h3 class="text-lg font-semibold">จัดทำโดย</h3>
+        <p>นายชินกิจ ฤกษ์ดี รหัสนักศึกษา 66070048</p>
+        <p>นางสาวณัฐธิดา พิมพา รหัสนักศึกษา 66070059</p>
+        <p>นางสาวกัสมิน เกิดอยู่ รหัสนักศึกษา 66070237</p>
+        <p>นายธนบูรณ์ภัทร รอดปาน รหัสนักศึกษา 66070269</p>
+        <p>นางสาวพักธีธิรา บุญธรรม รหัสนักศึกษา 66070298</p>
+    </footer>
+
+
+    <%- include('partials/scrollTop') %>
+        <!-- Swiper.js JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+        <script>
+            var swiper = new Swiper(".mySwiper", {
+                loop: true,  // ให้เลื่อนวนไปเรื่อยๆ
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+            });
+        </script>
+</body>
+
+</html>
