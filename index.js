@@ -19,6 +19,16 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
+// เสิร์ฟหน้า Sign-in(ลูกค้า)
+app.get("/signin-customer", (req, res) => {
+    res.render("signin-customer");
+});
+// เสิร์ฟหน้า Sign-in(สำหรับผู้ขาย)
+app.get("/signin-provider", (req, res) => {
+    res.render("signin-provider");
+});
+
+
 // ตรวจสอบการเข้าสู่ระบบ
 app.post("/login", (req, res) => {
     const { username, password } = req.body;

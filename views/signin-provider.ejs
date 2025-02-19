@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิกผู้ขาย | FINFUR</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-white">
+    <!-- Sign-in Form -->
+    <div class="flex justify-center items-center h-screen">
+        <div class="w-full max-w-md">
+            <h3 class="text-3xl font-bold text-black mb-4">สมัครสมาชิกผู้ขาย</h3>
+
+            <form action="/signin-provider" method="POST" class="bg-white shadow-md rounded-lg p-6 space-y-4">
+                <div>
+                    <label class="block font-medium text-black">เบอร์โทรศัพท์*</label>
+                    <input type="text" name="phone-provider" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-black">อีเมล*</label>
+                    <input type="email" name="email-provider" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-black">รหัสผ่าน*</label>
+                    <input type="password" name="password-provider" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-black">ยืนยันรหัสผ่าน*</label>
+                    <input type="password" name="confirm_password-provider" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" name="agree_terms" class="form-checkbox border border-gray-400 text-blue-600 rounded-md">
+                    <span class="ml-2 text-sm text-black">ยอมรับข้อกำหนดเงื่อนไขและ <a href="#" class="text-blue-600 underline">นโยบายความเป็นส่วนตัว</a></span>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white text-lg font-semibold py-3 rounded-lg hover:bg-blue-700">
+                    สมัครสมาชิก
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
