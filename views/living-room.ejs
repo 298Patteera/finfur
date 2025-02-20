@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ห้องนั่งเล่น | FINFUR</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-white">
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <div class="max-w-screen-lg mx-auto mt-4">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">ห้องนั่งเล่น</h1>
+        <div class="w-full h-64 rounded-lg overflow-hidden shadow-md">
+            <img src="/images/living-room-img.jpg" alt="ห้องนั่งเล่น" class="w-full h-full object-cover">
+        </div>
+    </div>
+
+    <!-- พื้นที่เว้นไว้สำหรับสินค้า -->
+    <div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex justify-center items-center border border-gray-300 rounded-lg">
+        <p class="text-gray-500 text-lg">🚧 สินค้าจะถูกเพิ่มที่นี่เร็วๆ นี้...</p>
+    </div>
+
+    <%- include('partials/scrollTop') %>
+        <!-- Swiper.js JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+        <script>
+            var swiper = new Swiper(".mySwiper", {
+                loop: true,  // ให้เลื่อนวนไปเรื่อยๆ
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+            });
+        </script>
+
+    <script>
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
+
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
+
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
+
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+    </script>
+</body>
+</html>
