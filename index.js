@@ -57,6 +57,10 @@ app.get("/dining-room", (req, res) => {
 app.get("/working-room", (req, res) => {
     res.send("💻 หน้าห้องทำงาน");
 });
+// เสิร์ฟหน้าตะกร้าสินค้า (Cart Page)
+app.get("/cart", (req, res) => {
+    res.render("cart");
+});
 
 
 // ตรวจสอบการเข้าสู่ระบบ

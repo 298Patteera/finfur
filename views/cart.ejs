@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตะกร้าสินค้า | FINFUR</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Swiper.js CSS (สำหรับ Carousel) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>    
+<main class="container mx-auto p-4">
+    
+    <h1 class="text-2xl font-bold text-center my-4">ตะกร้าสินค้า</h1>
+
+    <!-- Table Header -->
+    <div class="bg-gray-200 p-2 rounded-lg flex items-center">
+        <input type="checkbox" class="mr-2">
+        <span class="w-1/2">สินค้า</span>
+        <span class="w-1/4 text-center">ราคา/หน่วย</span>
+        <span class="w-1/6 text-center">จำนวน</span>
+        <span class="w-1/6 text-right">ราคาสินค้ารวม</span>
+    </div>
+
+    <!-- พื้นที่สำหรับสินค้า -->
+    <div id="cart-items" class="my-4 space-y-4">
+        <!-- เว้นที่ไว้เพื่อเพิ่มสินค้า -->
+    </div>
+
+    <!-- ปุ่มควบคุม -->
+    <div class="flex justify-between items-center mt-6">
+        <a href="/" class="px-4 py-2 bg-white border rounded-lg flex items-center">
+            <span class="mr-2">⬅</span> เลือกซื้อสินค้าต่อ
+        </a>
+
+        <div class="flex space-x-4">
+            <button class="px-4 py-2 border rounded-lg flex items-center">
+                🗑 ลบทั้งหมด
+            </button>
+            <button class="px-6 py-2 bg-red-500 text-white rounded-lg">
+                ดำเนินการสั่งซื้อ
+            </button>
+        </div>
+    </div>
+
+    <!-- ราคาสุทธิ -->
+    <div class="text-right mt-4 text-lg font-bold">
+        ราคารวมทั้งหมด: <span id="total-price">$sum price บาท</span>
+    </div>
+    <script>
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
+
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
+
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
+
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+    </script>
+</main>
+</body>
+</html>

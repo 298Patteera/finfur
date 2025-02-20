@@ -14,6 +14,14 @@
 <body class="bg-white">
     <!-- Sign-in Form -->
     <div class="flex justify-center items-center h-screen">
+        <div id="navbarContainer" class="w-full fixed top-0 left-0 z-50 bg-white shadow-md">
+            <div id="defaultNavbar">
+                <%- include('partials/narbar') %>
+            </div>
+            <div id="searchNavbar" style="display: none;">
+                <%- include('partials/narbar_search') %>
+            </div>
+        </div>
         <div class="w-full max-w-md">
 
             <!-- ข้อความลิงก์สมัครผู้ขาย -->
@@ -58,5 +66,23 @@
             </form>
         </div>
     </div>
+    <script>
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
+
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
+
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
+
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+    </script>
 </body>
 </html>
