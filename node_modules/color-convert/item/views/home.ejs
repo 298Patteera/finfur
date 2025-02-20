@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <!-- 1 -->
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('item/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('item/narbar_search') %>
+        </div>
+    </div>
+    <!-- 1 -->
+    
+    <h1>Welcome to the Home Page</h1>
+    <h2 class="font-bold">หน้านี้เป็นตัวอย่างการนำไปใช้งานเด้อ
+        อย่าลืมเอา 
+        !-- 1 --
+        !-- 2 --
+    ใส่ให้ครบนะจ๊ะ เช็คpathดีๆนะจ๊ะ</h2>
+    <!-- 2 -->
+  <script>
+  function toggleSearch(event) {
+    event.preventDefault();
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    sessionStorage.setItem("searchMode", !searchMode);
+
+    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+  }
+
+  function updateNavbar() {
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+  }
+
+  // ตรวจสอบเมื่อโหลดหน้า
+  document.addEventListener("DOMContentLoaded", updateNavbar);
+</script>
+    <!-- 2 -->
+</body>
+</html>
+
