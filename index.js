@@ -6,13 +6,14 @@ const port = 3000;
 // ตั้งค่า View Engine เป็น EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+console.log("Views Directory:", path.join(__dirname, "views"));
 
 // Middleware อ่านค่าจาก Form
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // เสิร์ฟ Static Files เช่น CSS และโลโก้
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 // เสิร์ฟหน้า Login
 app.get("/login", (req, res) => {
@@ -27,9 +28,10 @@ app.get("/signin-customer", (req, res) => {
 app.get("/signin-provider", (req, res) => {
     res.render("signin-provider");
 });
-// เสิร์ฟหน้า home
+// เสิร์ฟหน้า Home 💢💢💢
 app.get("/", (req, res) => {
-    res.render("home");
+    let showSearchBar = req.query.search === "true"; // ถ้าส่งค่า ?search=true จะแสดง navbar_search
+    res.render("home", { showSearchBar });
 });
 // เสิร์ฟหน้า สินค้าทั้งหมด
 app.get("/all-product", (req, res) => {

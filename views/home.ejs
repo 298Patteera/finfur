@@ -18,6 +18,15 @@
 
 <body class="bg-white">
 
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+
     <!-- Carousel Section -->
     <div class="flex justify-center mt-8">
         <div class="swiper mySwiper w-full max-w-screen-lg h-[350px]">
@@ -141,9 +150,9 @@
         <h3 class="text-lg font-semibold">จัดทำโดย</h3>
         <p>นายชินกิจ ฤกษ์ดี รหัสนักศึกษา 66070048</p>
         <p>นางสาวณัฐธิดา พิมพา รหัสนักศึกษา 66070059</p>
-        <p>นางสาวกลิ่น เกิดอยู่	รหัสนักศึกษา 66070237</p>
+        <p>นางสาวกลิ่น เกิดอยู่ รหัสนักศึกษา 66070237</p>
         <p>นายธนานุภัทร รอดปาน รหัสนักศึกษา 66070269</p>
-        <p>นางสาวพัทธ์ธีรา บุตรธรรม	รหัสนักศึกษา 66070298</p>
+        <p>นางสาวพัทธ์ธีรา บุตรธรรม รหัสนักศึกษา 66070298</p>
     </footer>
 
 
@@ -162,6 +171,24 @@
                     clickable: true,
                 },
             });
+        </script>
+        <script>
+            function toggleSearch(event) {
+                event.preventDefault();
+                let searchMode = sessionStorage.getItem("searchMode") === "true";
+                sessionStorage.setItem("searchMode", !searchMode);
+
+                updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+            }
+
+            function updateNavbar() {
+                let searchMode = sessionStorage.getItem("searchMode") === "true";
+                document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+                document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+            }
+
+            // ตรวจสอบเมื่อโหลดหน้า
+            document.addEventListener("DOMContentLoaded", updateNavbar);
         </script>
 </body>
 
