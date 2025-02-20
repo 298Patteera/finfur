@@ -61,7 +61,22 @@ app.get("/working-room", (req, res) => {
 app.get("/cart", (req, res) => {
     res.render("cart");
 });
-
+// เสิร์ฟหน้าuser-profile
+app.get("/user-profile", (req, res) => {
+    res.render("user-profile");
+});
+// เสิร์ฟหน้าuser-payment
+app.get("/user-payment", (req, res) => {
+    res.render("user-payment");
+});
+// เสิร์ฟหน้าuser-address
+app.get("/user-address", (req, res) => {
+    res.render("user-address");
+});
+// เสิร์ฟหน้าuser-changepass
+app.get("/user-changepass", (req, res) => {
+    res.render("user-changepass");
+});
 
 // ตรวจสอบการเข้าสู่ระบบ
 app.post("/login", (req, res) => {
