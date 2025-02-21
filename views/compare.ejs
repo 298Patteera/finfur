@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เปรียบเทียบสินค้า | FINFUR</title>
+    <link rel="icon" type="image/png" href="/images/logo_main.png">
+</head>
+<body>
+    <!-- 1 -->
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+    <!-- 1 -->
+    <div class="px-10 mt-10">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">เปรียบเทียบสินค้าใน รายการโปรด</h1>
+        <ol class="list-decimal pl-6 space-y-2 text-gray-900">
+            <li class="font-semibold">เลือกสินค้า</li>
+            <ul class="list-disc pl-6 text-gray-700">
+                <li>เลือกสินค้า 2 รายการเพื่อทำการเปรียบเทียบ</li>
+            </ul>
+            <li class="font-semibold">ทำการเปรียบเทียบ</li>
+        </ol>        
+    </div>
+
+<div class="mt-10 gap-10">
+    <div class="p-5">
+        <button class="right-4 w-[200px] h-[50px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow" onclick="toggleCompare()">
+            เปรียบเทียบสินค้าเลย!
+        </button>        
+    </div>
+
+    <div class="relative flex items-center justify-center px-4 py-2 rounded-lg w-full gap-10">
+        <div class="w-full h-[700px] max-w-[700px] min-w-[300px] bg-blue-600 rounded-lg p-4 shadow-lg shadow-[rgba(0,0,0,0.5)]">
+            <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
+                <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 1
+                    <input type="checkbox" class="w-5 h-5" id="checkbox1" disabled>
+                </h3>   
+            </div >
+            <div class=" rounded-lg overflow-auto p-4 h-[600px]">
+                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10 ">
+                    <div id="1-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+                    <div id="1-box2" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+                    <div id="1-box3" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+                    <div id="1-box4" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+                </div>   
+            </div>
+        </div>
+    
+        <div class="w-full h-[700px] max-w-[700px] min-w-[300px] bg-blue-600 rounded-lg p-4 shadow-lg shadow-[rgba(0,0,0,0.5)]">
+            <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
+                 <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 2
+                    <input type="checkbox" class="w-5 h-5" id="checkbox2" disabled>
+                </h3> 
+            </div>  
+            <div class=" rounded-lg overflow-auto p-4 h-[600px]">
+                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
+                    <div id="2-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+                    <div id="2-box2" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
+
+        <!-- Pop-up กล่องที่จะแสดงเมื่อคลิกปุ่ม -->
+        <div id="popup" class="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-80 hidden grid justify-center items-center">
+            <h3 class="mt-10 text-white text-2xl font-bold">เปรียบเทียบสินค้าใน รายการโปรด</h3>
+            <div class=" p-6 rounded-lg flex gap-6 w-[80vw] h-[80vh] shadow-2xl">
+                <!-- กล่องที่ 1 -->
+                <div class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px] "></div>
+                <!-- กล่องที่ 2 -->
+                <div class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px]"></div>
+                <div class="h-full  mt-[15%]">
+                    <button class="w-[220px] h-[70px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow" onclick="toggleCompare()">
+                        เลือกสินค้าที่ต้องการจะเปรียบเทียบใหม่
+                    </button>                      
+                </div>
+ 
+            </div>
+        </div>
+
+  <script>
+
+    // Add event listeners to the boxes
+    document.getElementById("1-box1").addEventListener("click", function() {
+        handleClick("1-box1", "checkbox1");
+    });
+
+    document.getElementById("1-box2").addEventListener("click", function() {
+        handleClick("1-box2", "checkbox1");
+    });
+
+    document.getElementById("1-box3").addEventListener("click", function() {
+        handleClick("1-box3", "checkbox1");
+    });
+    document.getElementById("1-box4").addEventListener("click", function() {
+        handleClick("1-box4", "checkbox1");
+    });
+
+        // Add event listeners to the boxes
+        document.getElementById("2-box1").addEventListener("click", function() {
+        handleClick("2-box1", "checkbox2");
+    });
+
+    document.getElementById("2-box2").addEventListener("click", function() {
+        handleClick("2-box2", "checkbox2");
+    });
+
+    function handleClick(boxId, checkboxId) {
+        const box = document.getElementById(boxId);
+        const checkbox = document.getElementById(checkboxId);
+
+        // Toggle checkbox value
+        checkbox.checked = !checkbox.checked;
+
+        // Toggle shadow based on checkbox status
+        if (checkbox.checked) {
+            box.classList.add("shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)]");
+        } else {
+            box.classList.remove("shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)]");
+        }
+    }
+
+    function checkCheckboxes() {
+    // ตรวจสอบสถานะของ checkbox1 และ checkbox2
+    let isCheckbox1Checked = document.getElementById("checkbox1").checked;
+    let isCheckbox2Checked = document.getElementById("checkbox2").checked;
+
+    // ถ้าทั้ง checkbox1 และ checkbox2 ถูกเลือก
+    if (isCheckbox1Checked && isCheckbox2Checked) {
+        console.log("ทั้ง checkbox1 และ checkbox2 ถูกเลือก!");
+        // ทำการอัปเดต navbar หรือการแสดงผลต่าง ๆ ที่ต้องการที่นี่
+        sessionStorage.setItem("searchMode", "true");
+    } else {
+        console.log("ไม่ครบทั้งสอง checkbox หรือยังไม่ได้เลือก");
+        // อัปเดตค่า sessionStorage เพื่อปิดการแสดงผลบางอย่าง
+        sessionStorage.setItem("searchMode", "false");
+    }
+}
+    // ฟังก์ชันในการแสดงหรือซ่อน popup
+    function toggleCompare() {
+
+        let isCheckbox1Checked = document.getElementById("checkbox1").checked;
+        let isCheckbox2Checked = document.getElementById("checkbox2").checked;
+
+         // ถ้าทั้ง checkbox1 และ checkbox2 ถูกเลือก
+    if (isCheckbox1Checked && isCheckbox2Checked) {
+        console.log("ทั้ง checkbox1 และ checkbox2 ถูกเลือก!");
+        console.log("มาเเล้ววว");
+        const popup = document.getElementById("popup");
+
+        if (popup.classList.contains('hidden')) {
+            popup.classList.remove('hidden');
+        } else {
+            popup.classList.add('hidden');
+        }
+    } else {
+        console.log("ไม่ครบทั้งสอง checkbox หรือยังไม่ได้เลือก");
+        alert("กรุณาเลือกสินค้าสองชิ้นเพื่อเปรียบเทียบ คุณอาจลืมเลือกสินค้าหรือเลือกไม่ครบ");
+    }
+    }
+
+  function toggleSearch(event) {
+    event.preventDefault();
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    sessionStorage.setItem("searchMode", !searchMode);
+
+    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+  }
+
+  function updateNavbar() {
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+  }
+
+  // ตรวจสอบเมื่อโหลดหน้า
+  document.addEventListener("DOMContentLoaded", updateNavbar);
+</script>
+    <!-- 2 -->
+</body>
+</html>

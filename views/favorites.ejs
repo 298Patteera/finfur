@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายการโปรด | FINFUR</title>
+    <link rel="icon" type="image/png" href="/images/logo_main.png">
+</head>
+<body>
+    <!-- 1 -->
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+    <!-- 1 -->
+
+    <!-- หน้าที่ ลูกค้ายังไม่ได้บันทึกรายการโปรด -->
+    <div class="px-10 mt-10" id="non_showFavorites">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">ดูเหมือนว่าคุณยังไม่มีสินค้าที่ถูกใจ</h1>
+        <ul class="list-disc pl-6 space-y-2 text-gray-900">
+            <li class="font-semibold">บันทึกและจัดลำดับสินค้าที่คุณชื่นชอบ เพื่อให้เลือกได้ง่ายขึ้นเมื่อพร้อมซื้อ</li>
+            <ul class="list-disc pl-6 text-gray-700">
+                <li class="flex items-center space-x-2">
+                    <img src="/images/logo_favorite.png" class="bg-red-500 rounded-[50px] p-2 w-[40px]" alt="Favorite Icon">
+                    <span>คลิกไอคอนรูปหัวใจเพื่อบันทึกสินค้า</span>
+                </li>
+                <li class="flex items-center space-x-2 mt-2">
+                    <img src="/images/logo_account.png" class="bg-blue-600 rounded-[50px] p-2 w-[40px]" alt="Account Icon">
+                    <span>สมัครสมาชิกหรือลงชื่อเข้าใช้ เพื่อเข้าถึงสินค้าที่บันทึกไว้จากทุกอุปกรณ์</span>
+                </li>
+            </ul>
+        </ul>
+    </div> 
+
+    <!-- หน้าที่ ลูกค้าบันทึกรายการโปรดเเล้ว -->
+    <div class="px-10 mt-10 hidden" id="showFavorites">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">รายการโปรด</h1>
+        <ul class="pl-6 space-y-2 text-gray-700"">
+            <li >รายการโปรด 8 รายการ</li>
+        </ul>
+        <div class="relative flex flex-wrap gap-10 mt-10 ">
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+            <div class="bg-gray-200 w-[200px] h-[300px] min-w-[200px] min-h-[300px]"></div>
+        </div>
+        <h2 class="mt-10 text-[20px]">
+            คุณอยากลอง 
+            <a href="/compare" class="font-bold text-blue-600 ">เปรียบเทียบสินค้าในรายการโปรด</a> 
+            ดูไหม?
+        </h2>        
+    </div>
+
+    <div class="mt-10">
+        <button class="w-[250px] h-[100px] bg-red-700 font-bold text-white rounded-[20px] flex items-center justify-center teshadow" onclick="toggleFavorites()" id="ToggleButtun">
+            <p>เพื่อนลองกดดูว่าถ้ามีข้อมูลจะเป็นหน้ายังไง (ของจริงปุ่มนี้ไม่มี ให้ลองเฉยๆ)</p>
+        </button>         
+    </div>
+
+
+
+
+  <script>
+
+    function toggleFavorites() { 
+        const showF = document.getElementById("showFavorites");
+        const non_showF = document.getElementById("non_showFavorites");
+        const ToggleButtun = document.getElementById('ToggleButtun');
+
+        if (showF.classList.contains('hidden')) {
+            showF.classList.remove('hidden');
+            non_showF.classList.add('hidden');
+            ToggleButtun.textContent = 'กลับไปดูตอนไม่มีรายการโปรด (ของจริงปุ่มนี้ไม่มี ให้ลองเฉยๆ)';
+
+        } else {
+            showF.classList.add('hidden');
+            non_showF.classList.remove('hidden');
+            ToggleButtun.textContent = 'เพื่อนลองกดดูว่าถ้ามีข้อมูลจะเป็นหน้ายังไง (ของจริงปุ่มนี้ไม่มี ให้ลองเฉยๆ)';
+        }
+    }
+
+// 2
+  function toggleSearch(event) {
+    event.preventDefault();
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    sessionStorage.setItem("searchMode", !searchMode);
+
+    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+  }
+
+  function updateNavbar() {
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+  }
+
+  // ตรวจสอบเมื่อโหลดหน้า
+  document.addEventListener("DOMContentLoaded", updateNavbar);
+//2
+</script>
+</body>
+</html>
