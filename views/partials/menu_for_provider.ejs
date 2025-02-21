@@ -1,0 +1,23 @@
+
+<div class="flex space-x-4 mt-4 border-b pb-2">
+    <a href="/provider-productList" id="ProductList" class="text-gray-600">สินค้าทั้งหมด</a>
+    <a href="/provider-addProduct" id="AddProduct" class="text-gray-600">เพิ่ม/ลบ สินค้า</a>
+    <a href="/provider-productHistory" id="ProductHistory" class="text-gray-600">ประวัติ</a>
+</div>
+
+<script>
+    // ดึง URL ปัจจุบัน
+    const currentPath = window.location.pathname;
+
+    // กำหนดค่า Path และ Element ID ที่เกี่ยวข้อง
+    const menuItems = {
+        "/provider-productList": "ProductList",
+        "/provider-addProduct": "AddProduct",
+        "/provider-productHistory": "ProductHistory",
+    };
+
+    // เช็คว่าหน้านี้ตรงกับเมนูไหน
+    if (menuItems[currentPath]) {
+        document.getElementById(menuItems[currentPath]).classList.add("text-blue-600", "font-bold","border-b-2","pb-1");
+    }
+</script>

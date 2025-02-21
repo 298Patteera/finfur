@@ -1,0 +1,27 @@
+<aside class="w-1/4 p-5 bg-blue-100 rounded-l-lg">
+    <ul class="space-y-4">
+        <li class="font-semibold">บัญชีของฉัน</li>
+        <li class="text-gray-600" id="profile"><a href="/user-profile">ข้อมูลของฉัน</a></li>
+        <li class="text-gray-600" id="payment"><a href="/user-payment">ช่องทางการชำระเงิน</a></li>
+        <li class="text-gray-600" id="address"><a href="/user-address">ที่อยู่</a></li>
+        <li class="text-gray-600" id="changepass"><a href="/user-changepass">เปลี่ยนรหัสผ่าน</a></li>
+    </ul>
+</aside>
+
+<script>
+    // ดึง URL ปัจจุบัน
+    const currentPath = window.location.pathname;
+
+    // กำหนดค่า Path และ Element ID ที่เกี่ยวข้อง
+    const menuItems = {
+        "/user-profile": "profile",
+        "/user-payment": "payment",
+        "/user-changepass": "changepass",
+        "/user-address": "address"
+    };
+
+    // เช็คว่าหน้านี้ตรงกับเมนูไหน
+    if (menuItems[currentPath]) {
+        document.getElementById(menuItems[currentPath]).classList.add("text-blue-600", "font-bold");
+    }
+</script>
