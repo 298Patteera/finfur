@@ -77,6 +77,31 @@ app.get("/user-address", (req, res) => {
 app.get("/user-changepass", (req, res) => {
     res.render("user-changepass");
 });
+// เสิร์ฟหน้าcompare
+app.get("/compare", (req, res) => {
+    res.render("compare");
+});
+// เสิร์ฟหน้าfavorites
+app.get("/favorites", (req, res) => {
+    res.render("favorites");
+});
+
+// เสิร์ฟหน้า ของ provider
+
+// เสิร์ฟหน้า ของ productList
+app.get("/provider-productList", (req, res) => {
+    res.render("provider-productList");
+});
+
+// เสิร์ฟหน้า ของ addProduct
+app.get("/provider-addProduct", (req, res) => {
+    res.render("provider-addProduct");
+});
+
+// เสิร์ฟหน้า ของ productHistory
+app.get("/provider-productHistory", (req, res) => {
+    res.render("provider-productHistory");
+});
 
 // ตรวจสอบการเข้าสู่ระบบ
 app.post("/login", (req, res) => {
