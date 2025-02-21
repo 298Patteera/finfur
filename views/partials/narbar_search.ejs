@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/style.css">
+<script src="https://cdn.tailwindcss.com"></script>
     <title>Document</title>
 </head>
 <body>
     <nav class="bg-blue-600 text-white p-4 h-[110px]">
         <div class="flex justify-between items-center">
             <a href="/">
-                <img src="/images/logo_main.png" width="150px" class="min-h-8 min-w-[100px]>
+                <img src="/images/logo_main.png" width="150px" class="min-h-8 min-w-[80px]">
             </a>
 
            <div class="relative flex items-center px-4 py-2 rounded-lg w-full max-w-2xl">
@@ -21,20 +22,20 @@
             
                 <!-- ปุ่มไอคอน Search -->
                 <button class="absolute right-4 w-10 h-10 min-w-8 min-h-8 bg-[#FFEF00] rounded-lg flex items-center justify-center shadow">
-                    <img src="/images/logo_search_black.png" alt="search" class="w-6 h-6 object-contain" >
+                    <img src="/images/logo_search_black.png" alt="search" class="w-6 h-6 min-w-6 min-h-6 object-contain" >
                 </button>
             </div>
                 <div>
-                    <a href="#" onclick="toggleSearch(event)" alt="close" class="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow text-[15px] text-black font-bold">X</a>
+                    <a href="#" onclick="toggleSearch(event)" alt="close" class="w-7 h-7 min-w-7 min-h-7 bg-white rounded-full flex items-center justify-center shadow text-[15px] text-black font-bold">X</a>
                 </div>
             </div>
 
           <ul class="flex space-x-4 items-center flex-nowrap">
-            <li><a href="index.html"><img src="/images/logo_account.png" alt="account" class=" w-8 h-8 min-w-8 min-h-8"></a></li>
+            <li><a href="/user-profile"><img src="/images/logo_account.png" alt="account" class=" w-8 h-8 min-w-8 min-h-8  "></a></li>
             <li><a href="/favorites"><img src="/images/logo_favorite.png" alt="favorite" class="w-8 h-8 min-w-8 min-h-8"></a></li>
             <li><a href="/compare"><img src="/images/logo_compare.png" alt="compare" class="w-8 h-8 min-w-8 min-h-8"></a></li>
             <li class="border-l border-white-600 h-10"></li>
-            <li><a href="index.html"><img src="/images/logo_shopping_cart.png" alt="หน้าแรก" class="w-8 h-8 min-w-8 min-h-8"></a></li>
+            <li><a href="/cart"><img src="/images/logo_shopping_cart.png" alt="หน้าแรก" class="w-8 h-8 min-w-8 min-h-8  "></a></li>
           </ul>
         </div>
       </nav>
