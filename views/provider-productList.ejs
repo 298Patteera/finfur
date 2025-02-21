@@ -1,0 +1,61 @@
+<!-- provider-productList.ejs -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตรวจสอบรายการสินค้า</title>
+    <link rel="stylesheet" href="/public/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleCategoryDropdown() {
+            document.getElementById('categoryDropdown').classList.toggle('hidden');
+        }
+
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
+
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
+
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
+
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+    </script>
+</head>
+<body class="bg-gray-100">
+
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+<!-- เเก้ -->
+    <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
+        <%- include('partials/menu_for_provider') %>
+        <%- include('partials/categoryDropdown_for_provider') %>
+        <div class="grid grid-cols-3 gap-4 mt-6">
+                <div class="bg-blue-100 p-4 rounded">
+                    <img src="product.image" alt="Product Image" class="w-full h-32 object-cover rounded">
+                    <p class="text-gray-700 font-semibold mt-2">product.category</p>
+                    <p class="text-gray-600">รหัสสินค้า: product.id</p>
+                    <p class="text-gray-600">ราคา: product.price บาท</p>
+                    <p class="text-gray-600">วันที่เพิ่มสินค้า: product.addedDate</p>
+                    <p class="text-gray-600">ยอดที่เพิ่มในรายการโปรด: product.favoritesCount</p>
+                    <button class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded">แก้ไข</button>
+                </div>
+        </div>
+    </div>
+<!-- เเก้ -->
+</body>
+</html>

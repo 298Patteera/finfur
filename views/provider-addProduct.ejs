@@ -1,0 +1,109 @@
+<!-- provider-addProduct -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่ม/ลบสินค้า</title>
+    <link rel="stylesheet" href="/public/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleCategoryDropdown() {
+            document.getElementById('categoryDropdown').classList.toggle('hidden');
+        }
+        
+        function addProduct() {
+            let name = document.getElementById('productName').value;
+            let category = document.getElementById('categorySelect').value;
+            let quantity = document.getElementById('productQuantity').value;
+            let unit = document.getElementById('productUnit').value;
+            let price = document.getElementById('productPrice').value;
+            
+            if (!name || !category || !quantity || !unit || !price) {
+                alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                return;
+            }
+            
+            let productRow = `<tr>
+                <td class='border p-2'>${name}</td>
+                <td class='border p-2'>${category}</td>
+                <td class='border p-2'>${quantity}</td>
+                <td class='border p-2'>${unit}</td>
+                <td class='border p-2'>${price}</td>
+            </tr>`;
+            
+            document.getElementById('productTable').innerHTML += productRow;
+        }
+
+        function toggleCategoryDropdown() {
+            document.getElementById('categoryDropdown').classList.toggle('hidden');
+        }
+
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
+
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
+
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
+
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
+        <%- include('partials/menu_for_provider') %>
+        <%- include('partials/categoryDropdown_for_provider') %>
+        
+        <table class="mt-6 w-full border">
+            <thead>
+                <tr class="bg-blue-100">
+                    <th class="border p-2">ชื่อสินค้า</th>
+                    <th class="border p-2">หมวดหมู่</th>
+                    <th class="border p-2">จำนวน</th>
+                    <th class="border p-2">หน่วย</th>
+                    <th class="border p-2">ราคา</th>
+                </tr>
+            </thead>
+            <tbody id="productTable">
+                <tr>
+                    <td class="border p-2"><input type="text" id="productName" class="w-full border"></td>
+                    <td class="border p-2">
+                        <select id="categorySelect" class="w-full border">
+                            <option>ห้องนอน</option>
+                            <option>ห้องนั่งเล่น</option>
+                            <option>ห้องครัว</option>
+                            <option>ห้องรับประทานอาหาร</option>
+                            <option>ห้องทำงาน</option>
+                        </select>
+                    </td>
+                    <td class="border p-2"><input type="number" id="productQuantity" class="w-full border"></td>
+                    <td class="border p-2"><input type="text" id="productUnit" class="w-full border"></td>
+                    <td class="border p-2"><input type="number" id="productPrice" class="w-full border"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="flex mt-4 space-x-4">
+            <button class="bg-red-600 text-white px-4 py-2 rounded">ลบสินค้า</button>
+            <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="addProduct()">เพิ่มสินค้า</button>
+        </div>
+    </div>
+</body>
+</html>
