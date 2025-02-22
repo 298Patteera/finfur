@@ -61,6 +61,11 @@ app.get("/working-room", (req, res) => {
 app.get("/cart", (req, res) => {
     res.render("cart");
 });
+// เสิร์ฟหน้าเช็คเอาท์
+app.get("/checkout", (req, res) => {
+    res.render("checkout"); 
+});
+
 // เสิร์ฟหน้าuser-profile
 app.get("/user-profile", (req, res) => {
     res.render("user-profile");
