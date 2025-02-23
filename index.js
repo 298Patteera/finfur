@@ -114,6 +114,11 @@ app.get("/provider-productHistory", (req, res) => {
     res.render("provider-productHistory");
 });
 
+// เสิร์ฟหน้า ของ orderHistory
+app.get("/provider-orderHistory", (req, res) => {
+    res.render("provider-orderHistory");
+});
+
 // ตรวจสอบการเข้าสู่ระบบ
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
