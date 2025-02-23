@@ -38,7 +38,7 @@
         <ul class="p-4 space-y-4 text-lg">
                 <!-- ห้องนอน -->
                 <li>
-                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                    <a href="/bed-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องนอน
                         <span id="bedroomToggle" onclick="toggleItems('bedroomItems', 'bedroomToggle')" class="cursor-pointer">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
@@ -55,7 +55,7 @@
             
                 <!-- ห้องนั่งเล่น -->
                 <li>
-                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                    <a href="/living-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องนั่งเล่น
                         <span id="livingRoomToggle" onclick="toggleItems('livingRoomItems', 'livingRoomToggle')" class="cursor-pointer">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
@@ -72,7 +72,7 @@
             
                 <!-- ห้องครัว -->
                 <li>
-                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                    <a href="/kitchen" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องครัว
                         <span id="kitchenToggle" onclick="toggleItems('kitchenItems', 'kitchenToggle')" class="cursor-pointer">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
@@ -89,7 +89,7 @@
             
                 <!-- ห้องรับประทานอาหาร -->
                 <li>
-                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                    <a href="/dining-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องรับประทานอาหาร
                         <span id="diningRoomToggle" onclick="toggleItems('diningRoomItems', 'diningRoomToggle')" class="cursor-pointer">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
@@ -106,7 +106,7 @@
             
                 <!-- ห้องทำงาน -->
                 <li>
-                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                    <a href="/working-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องทำงาน
                         <span id="officeToggle" onclick="toggleItems('officeItems', 'officeToggle')" class="cursor-pointer">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
@@ -125,6 +125,8 @@
 
     <script>
     function toggleItems(itemId, toggleId) {
+        // หยุดไม่ให้ลิงก์ทำงาน
+        event.preventDefault();
         // Get the list to toggle visibility
         const items = document.getElementById(itemId);
         // Get the icon element to change its image
