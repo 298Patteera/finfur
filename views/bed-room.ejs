@@ -130,6 +130,19 @@
         </script>
 
     <script>
+    function changeFavorites(button) {
+        const icon = button.querySelector('img');
+        icon.src = (icon.src.includes("favorite_variant2.png")) ? 
+                    "/images/favorite_default.png" : 
+                    "/images/favorite_variant2.png";
+    }
+
+    function changeShopping(button) {
+        const icon = button.querySelector('img');
+        icon.src = (icon.src.includes("shopping_cart_variant2.png")) ? 
+                    "/images/shopping_cart_default.png" : 
+                    "/images/shopping_cart_variant2.png";
+    }
         function toggleSearch(event) {
             event.preventDefault();
             let searchMode = sessionStorage.getItem("searchMode") === "true";
