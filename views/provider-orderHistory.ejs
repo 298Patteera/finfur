@@ -1,0 +1,159 @@
+<!-- provider-addProduct -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่ม/ลบสินค้า</title>
+    <link rel="stylesheet" href="/public/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleCategoryDropdown() {
+            document.getElementById('categoryDropdown').classList.toggle('hidden');
+        }
+        
+        function addProduct() {
+            let name = document.getElementById('productName').value;
+            let category = document.getElementById('categorySelect').value;
+            let quantity = document.getElementById('productQuantity').value;
+            let unit = document.getElementById('productUnit').value;
+            let price = document.getElementById('productPrice').value;
+            
+            if (!name || !category || !quantity || !unit || !price) {
+                alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                return;
+            }
+            
+            let productRow = `<tr>
+                <td class='border p-2'>${name}</td>
+                <td class='border p-2'>${category}</td>
+                <td class='border p-2'>${quantity}</td>
+                <td class='border p-2'>${unit}</td>
+                <td class='border p-2'>${price}</td>
+            </tr>`;
+            
+            document.getElementById('productTable').innerHTML += productRow;
+        }
+
+        function toggleCategoryDropdown() {
+            document.getElementById('categoryDropdown').classList.toggle('hidden');
+        }
+
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
+
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
+
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
+
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+    </script>
+</head>
+<body class="bg-gray-100">
+            <%- include('partials/narbar_provider') %>
+    
+    <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
+        <%- include('partials/menu_for_provider') %>
+        <%- include('partials/categoryDropdown_for_provider') %>
+        
+        <table class="mt-6 w-full border">
+            <thead>
+                <tr class="bg-blue-100">
+                    <th class="border p-2">ชื่อสินค้า</th>
+                    <th class="border p-2">หมวดหมู่</th>
+                    <th class="border p-2">รหัสสินค้า</th>
+                    <th class="border p-2">username ของลูกค้า</th>
+                    <th class="border p-2">วันที่/เวลาที่ลูกค้าทำการสั่งซื้อ</th>
+                            <!-- ประวัติการสั่งซื้อฝั่งผู้ขาย
+            timestamp(เวลาที่ลูกค้าทำการสั่งซื้อ),usernameผู้ซื้อ, id, name, quantitiesจำนวน, สถานะการสั่งซื้อ(แก้ไข) -->
+                </tr>
+            </thead>
+            <tbody id="productTable">
+                <tr>
+                    <td class="border p-2"><input type="text" id="productName" class="w-full border"></td>
+                    <td class="border p-2">
+                        <select id="categorySelect" class="w-full border">
+                            <option>ห้องนอน</option>
+                            <option>ห้องนั่งเล่น</option>
+                            <option>ห้องครัว</option>
+                            <option>ห้องรับประทานอาหาร</option>
+                            <option>ห้องทำงาน</option>
+                        </select>
+                    </td>
+                    <td class="border p-2"><input type="text" id="productUnit" class="w-full border"></td>
+                    <td class="border p-2"><input type="text" id="productUnit" class="w-full border"></td>
+                    <td class="border p-2"><input type="datetime-local" id="orderDatetime" class="w-full border"></td> <!-- ใส่ช่องสำหรับวันที่/เวลา -->
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- <div class="mt-6">
+            <div class="flex justify-between items-center bg-blue-100 p-4 rounded mb-4">
+                <div class="flex items-center space-x-4">
+                    <img src="item.image" alt="Product Image" class="w-20 h-20 object-cover rounded">
+                    <div>
+                        <p class="text-gray-700 font-semibold">item.productName </p>
+                    </div>
+                </div>
+                <div>
+                    <p class="%= item.status === 'added' ? 'text-green-600' : 'text-red-600' %">
+                        = item.status === 'added' ? 'เพิ่มสินค้าสำเร็จ' : 'ลบสินค้าสำเร็จ' %
+                    </p>
+                    <p class="text-gray-600"> item.date </p>
+                    <p class="text-gray-600"> item.time </p>
+                </div>
+            </div>
+    </div> -->
+
+    <!-- ตารางแสดงรายการประวัติการสั่งซื้อ -->
+    <table class="mt-6 w-full border">
+        <thead>
+            <tr class="bg-blue-100">
+                <th class="border p-2">ชื่อสินค้า</th>
+                <th class="border p-2">หมวดหมู่</th>
+                <th class="border p-2">รหัสสินค้า</th>
+                <th class="border p-2">username ของลูกค้า</th>
+                <th class="border p-2">วันที่/เวลาที่ลูกค้าทำการสั่งซื้อ</th>
+                <th class="border p-2">แก้ไขสถานะ</th> <!-- เพิ่มคอลัมน์สำหรับปุ่ม -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="border p-2">item.productName %></td>
+                <td class="border p-2">item.category %></td>
+                <td class="border p-2">item.productCode %></td>
+                <td class="border p-2">item.customerUsername %></td>
+                <td class="border p-2">item.date  / = item.time %></td>
+                <td class="border p-2">
+                    <button onclick="changeStatus('<  %  = item.id %  >')" class="bg-[#FFEF00] text-black px-4 py-2 rounded-md hover:bg-yellow-600">
+                        แก้ไขสถานะ
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+    </div>
+
+    <script>
+    //     function changeStatus(itemId) {
+    //     // สมมุติว่าเรามีข้อมูลของสินค้าทั้งหมด
+    //     // เปลี่ยนสถานะของสินค้าที่มี ID ที่เลือก
+    //     let item = items.find(item => item.id === itemId); // ค้นหาสินค้า
+    //     if (item) {
+    //         item.status = item.status === 'added' ? 'removed' : 'added'; // สลับสถานะ
+    //         // อาจจะทำการอัพเดตหน้าเว็บหรือส่งข้อมูลไปที่เซิร์ฟเวอร์
+    //         location.reload(); // รีเฟรชหน้าเว็บเพื่อแสดงสถานะที่เปลี่ยน
+    //     }
+    // }
+    </script>
+</body>
+</html>
