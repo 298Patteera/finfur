@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+    <nav class="bg-blue-600 text-white p-4 h-[110px] flex justify-between items-center">
+        <!-- โลโก้ตรงกลาง -->
+        <a href="#" class="absolute left-1/2 transform -translate-x-1/2">
+            <img src="/images/logo_main.png" width="150px" class="min-w-[80px]">
+        </a>
+    
+        <!-- ปุ่มเข้าสู่ระบบ (อยู่ขวา) -->
+        <div class="relative ml-auto"> <!-- เพิ่ม ml-auto เพื่อให้ div ไปอยู่ขวา -->
+            <button onclick="toggleLoginOptions()" 
+                    class="bg-white text-blue-600 px-4 py-2 rounded-lg shadow-md hover:bg-blue-100">
+                เข้าสู่ระบบ
+            </button>
+    
+            <!-- กรอบตัวเลือก (ซ่อนเริ่มต้น) -->
+            <div id="loginOptions" 
+                 class="hidden absolute right-0 mt-2 bg-blue-300 text-black p-4 rounded-lg shadow-lg border w-[200px]">
+    
+                 <a href="/" class="bg-white w-full py-2 mb-2 rounded-lg hover:bg-blue-100 transition block text-center">
+                    เข้าสู่ระบบ User
+                </a>
+                
+                <a href="/provider-productList" class="bg-white w-full py-2 rounded-lg hover:bg-blue-100 transition block text-center">
+                    เข้าสู่ระบบ Provider
+                </a>                
+            </div>
+        </div>
+    </nav>
+    
+    <script>
+        function toggleLoginOptions() {
+            const options = document.getElementById("loginOptions");
+            options.classList.toggle("hidden"); // สลับแสดง/ซ่อน
+        }
+        function toggleMenu() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("-translate-x-full");
+        }
+
+    </script>
+
+</body>
+</html>
