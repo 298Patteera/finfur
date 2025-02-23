@@ -36,119 +36,90 @@
             <button onclick="toggleMenu()" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
         </div>
         <ul class="p-4 space-y-4 text-lg">
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    กระเบื้อง
-                    <span id="tileToggle" onclick="toggleItems('tileItems', 'tileToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="tileItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">กระเบื้องปูพื้น</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">กระเบื้องผนัง</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    วัสดุปิดผิวและตกแต่ง
-                    <span id="finishToggle" onclick="toggleItems('finishItems', 'finishToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="finishItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">วัสดุปิดผิวไม้</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">วัสดุพีวีซี</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    ห้องน้ำ<span id="bathroomToggle" onclick="toggleItems('bathroomItems', 'bathroomToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="bathroomItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">อ่างล้างหน้า</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">ห้องอาบน้ำ</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    ห้องครัว<span id="kitchenToggle" onclick="toggleItems('kitchenItems', 'kitchenToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="kitchenItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">เตาแก๊ส</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">ซิงค์ล้างจาน</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    แอร์และเครื่องใช้ไฟฟ้า<span id="acToggle" onclick="toggleItems('acItems', 'acToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="acItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">เครื่องปรับอากาศ</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">พัดลม</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    ไฟฟ้าและแสงสว่าง<span id="lightingToggle" onclick="toggleItems('lightingItems', 'lightingToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="lightingItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">หลอดไฟ LED</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">โคมไฟ</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    เฟอร์นิเจอร์<span id="furnitureToggle" onclick="toggleItems('furnitureItems', 'furnitureToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="furnitureItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">โซฟา</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">เก้าอี้</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    ประตูและหน้าต่าง<span id="doorToggle" onclick="toggleItems('doorItems', 'doorToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="doorItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">ประตูไม้</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">หน้าต่างอลูมิเนียม</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    เครื่องมือช่างและฮาร์ดแวร์<span id="toolsToggle" onclick="toggleItems('toolsItems', 'toolsToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="toolsItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">สว่าน</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">เครื่องมือไฟฟ้า</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
-                    สีและอุปกรณ์<span id="paintToggle" onclick="toggleItems('paintItems', 'paintToggle')" class="cursor-pointer">
-                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
-                    </span>
-                </a>
-                <ul id="paintItems" class="pl-4 hidden">
-                    <li><a href="#" class="block hover:text-blue-500">สีทาผนัง</a></li>
-                    <li><a href="#" class="block hover:text-blue-500">แปรงทาสี</a></li>
-                </ul>
-            </li>
-            <!-- เพิ่มหัวข้ออื่นๆ ตรงนี้เด้อ -->
+                <!-- ห้องนอน -->
+                <li>
+                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                        ห้องนอน
+                        <span id="bedroomToggle" onclick="toggleItems('bedroomItems', 'bedroomToggle')" class="cursor-pointer">
+                            <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                        </span>
+                    </a>
+                    <ul id="bedroomItems" class="pl-4 hidden">
+                        <li><a href="#" class="block hover:text-blue-500">เตียงนอน</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ตู้เสื้อผ้า</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">โต๊ะข้างเตียง</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">เก้าอี้อำนวยความสะดวก</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">โคมไฟนอน</a></li>
+                    </ul>
+                </li>
+            
+                <!-- ห้องนั่งเล่น -->
+                <li>
+                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                        ห้องนั่งเล่น
+                        <span id="livingRoomToggle" onclick="toggleItems('livingRoomItems', 'livingRoomToggle')" class="cursor-pointer">
+                            <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                        </span>
+                    </a>
+                    <ul id="livingRoomItems" class="pl-4 hidden">
+                        <li><a href="#" class="block hover:text-blue-500">โซฟา</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">โต๊ะกาแฟ</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ชั้นวางทีวี</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">โคมไฟตั้งพื้น</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">เก้าอี้เอนหลัง</a></li>
+                    </ul>
+                </li>
+            
+                <!-- ห้องครัว -->
+                <li>
+                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                        ห้องครัว
+                        <span id="kitchenToggle" onclick="toggleItems('kitchenItems', 'kitchenToggle')" class="cursor-pointer">
+                            <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                        </span>
+                    </a>
+                    <ul id="kitchenItems" class="pl-4 hidden">
+                        <li><a href="#" class="block hover:text-blue-500">เตาแก๊ส</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ซิงค์ล้างจาน</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ตู้เย็น</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ไมโครเวฟ</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">เครื่องดูดควัน</a></li>
+                    </ul>
+                </li>
+            
+                <!-- ห้องรับประทานอาหาร -->
+                <li>
+                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                        ห้องรับประทานอาหาร
+                        <span id="diningRoomToggle" onclick="toggleItems('diningRoomItems', 'diningRoomToggle')" class="cursor-pointer">
+                            <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                        </span>
+                    </a>
+                    <ul id="diningRoomItems" class="pl-4 hidden">
+                        <li><a href="#" class="block hover:text-blue-500">โต๊ะรับประทานอาหาร</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">เก้าอี้รับประทานอาหาร</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ตู้เก็บของ</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">โคมไฟห้องอาหาร</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ชั้นวางไวน์</a></li>
+                    </ul>
+                </li>
+            
+                <!-- ห้องทำงาน -->
+                <li>
+                    <a href="#" class="block hover:text-blue-500 flex justify-between items-center">
+                        ห้องทำงาน
+                        <span id="officeToggle" onclick="toggleItems('officeItems', 'officeToggle')" class="cursor-pointer">
+                            <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                        </span>
+                    </a>
+                    <ul id="officeItems" class="pl-4 hidden">
+                        <li><a href="#" class="block hover:text-blue-500">โต๊ะทำงาน</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">เก้าอี้ทำงาน</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ชั้นวางเอกสาร</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">ตู้เก็บเอกสาร</a></li>
+                        <li><a href="#" class="block hover:text-blue-500">โคมไฟทำงาน</a></li>
+                    </ul>
+                </li>
         </ul>
     </div>
 
