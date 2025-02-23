@@ -33,6 +33,12 @@ app.get("/", (req, res) => {
     let showSearchBar = req.query.search === "true"; // ถ้าส่งค่า ?search=true จะแสดง navbar_search
     res.render("home", { showSearchBar });
 });
+// เสิร์ฟหน้า Product Details
+app.get("/product/:id", (req, res) => {
+    const productId = req.params.id;
+    // ⏳ ในอนาคตจะดึงข้อมูลจาก Database มาแสดง
+    res.render("product-detail", { productId });
+});
 // เสิร์ฟหน้า สินค้าทั้งหมด
 app.get("/all-product", (req, res) => {
     res.render("all-product");
