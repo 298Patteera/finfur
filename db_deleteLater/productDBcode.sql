@@ -32,13 +32,13 @@ CREATE TABLE IF NOT EXISTS "ProductList" (
 	"categoryID"	INTEGER NOT NULL,
 	"brand"	TEXT,
 	"price"	REAL NOT NULL,
-	"stockNum"	INTEGER DEFAULT 0,
-	"favoritesCount"	INTEGER DEFAULT 0,
-	"addedDate"	TEXT NOT NULL,
+	"stockNum"	INTEGER NOT NULL DEFAULT 0,
+	"favoritesCount"	INTEGER NOT NULL DEFAULT 0,
+	"addedDate"	TEXT,
 	"subID"	INTEGER NOT NULL,
+	"description"	TEXT,
 	PRIMARY KEY("productID"),
-	FOREIGN KEY("categoryID") REFERENCES "subCategory"("categoryID") ON DELETE CASCADE,
-	FOREIGN KEY("subID") REFERENCES ""
+	FOREIGN KEY("categoryID","subID") REFERENCES "subCategory"("categoryID","subID") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "custInfo" (
 	"phone"	TEXT,
@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS "subCategory" (
 	CONSTRAINT "mainSubID" PRIMARY KEY("categoryID","subID"),
 	FOREIGN KEY("categoryID") REFERENCES "productCategory"("categoryID") ON DELETE CASCADE
 );
+INSERT INTO "ProductList" VALUES ('11098','testP1',1,'plengja',5000.0,0,0,'2025-02-27',1,'for testing');
 INSERT INTO "custInfo" VALUES ('0998887745','shetest@gmail.com','sheserve');
 INSERT INTO "custInfo" VALUES ('0123456789','test2@example.com','222222');
 INSERT INTO "productCategory" VALUES (1,'ห้องนอน');
