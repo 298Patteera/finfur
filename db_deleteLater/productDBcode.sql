@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS "ProductList" (
 	"productName"	TEXT NOT NULL,
 	"categoryID"	INTEGER NOT NULL,
 	"brand"	TEXT,
-	"price"	INT NOT NULL,
+	"price"	REAL NOT NULL,
 	"stockNum"	INTEGER DEFAULT 0,
 	"favoritesCount"	INTEGER DEFAULT 0,
 	"addedDate"	TEXT NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS "productOption" (
 	"optionID"	INTEGER,
 	"optionType"	TEXT NOT NULL,
 	"optionName"	TEXT NOT NULL,
-	"addPrice"	INT NOT NULL,
+	"addPrice"	REAL NOT NULL,
 	"productID"	TEXT NOT NULL,
 	PRIMARY KEY("optionID" AUTOINCREMENT),
 	FOREIGN KEY("productID") REFERENCES "ProductList"("productID") ON DELETE CASCADE
@@ -91,4 +91,34 @@ CREATE TABLE IF NOT EXISTS "subCategory" (
 );
 INSERT INTO "custInfo" VALUES ('0998887745','shetest@gmail.com','sheserve');
 INSERT INTO "custInfo" VALUES ('0123456789','test2@example.com','222222');
+INSERT INTO "productCategory" VALUES (1,'ห้องนอน');
+INSERT INTO "productCategory" VALUES (2,'ห้องนั่งเล่น');
+INSERT INTO "productCategory" VALUES (3,'ห้องครัว');
+INSERT INTO "productCategory" VALUES (4,'ห้องรับประทานอาหาร');
+INSERT INTO "productCategory" VALUES (5,'ห้องทำงาน');
+INSERT INTO "subCategory" VALUES (1,1,'เตียงนอน');
+INSERT INTO "subCategory" VALUES (1,2,'ตู้เสื้อผ้า');
+INSERT INTO "subCategory" VALUES (1,3,'โต๊ะข้างเตียง');
+INSERT INTO "subCategory" VALUES (1,4,'เก้าอี้อำนวยความสะดวก');
+INSERT INTO "subCategory" VALUES (1,5,'โคมไฟนอน');
+INSERT INTO "subCategory" VALUES (2,1,'โซฟา');
+INSERT INTO "subCategory" VALUES (2,2,'โต๊ะกาแฟ');
+INSERT INTO "subCategory" VALUES (2,3,'ชั้นวางทีวี');
+INSERT INTO "subCategory" VALUES (2,4,'โคมไฟตั้งพื้น');
+INSERT INTO "subCategory" VALUES (2,5,'เก้าอี้เอนหลัง');
+INSERT INTO "subCategory" VALUES (3,1,'เตาแก๊ส');
+INSERT INTO "subCategory" VALUES (3,2,'ซิงค์ล้างจาน');
+INSERT INTO "subCategory" VALUES (3,3,'ตู้เย็น');
+INSERT INTO "subCategory" VALUES (3,4,'ไมโครเวฟ');
+INSERT INTO "subCategory" VALUES (3,5,'เครื่องดูดควัน');
+INSERT INTO "subCategory" VALUES (4,1,'โต๊ะรับประทานอาหาร');
+INSERT INTO "subCategory" VALUES (4,2,'เก้าอี้รับประทานอาหาร');
+INSERT INTO "subCategory" VALUES (4,3,'ตู้เก็บของ');
+INSERT INTO "subCategory" VALUES (4,4,'โคมไฟห้องอาหาร');
+INSERT INTO "subCategory" VALUES (4,5,'ชั้นวางไวน์');
+INSERT INTO "subCategory" VALUES (5,1,'โต๊ะทำงาน');
+INSERT INTO "subCategory" VALUES (5,2,'เก้าอี้ทำงาน');
+INSERT INTO "subCategory" VALUES (5,3,'ชั้นวางเอกสาร');
+INSERT INTO "subCategory" VALUES (5,4,'ตู้เก็บเอกสาร');
+INSERT INTO "subCategory" VALUES (5,5,'โคมไฟทำงาน');
 COMMIT;
