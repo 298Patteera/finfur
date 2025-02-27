@@ -11,7 +11,7 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="/style.css">
 </head>
-<body class="bg-white">
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white">
     <div id="navbarContainer">
         <div id="defaultNavbar">
             <%- include('partials/narbar') %>
@@ -23,7 +23,7 @@
     
     <!-- Header -->
     <div class="max-w-screen-lg mx-auto mt-4">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">ห้องครัว</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-4 dark:text-white">ห้องครัว</h1>
         <div class="w-full h-64 rounded-lg overflow-hidden shadow-md">
             <img src="/images/kitchen-img.jpg" alt="ห้องครัว" class="w-full h-full object-cover">
         </div>
@@ -31,7 +31,7 @@
 
     <!-- พื้นที่เว้นไว้สำหรับสินค้า -->
     <div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex justify-center items-center border border-gray-300 rounded-lg">
-        <p class="text-gray-500 text-lg">🚧 สินค้าจะถูกเพิ่มที่นี่เร็วๆ นี้...</p>
+        <p class="text-gray-500 text-lg dark:invert dark:brightness-75">🚧 สินค้าจะถูกเพิ่มที่นี่เร็วๆ นี้...</p>
     </div>
 
     <%- include('partials/scrollTop') %>
