@@ -5,32 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+          tailwind.config = { darkMode: 'class' };
+      </script>
     <title>Document</title>
 </head>
 <body>
-    <nav class="bg-blue-600 text-white p-4 h-[110px]">
+    <nav class="bg-blue-600 text-white p-4 h-[110px] dark:bg-black">
         <div class="flex justify-between items-center mt-5">
             <div class="flex space-x-4 items-center">
                 <div><img src="/images/logo_hamburger_bar.png" class="w-8 h-8" onclick="toggleMenu()"></a></div>
-                <p>หน้า...</p>
             </div>
 
-            <a href="/" class="absolute left-1/2 -translate-x-1/2">
-                <img src="/images/logo_main.png" width="150px" class="min-w-[80px]">
+            <a href="/" class="absolute left-1/2 -translate-x-1/2" id="mainlogo">
+                <img src="/images/logo_main.png" width="150px" class="min-w-[80px] transition-all duration-300 dark:invert dark:brightness-75">
             </a>
-          <ul class="flex space-x-4 items-center">
-            <li><a href="#" onclick="toggleSearch(event)"><img src="/images/logo_search.png" alt="search" class="w-8 h-8 min-w-8 min-h-8"></a></li>
-            <li><a href="/login"><img src="/images/logo_account.png" alt="account" class="w-8 h-8 min-w-8 min-h-8"></a></li>
-            <li><a href="/favorites"><img src="/images/logo_favorite.png" alt="favorite" class="w-8 h-8 min-w-8 min-h-8"></a></li>
-            <li><a href="/compare"><img src="/images/logo_compare.png" alt="compare" class="w-8 h-8 min-w-8 min-h-8"></a></li>
-            <li class="border-l border-white-600 h-10"></li>
-            <li><a href="/cart"><img src="/images/logo_shopping_cart.png" alt="หน้าแรก" class="w-8 h-8 min-w-8 min-h-8"></a></li>
+          <ul class="flex gap-2 md:gap-5 items-center">
+            <li><a href="#" onclick="toggleSearch(event)"><img src="/images/logo_search.png" alt="search" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 "></a></li>
+            <li><a href="/login"><img src="/images/logo_account.png" alt="account" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 "></a></li>
+            <li><a href="/favorites"><img src="/images/logo_favorite.png" alt="favorite" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8"></a></li>
+            <li><a href="/compare"><img src="/images/logo_compare.png" alt="compare" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8"></a></li>
+            <li class="border-l border-white-600 h-5 sm:h-7 md:h-10"></li>
+            <li><a href="/cart"><img src="/images/logo_shopping_cart.png" alt="หน้าแรก" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8"></a></li>
           </ul>
         </div>
       </nav> 
 
+    <div class="fixed bottom-5 right-5">
+        <button id="darkModeToggle" 
+            class="px-4 py-2 transition-all duration-500 ease-in-out transform">
+            <img id="darkModeIcon" src="/images/light_mode.png" alt="" class="h-[40px] ">
+        </button>
+    </div>
+
     <!-- Sidebar -->
-    <div id="sidebar" class="fixed top-0 left-0 h-full w-[250px] bg-white shadow-lg transform -translate-x-full transition-transform duration-300 overflow-y-auto z-50">
+    <div id="sidebar" class="dark:bg-black fixed top-0 left-0 h-full w-[250px] bg-white dark:text-white  shadow-lg transform -translate-x-full transition-transform duration-300 overflow-y-auto z-50">
         <div class="p-4 border-b flex justify-between items-center">
             <h2 class="text-xl font-bold">หมวดหมู่เฟอร์นิเจอร์</h2>
             <button onclick="toggleMenu()" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
@@ -40,7 +49,7 @@
                 <li>
                     <a href="/bed-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องนอน
-                        <span id="bedroomToggle" onclick="toggleItems('bedroomItems', 'bedroomToggle')" class="cursor-pointer">
+                        <span id="bedroomToggle" onclick="toggleItems('bedroomItems', 'bedroomToggle')" class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
                         </span>
                     </a>
@@ -57,7 +66,7 @@
                 <li>
                     <a href="/living-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องนั่งเล่น
-                        <span id="livingRoomToggle" onclick="toggleItems('livingRoomItems', 'livingRoomToggle')" class="cursor-pointer">
+                        <span id="livingRoomToggle" onclick="toggleItems('livingRoomItems', 'livingRoomToggle')" class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
                         </span>
                     </a>
@@ -74,7 +83,7 @@
                 <li>
                     <a href="/kitchen" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องครัว
-                        <span id="kitchenToggle" onclick="toggleItems('kitchenItems', 'kitchenToggle')" class="cursor-pointer">
+                        <span id="kitchenToggle" onclick="toggleItems('kitchenItems', 'kitchenToggle')" class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
                         </span>
                     </a>
@@ -91,7 +100,7 @@
                 <li>
                     <a href="/dining-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องรับประทานอาหาร
-                        <span id="diningRoomToggle" onclick="toggleItems('diningRoomItems', 'diningRoomToggle')" class="cursor-pointer">
+                        <span id="diningRoomToggle" onclick="toggleItems('diningRoomItems', 'diningRoomToggle')" class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
                         </span>
                     </a>
@@ -108,7 +117,7 @@
                 <li>
                     <a href="/working-room" class="block hover:text-blue-500 flex justify-between items-center">
                         ห้องทำงาน
-                        <span id="officeToggle" onclick="toggleItems('officeItems', 'officeToggle')" class="cursor-pointer">
+                        <span id="officeToggle" onclick="toggleItems('officeItems', 'officeToggle')" class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
                             <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
                         </span>
                     </a>
@@ -124,6 +133,82 @@
     </div>
 
     <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const darkModeIcon = document.getElementById("darkModeIcon"); // ดึง <img>
+    const htmlClass = document.documentElement.classList;
+
+    // ตรวจสอบโหมดที่เคยเลือก
+    if (localStorage.getItem("theme") === "dark") {
+        htmlClass.add("dark");
+        darkModeIcon.src = "/images/dark_mode.png"; // แก้ path ให้ถูก
+        darkModeToggle.classList.add("translate-y-2", "scale-110"); // ให้ปุ่มเลื่อนตอนโหลด
+    }
+
+    // ฟังก์ชันเปลี่ยนธีม + แอนิเมชันปุ่ม
+    darkModeToggle.addEventListener("click", function () {
+        darkModeToggle.classList.add("transition-all", "duration-500", "ease-in-out"); // ใช้ transition
+
+        if (htmlClass.contains("dark")) {
+            htmlClass.remove("dark");
+            localStorage.setItem("theme", "light");
+            darkModeIcon.src = "/images/light_mode.png"; // ใช้ไอคอน Light Mode
+            darkModeToggle.classList.remove("translate-y-2", "scale-110"); // เลื่อนกลับ
+        } else {
+            htmlClass.add("dark");
+            localStorage.setItem("theme", "dark");
+            darkModeIcon.src = "/images/dark_mode.png"; // ใช้ไอคอน Dark Mode
+            darkModeToggle.classList.add("translate-y-2", "scale-110"); // เลื่อนลง + ขยาย
+        }
+    });
+});
+
+//         document.addEventListener("DOMContentLoaded", function () {
+//     const darkModeToggle = document.getElementById("darkModeToggle");
+//     const darkModeIcon = document.getElementById("darkModeIcon");
+//     const htmlClass = document.documentElement.classList;
+
+//     // ตรวจสอบโหมดที่เคยเลือก
+//     if (localStorage.getItem("theme") === "dark") {
+//         htmlClass.add("dark");
+//         darkModeIcon.src = "/images/dark_mode.png";
+//         changeMainLogo(true); // เปลี่ยนโลโก้
+//     }
+
+//     // ฟังก์ชันเปลี่ยนธีม + แอนิเมชันปุ่ม
+//     darkModeToggle.addEventListener("click", function () {
+//         darkModeToggle.classList.add("transition-all", "duration-500", "ease-in-out");
+        
+
+//         const isDarkMode = htmlClass.contains("dark");
+
+//         if (isDarkMode) {
+//             htmlClass.remove("dark");
+//             localStorage.setItem("theme", "light");
+//             darkModeIcon.src = "/images/light_mode.png";
+//             changeMainLogo(false);
+//             darkModeToggle.classList.remove("translate-y-2", "scale-110");
+//         } else {
+//             htmlClass.add("dark");
+//             localStorage.setItem("theme", "dark");
+//             darkModeIcon.src = "/images/dark_mode.png";
+//             changeMainLogo(true);
+//             darkModeToggle.classList.add("translate-y-2", "scale-110");
+//         }
+//     });
+
+//     function changeMainLogo(isDark) {
+//         const mainLogo = document.getElementById("mainlogo");
+//         if (mainLogo) {
+//             const mainIcon = mainLogo.querySelector("img");
+//             if (mainIcon) {
+//                 mainIcon.src = isDark ? "/images/logo_main_dark.png" : "/images/logo_main.png";
+//             }
+//         }
+//     }
+// });
+
+
     function toggleItems(itemId, toggleId) {
         // หยุดไม่ให้ลิงก์ทำงาน
         event.preventDefault();
