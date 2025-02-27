@@ -15,8 +15,7 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="/style.css">
 </head>
-
-<body class="bg-white">
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white  ">
 
     <div id="navbarContainer">
         <div id="defaultNavbar">
@@ -28,8 +27,8 @@
     </div>
 
     <!-- Carousel Section -->
-    <div class="flex justify-center mt-8">
-        <div class="swiper mySwiper w-full max-w-screen-lg h-[350px]">
+    <div class="flex justify-center mt-8 ">
+        <div class="swiper mySwiper w-full max-w-screen-lg h-[350px] ">
             <div class="swiper-wrapper">
                 <!-- Slide 1 -->
                 <div class="swiper-slide">
@@ -55,8 +54,8 @@
     </div>
 
     <!-- หมวดหมู่สินค้า -->
-    <div class="text-center mt-10">
-        <h2 class="text-xl font-semibold text-black">หมวดหมู่สินค้า</h2>
+    <div class="text-center mt-10 dark:invert dark:brightness-75">
+        <h2 class="text-xl font-semibold text-black ">หมวดหมู่สินค้า</h2>
         <a href="/all-product" class="text-gray-600 hover:text-blue-600 text-sm">กลุ่มสินค้าทั้งหมด &gt;</a>
     </div>
 
@@ -64,38 +63,42 @@
     <div class="grid grid-cols-5 gap-6 text-center mt-6 max-w-4xl mx-auto">
 
         <!-- ห้องนอน -->
-        <a href="/bed-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+        <a href="/bed-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600 dark:invert dark:brightness-75">
             <img src="/images/bedroom.png" alt="ห้องนอน" class="w-12 h-12">
             <span>ห้องนอน</span>
         </a>
 
         <!-- ห้องนั่งเล่น -->
-        <a href="/living-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+        <a href="/living-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600 dark:invert dark:brightness-75">
             <img src="/images/livingroom.png" alt="ห้องนั่งเล่น" class="w-12 h-12">
             <span>ห้องนั่งเล่น</span>
         </a>
 
         <!-- ห้องครัว -->
-        <a href="/kitchen" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+        <a href="/kitchen" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600 dark:invert dark:brightness-75">
             <img src="/images/kitchen.png" alt="ห้องครัว" class="w-12 h-12">
             <span>ห้องครัว</span>
         </a>
 
         <!-- ห้องรับประทานอาหาร -->
-        <a href="/dining-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+        <a href="/dining-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600 dark:invert dark:brightness-75">
             <img src="/images/diningroom.png" alt="ห้องรับประทานอาหาร" class="w-12 h-12">
             <span>ห้องรับประทานอาหาร</span>
         </a>
 
         <!-- ห้องทำงาน -->
-        <a href="/working-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600">
+        <a href="/working-room" class="flex flex-col items-center space-y-2 text-black hover:text-blue-600 dark:invert dark:brightness-75">
             <img src="/images/workingroom.png" alt="ห้องทำงาน" class="w-12 h-12">
             <span>ห้องทำงาน</span>
         </a>
 
     </div>
+
+
     <!-- Recommend Deal Section -->
-    <div class="text-center mt-10">
+
+    <div class="text-center mt-10 dark:invert dark:brightness-75">
+
         <h2 class="text-xl font-semibold text-black">Recommend Deal</h2>
         <p class="text-gray-500">สินค้าราคาพิเศษที่คุณไม่ควรพลาด!</p>
 
@@ -105,7 +108,9 @@
         </div>
     </div>
     <!-- Information Section -->
-    <div class="grid grid-cols-4 gap-4 text-center mt-10 max-w-6xl mx-auto">
+    
+    <div class="grid grid-cols-4 gap-4 text-center mt-10 max-w-6xl mx-auto dark:invert dark:brightness-75">
+    
 
         <!-- บริการ 24 ชั่วโมง -->
         <div class="bg-blue-600 text-white p-4 flex items-center space-x-4 rounded-lg">
@@ -146,7 +151,9 @@
     </div>
 
     <!-- Footer Section -->
-    <footer class="bg-blue-600 text-white text-center py-6 mt-10">
+
+    <footer class="bg-blue-600 text-white text-center py-6 mt-10 dark:invert dark:brightness-75">
+
         <h3 class="text-lg font-semibold">จัดทำโดย</h3>
         <p>นายชินกิจ ฤกษ์ดี รหัสนักศึกษา 66070048</p>
         <p>นางสาวณัฐธิดา พิมพา รหัสนักศึกษา 66070059</p>
@@ -191,5 +198,4 @@
             document.addEventListener("DOMContentLoaded", updateNavbar);
         </script>
 </body>
-
 </html>
