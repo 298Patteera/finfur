@@ -45,22 +45,20 @@
             </div>
             
             <div class="mt-4">
-                <% orders.forEach(order => { %>
                     <div class="flex justify-between items-center bg-gray-100 p-4 rounded mb-4">
                         <div class="flex items-center space-x-4">
                             <img src="<%= order.image %>" alt="Product Image" class="w-20 h-20 object-cover rounded">
                             <div>
-                                <p class="text-gray-700 font-semibold"><%= order.productName %></p>
-                                <p class="text-gray-600">ตัวเลือกสินค้า: <%= order.details %></p>
-                                <p class="text-gray-600">จำนวน: x<%= order.quantity %></p>
+                                <p class="text-gray-700 font-semibold">ชื่อสินค้า</p>
+                                <p class="text-gray-600">ตัวเลือกสินค้า</p>
+                                <p class="text-gray-600">จำนวน</p>
                             </div>
                         </div>
                         <div>
-                            <p class="text-blue-600"><%= order.status %></p>
-                            <p class="text-gray-600">ราคา: <%= order.price %> บาท</p>
+                            <p class="text-blue-600"></p>
+                            <p class="text-gray-600">ราคา</p>
                         </div>
                     </div>
-                <% }) %>
             </div>
         </section>
     </div>
