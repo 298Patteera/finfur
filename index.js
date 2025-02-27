@@ -119,6 +119,31 @@ app.get("/provider-orderHistory", (req, res) => {
     res.render("provider-orderHistory");
 });
 
+// เสิร์ฟหน้า ของ orderlist
+app.get("/user-orderlist", (req, res) => {
+    res.render("user-orderlist");
+});
+
+// เสิร์ฟหน้า ของ user-pending
+app.get("/user-pending", (req, res) => {
+    res.render("user-pending");
+});
+
+// เสิร์ฟหน้า ของ user-shipping
+app.get("/user-shipping", (req, res) => {
+    res.render("user-shipping");
+});
+
+// เสิร์ฟหน้า ของ user-completed
+app.get("/user-completed", (req, res) => {
+    res.render("user-completed");
+});
+
+// เสิร์ฟหน้า ของ user-canceled
+app.get("/user-canceled", (req, res) => {
+    res.render("user-canceled");
+});
+
 // ตรวจสอบการเข้าสู่ระบบ
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
