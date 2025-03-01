@@ -21,7 +21,7 @@
         </div>
     </div>
     <!-- ทดสอบ local email -->
-    <% if (userEmail) { %>
+    <% if (typeof userEmail !== "undefined" && userEmail) { %>
         <p>User : <%= userEmail %></p>
     <% } %>
     <!-- Header -->

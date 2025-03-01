@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-const port = 8000;
+const port = 3000;
 
 // ตั้งค่า View Engine เป็น EJS
 app.set("view engine", "ejs");

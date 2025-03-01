@@ -21,8 +21,8 @@
         </div>
     </div>
     
-    <% if (userEmail) { %>
-        <p>Welcome, <%= userEmail %></p>
+    <% if (typeof userEmail !== "undefined" && userEmail) { %>
+        <p>User : <%= userEmail %></p>
     <% } %>
     
     <!-- Header -->
