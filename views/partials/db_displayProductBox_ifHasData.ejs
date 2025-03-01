@@ -1,0 +1,42 @@
+<div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex border border-gray-300 rounded-lg">
+    <div class="p-4 ">
+        <div class="flex flex-wrap gap-10 mt-10 ">
+            <% product.forEach(item => { %>
+                <div id="<%= item.productID %>-box" class="p-5 bg-white w-[200px] h-auto min-w-[200px] min-h-[300px]">
+                    <a href="/product/<%= item.productID %>">
+                        <img class="rounded-lg hover:shadow-lg active:shadow-xl transition-shadow duration-300 ease-in-out" 
+                            src="/images/allProduct/<%= item.productID %>.png" alt="">
+                    </a>
+                    <br>
+                    <div class="bg-blue-700 w-[90px] h-[26px] p-1 text-center text-white text-[15px]">
+                        <%= item.subName %>
+                    </div> 
+                    <div class="mt-2">
+                        <p class="font-bold"><%= item.productName %> / <%= item.brand %></p> 
+                        <p>
+                            <%= item.description.length > 20 ? item.description.substring(0, 20) + "..." : item.description %>
+                        </p> 
+                        <h2 class="text-lg font-semibold text-red-500"><%= item.price %> ฿</h2>
+                    </div> 
+                    <div class="flex gap-4 items-center">
+                        <!-- ปุ่มรายการโปรด -->
+                        <!-- <button onclick="changeFavorites(this)">
+                            <img class="w-5 h-5" src="/images/favorite_default.png" alt="เพิ่มในรายการโปรด">
+                        </button> -->
+                        <form action="/add-to-fav" method="POST" id="addToFav" style="display: inline;">
+                            <input type="hidden" name="productID" value="<%= item.productID %>">
+                            <input type="hidden" name="userEmail" value="<%= userEmail %>">
+                            <button type="submit" onclick="changeFavorites(this)">
+                                <img class="w-5 h-5" src="/images/favorite_default.png" alt="เพิ่มในรายการโปรด">
+                            </button>
+                        </form>
+
+                        <button onclick="changeShopping(this)">
+                            <img class="w-8 h-8" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
+                        </button>
+                    </div>
+                </div>
+            <% }); %>
+        </div>   
+    </div>
+</div>

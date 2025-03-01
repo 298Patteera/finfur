@@ -20,7 +20,10 @@
             <%- include('partials/narbar_search') %>
         </div>
     </div>
-    
+    <!-- ทดสอบ local email -->
+    <% if (userEmail) { %>
+        <p>User : <%= userEmail %></p>
+    <% } %>
     <!-- Header -->
     <div class="max-w-screen-lg mx-auto mt-4">
         <h1 class="text-3xl font-bold text-gray-900 mb-4">ห้องนอน</h1>
@@ -29,88 +32,8 @@
         </div>
     </div>
 
-    <!-- พื้นที่เว้นไว้สำหรับสินค้า -->
-     <!-- <div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex justify-center items-center border border-gray-300 rounded-lg">
-        <p class="text-gray-500 text-lg">🚧 สินค้าจะถูกเพิ่มที่นี่เร็วๆ นี้...</p>
-    </div> -->
-
-    <!-- พื้นที่สำหรับสินค้า -->
-    <div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex border border-gray-300 rounded-lg">
-        <div class="p-4 ">
-            <div class="flex flex-wrap gap-10 mt-10 ">
-                <div id="1-box1" class="p-5 bg-white w-[200px] h-auto min-w-[200px] min-h-[300px]">
-                    <img class="rounded-lg hover:shadow-lg active:shadow-xl transition-shadow duration-300 ease-in-out" 
-                        src="/images/01.png" alt=""><br>
-                    <div class="bg-blue-700 w-[90px] h-[26px] p-1 text-center text-white text-[15px]">ห้องน้ำ</div>
-                    <div class="mt-2">
-                        <p class="font-bold">ตู้ตั้ง.. /finfur(ยี่ห้อ)</p>
-                        <p>ตู้ 6 ลิ้นชัก, 40x123 ชม.</p>
-                        <h2 class="text-lg font-semibold text-red-500">400 บาท/ชิ้น</h2></div>
-                        <div class="flex gap-4 items-center ">
-                            <button onclick="changeFavorites(this)">
-                                <img class="w-5 h-5" src="/images/favorite_default.png" alt="เพิ่มในรายการโปรด">
-                            </button>
-                            <button onclick="changeShopping(this)">
-                                <img class="w-8 h-8" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
-                            </button>
-                        </div>
-                </div>
-
-                <div id="1-box1" class="p-5 bg-white w-[200px] h-auto min-w-[200px] min-h-[300px]">
-                    <img class="rounded-lg hover:shadow-lg active:shadow-xl transition-shadow duration-300 ease-in-out" 
-                        src="/images/01.png" alt=""><br>
-                    <div class="bg-blue-700 w-[90px] h-[26px] p-1 text-center text-white text-[15px]">ห้องน้ำ</div>
-                    <div class="mt-2">
-                        <p class="font-bold">ตู้ตั้ง.. /finfur(ยี่ห้อ)</p>
-                        <p>ตู้ 6 ลิ้นชัก, 40x123 ชม.</p>
-                        <h2 class="text-lg font-semibold text-red-500">400 บาท/ชิ้น</h2></div>
-                        <div class="flex gap-4 items-center ">
-                            <button onclick="changeFavorites(this)">
-                                <img class="w-5 h-5" src="/images/favorite_default.png" alt="เพิ่มในรายการโปรด">
-                            </button>
-                            <button onclick="changeShopping(this)">
-                                <img class="w-8 h-8" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
-                            </button>
-                        </div>
-                </div>
-                <div id="1-box1" class="p-5 bg-white w-[200px] h-auto min-w-[200px] min-h-[300px]">
-                    <img class="rounded-lg hover:shadow-lg active:shadow-xl transition-shadow duration-300 ease-in-out" 
-                        src="/images/01.png" alt=""><br>
-                    <div class="bg-blue-700 w-[90px] h-[26px] p-1 text-center text-white text-[15px]">ห้องน้ำ</div>
-                    <div class="mt-2">
-                        <p class="font-bold">ตู้ตั้ง.. /finfur(ยี่ห้อ)</p>
-                        <p>ตู้ 6 ลิ้นชัก, 40x123 ชม.</p>
-                        <h2 class="text-lg font-semibold text-red-500">400 บาท/ชิ้น</h2></div>
-                        <div class="flex gap-4 items-center ">
-                            <button onclick="changeFavorites(this)">
-                                <img class="w-5 h-5" src="/images/favorite_default.png" alt="เพิ่มในรายการโปรด">
-                            </button>
-                            <button onclick="changeShopping(this)">
-                                <img class="w-8 h-8" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
-                            </button>
-                        </div>
-                </div>
-
-                <div id="1-box1" class="p-5 bg-white w-[200px] h-auto min-w-[200px] min-h-[300px]">
-                    <img class="rounded-lg hover:shadow-lg active:shadow-xl transition-shadow duration-300 ease-in-out" 
-                        src="/images/01.png" alt=""><br>
-                    <div class="bg-blue-700 w-[90px] h-[26px] p-1 text-center text-white text-[15px]">ห้องน้ำ</div>
-                    <div class="mt-2">
-                        <p class="font-bold">ตู้ตั้ง.. /finfur(ยี่ห้อ)</p>
-                        <p>ตู้ 6 ลิ้นชัก, 40x123 ชม.</p>
-                        <h2 class="text-lg font-semibold text-red-500">400 บาท/ชิ้น</h2></div>
-                        <div class="flex gap-4 items-center ">
-                            <button onclick="changeFavorites(this)">
-                                <img class="w-5 h-5" src="/images/favorite_default.png" alt="เพิ่มในรายการโปรด">
-                            </button>
-                            <button onclick="changeShopping(this)">
-                                <img class="w-8 h-8" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
-                            </button>
-                        </div>
-                </div>
-            </div>   
-        </div>
-    </div>
+    <!-- พื้นที่แสดงสินค้า -->
+    <%- include('partials/db_displayProductBox') %>
 
     <%- include('partials/scrollTop') %>
         <!-- Swiper.js JavaScript -->

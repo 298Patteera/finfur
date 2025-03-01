@@ -21,15 +21,17 @@
         </div>
     </div>
     
+    <% if (userEmail) { %>
+        <p>Welcome, <%= userEmail %></p>
+    <% } %>
+    
     <!-- Header -->
     <div class="max-w-screen-lg mx-auto mt-4">
         <h1 class="text-3xl font-bold text-gray-900 mb-4">สินค้าทั้งหมด</h1>
     </div>
 
-    <!-- พื้นที่เว้นไว้สำหรับสินค้า -->
-    <div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex justify-center items-center border border-gray-300 rounded-lg">
-        <p class="text-gray-500 text-lg">🚧 สินค้าจะถูกเพิ่มที่นี่เร็วๆ นี้...</p>
-    </div>
+        <!-- พื้นที่แสดงสินค้า -->
+    <%- include('partials/db_displayProductBox') %>
 
     <%- include('partials/scrollTop') %>
         <!-- Swiper.js JavaScript -->

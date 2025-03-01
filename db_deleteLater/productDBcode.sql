@@ -9,6 +9,12 @@ CREATE TABLE IF NOT EXISTS "CustomerCart" (
 	FOREIGN KEY("optionID") REFERENCES "productOption"("optionID") ON DELETE CASCADE,
 	FOREIGN KEY("productID") REFERENCES "ProductList"("productID") ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS "CustomerInfo" (
+	"phone"	TEXT,
+	"email"	TEXT NOT NULL,
+	"psword"	text NOT NULL,
+	PRIMARY KEY("phone")
+);
 CREATE TABLE IF NOT EXISTS "FavoriteList" (
 	"productID"	TEXT NOT NULL,
 	"email"	TEXT NOT NULL,
@@ -40,12 +46,6 @@ CREATE TABLE IF NOT EXISTS "ProductList" (
 	PRIMARY KEY("productID"),
 	FOREIGN KEY("categoryID","subID") REFERENCES "subCategory"("categoryID","subID") ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "custInfo" (
-	"phone"	TEXT,
-	"email"	TEXT NOT NULL,
-	"psword"	text NOT NULL,
-	PRIMARY KEY("phone")
-);
 CREATE TABLE IF NOT EXISTS "orderList" (
 	"orderId"	INTEGER,
 	"email"	TEXT NOT NULL,
@@ -68,8 +68,9 @@ CREATE TABLE IF NOT EXISTS "productOption" (
 	"optionID"	INTEGER,
 	"optionType"	TEXT NOT NULL,
 	"optionName"	TEXT NOT NULL,
-	"addPrice"	REAL NOT NULL,
+	"addPrice"	REAL NOT NULL DEFAULT 0,
 	"productID"	TEXT NOT NULL,
+	"imgURL"	TEXT,
 	PRIMARY KEY("optionID" AUTOINCREMENT),
 	FOREIGN KEY("productID") REFERENCES "ProductList"("productID") ON DELETE CASCADE
 );
@@ -79,8 +80,7 @@ CREATE TABLE IF NOT EXISTS "selectedOption" (
 	"productID"	TEXT NOT NULL,
 	PRIMARY KEY("optionID","email","productID"),
 	FOREIGN KEY("email") REFERENCES "CustomerInfo"("email") ON DELETE CASCADE,
-	FOREIGN KEY("optionID") REFERENCES "productOption"("optionID") ON DELETE CASCADE,
-	FOREIGN KEY("productID") REFERENCES "ProductList"("productID") ON DELETE CASCADE
+	FOREIGN KEY("productID","optionID") REFERENCES "productOption"("productID","optionID") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "subCategory" (
 	"categoryID"	INTEGER NOT NULL,
@@ -89,14 +89,22 @@ CREATE TABLE IF NOT EXISTS "subCategory" (
 	CONSTRAINT "mainSubID" PRIMARY KEY("categoryID","subID"),
 	FOREIGN KEY("categoryID") REFERENCES "productCategory"("categoryID") ON DELETE CASCADE
 );
+INSERT INTO "CustomerInfo" VALUES ('0998887745','shetest@gmail.com','sheserve');
+INSERT INTO "CustomerInfo" VALUES ('0123456789','test2@example.com','222222');
+INSERT INTO "FavoriteList" VALUES ('11098','shetest@gmail.com');
 INSERT INTO "ProductList" VALUES ('11098','testP1',1,'plengja',5000.0,0,0,'2025-02-27',1,'for testing');
-INSERT INTO "custInfo" VALUES ('0998887745','shetest@gmail.com','sheserve');
-INSERT INTO "custInfo" VALUES ('0123456789','test2@example.com','222222');
+INSERT INTO "ProductList" VALUES ('13001','โต๊ะวางถาด',1,'GLADOM',399.0,0,0,'2025-02-28',3,'ให้คุณมีที่สำหรับวางของ ไม่ว่านั่งมุมไหนของบ้าน โต๊ะน้ำหนักเบา เคลื่อนย้ายง่าย ท็อปโต๊ะถอดใช้เป็นถาดเสิร์ฟขนมได้ และที่สำคัญ ราคาย่อมเยา ที่เมื่อคุณเห็นแล้วต้องอดใจไม่ไหว ซื้อไปใช้ที่บ้านสักอันสองอัน');
 INSERT INTO "productCategory" VALUES (1,'ห้องนอน');
 INSERT INTO "productCategory" VALUES (2,'ห้องนั่งเล่น');
 INSERT INTO "productCategory" VALUES (3,'ห้องครัว');
 INSERT INTO "productCategory" VALUES (4,'ห้องรับประทานอาหาร');
 INSERT INTO "productCategory" VALUES (5,'ห้องทำงาน');
+INSERT INTO "productOption" VALUES (1,'สี','ขาว',0.0,'13001',NULL);
+INSERT INTO "productOption" VALUES (2,'สี','เขียว',0.0,'13001',NULL);
+INSERT INTO "productOption" VALUES (3,'สี','ดำ',0.0,'13001',NULL);
+INSERT INTO "productOption" VALUES (4,'สี','น้ำตาล',0.0,'13001',NULL);
+INSERT INTO "productOption" VALUES (5,'วัสดุตัวถาด','พลาสติก',0.0,'13001',NULL);
+INSERT INTO "productOption" VALUES (6,'วัสดุตัวถาด','เหล็ก',150.0,'13001',NULL);
 INSERT INTO "subCategory" VALUES (1,1,'เตียงนอน');
 INSERT INTO "subCategory" VALUES (1,2,'ตู้เสื้อผ้า');
 INSERT INTO "subCategory" VALUES (1,3,'โต๊ะข้างเตียง');
