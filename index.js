@@ -436,9 +436,11 @@ app.get("/user-changepass", (req, res) => {
 });
 
 app.post("/user-changepass", (req, res) => {
+    console.log(req.body);
     let change = {
         oldpass: req.body.oldpass,
-        newpass: req.body.newpass
+        newpass: req.body.newpass,
+        confirmnewpass: req.body.confirmnewpass
     };
 
     const email = req.session.userEmail;
@@ -451,7 +453,7 @@ app.post("/user-changepass", (req, res) => {
         }
 
         if (!row) {
-            return res.status(404).send("ีuser not found");
+            return res.status(404).send("user not found");
         }
 
         if (row.pssword !== change.oldpass) { 
