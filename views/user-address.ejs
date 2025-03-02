@@ -13,26 +13,26 @@
             document.getElementById('addAddressForm').classList.toggle('hidden');
         }
         
-        function addNewAddress() {
-            let name = document.getElementById('newName').value;
-            let phone = document.getElementById('newPhone').value;
-            let address = document.getElementById('newAddress').value;
-            if (name && phone && address) {
-                let newId = 'address' + Math.floor(Math.random() * 10000);
-                let newBlock = document.createElement('div');
-                newBlock.id = newId;
-                newBlock.className = 'mb-4 p-4 border border-gray-300 rounded';
-                newBlock.innerHTML = `
-                    <p class="font-semibold">${name} (${phone}) <span id="${newId}_default" class="text-blue-500 default-text"></span></p>
-                    <p class="text-gray-600 address-text">${address}</p>
-                    <button class="text-blue-500" onclick="editAddress('${newId}')">แก้ไข</button>
-                    <button class="text-blue-500 ml-2" onclick="deleteAddress('${newId}')">ลบ</button>
-                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('${newId}_default')">ตั้งเป็นค่าเริ่มต้น</button>
-                `;
-                document.getElementById('addressesContainer').appendChild(newBlock);
-                document.getElementById('addAddressForm').classList.add('hidden');
-            }
-        }
+        // function addNewAddress() {
+        //     let name = document.getElementById('newName').value;
+        //     let phone = document.getElementById('newPhone').value;
+        //     let address = document.getElementById('newAddress').value;
+        //     if (name && phone && address) {
+        //         let newId = 'address' + Math.floor(Math.random() * 10000);
+        //         let newBlock = document.createElement('div');
+        //         newBlock.id = newId;
+        //         newBlock.className = 'mb-4 p-4 border border-gray-300 rounded';
+        //         newBlock.innerHTML = `
+        //             <p class="font-semibold">${name} (${phone}) <span id="${newId}_default" class="text-blue-500 default-text"></span></p>
+        //             <p class="text-gray-600 address-text">${address}</p>
+        //             <button class="text-blue-500" onclick="editAddress('${newId}')">แก้ไข</button>
+        //             <button class="text-blue-500 ml-2" onclick="deleteAddress('${newId}')">ลบ</button>
+        //             <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('${newId}_default')">ตั้งเป็นค่าเริ่มต้น</button>
+        //         `;
+        //         document.getElementById('addressesContainer').appendChild(newBlock);
+        //         document.getElementById('addAddressForm').classList.add('hidden');
+        //     }
+        // }
         
         function editAddress(addressId) {
             let addressBlock = document.getElementById(addressId);
@@ -101,22 +101,34 @@
             <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="showAddAddressForm()">เพิ่มที่อยู่</button>
             
             <div id="addressesContainer" class="mt-4">
-                <div id="address1" class="mb-4 p-4 border border-gray-300 rounded">
-                    <p class="font-semibold">นายชินกิจ คุญรัตน์ (+66) 94 865 1221 <span id="default1" class="text-blue-500 default-text">ค่าเริ่มต้น</span></p>
-                    <p class="text-gray-600 address-text">42/296 หมู่บ้านกลางซิตี้2 ถนน บินดีใหม่ ซอย 20, กรุงเทพมหานคร, 10510</p>
-                    <button class="text-blue-500" onclick="editAddress('address1')">แก้ไข</button>
-                    <button class="text-blue-500 ml-2" onclick="deleteAddress('address1')">ลบ</button>
-                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('default1')">ตั้งเป็นค่าเริ่มต้น</button>
-                </div>
+                <% if (data.length > 0) { %>
+                    <% data.forEach((address, index) => { %>
+                        <div id="address<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded">
+                            <p class="font-semibold">
+                                <%= address.name %> (<%= address.phone %>)
+                                <span id="default<%= index + 1 %>" class="text-blue-500 default-text">ค่าเริ่มต้น</span>
+                            </p>
+                            <p class="text-gray-600 address-text"><%= address.address %></p>
+                            <button class="text-blue-500" onclick="editAddress('address<%= index + 1 %>')">แก้ไข</button>
+                            <button class="text-blue-500 ml-2" onclick="deleteAddress('address<%= index + 1 %>')">ลบ</button>
+                            <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
+                        </div>
+                    <% }) %>
+                <% } %>
             </div>
             
-            <div id="addAddressForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
-                <h3 class="text-lg font-bold mb-2">เพิ่มที่อยู่ใหม่</h3>
-                <input type="text" id="newName" placeholder="ชื่อ" class="w-full p-2 border border-gray-300 rounded mb-2">
-                <input type="text" id="newPhone" placeholder="เบอร์โทรศัพท์" class="w-full p-2 border border-gray-300 rounded mb-2">
-                <textarea id="newAddress" placeholder="ที่อยู่" class="w-full p-2 border border-gray-300 rounded mb-2"></textarea>
-                <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="addNewAddress()">บันทึก</button>
-            </div>
+
+            <form action="/add-user-address" method="post">
+                <div id="addAddressForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
+                    <h3 class="text-lg font-bold mb-2">เพิ่มที่อยู่ใหม่</h3>
+                    <input type="text" id="newName" name="name" placeholder="ชื่อ" class="w-full p-2 border border-gray-300 rounded mb-2">
+                    <input type="text" id="newPhone" name="phone" placeholder="เบอร์โทรศัพท์" class="w-full p-2 border border-gray-300 rounded mb-2">
+                    <textarea id="newAddress" name="address" placeholder="ที่อยู่" class="w-full p-2 border border-gray-300 rounded mb-2"></textarea>
+                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
+                </div>
+            </form>
+            
+            
         </section>
     </div>
 </body>

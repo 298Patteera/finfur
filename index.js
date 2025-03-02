@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // เชื่อม database
 //ใช้ npm install sqlite3
 const sqlite3 = require('sqlite3').verbose();
-let db = new sqlite3.Database('finfurdB.db', (err) => {    
+let db = new sqlite3.Database('finfurdB.db', (err) => {
     if (err) {
         return console.error(err.message);
     }
@@ -29,6 +29,7 @@ let db = new sqlite3.Database('finfurdB.db', (err) => {
 // ใช้ npm install express-session
 // ทำ session
 const session = require("express-session");
+const { name } = require("ejs");
 app.use(session({
     secret: "simplemakmak",
     resave: false,
@@ -55,22 +56,22 @@ app.get("/login", (req, res) => {
 //     }
 // });
 app.post("/login", (req, res) => {
-    const { "email-login": email, "password-login": password } = req.body;
-    
-    const query = `SELECT * FROM CustomerInfo WHERE email = ? AND psword = ?`;
-    
-    db.get(query, [email, password], (err, user) => {
+    const { "email-login": email, "password-login": pssword } = req.body;
+
+    const query = `SELECT email, pssword FROM userInfo WHERE email = ? AND pssword = ?`;
+
+    db.get(query, [email, pssword], (err, user) => {
         if (err) {
-            console.log("❗" + err.message);
+            console.log(err.message);
             return res.redirect("/login");
         }
 
         if (user) {
             req.session.userEmail = email;
-            console.log("✅ เข้าสู่ระบบสำเร็จ!");
+            console.log("เข้าสู่ระบบสำเร็จ!");
             return res.redirect("/");
         } else {
-            console.log("❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!");
+            console.log("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!");
             return res.redirect("/login");
         }
     });
@@ -80,6 +81,29 @@ app.post("/login", (req, res) => {
 app.get("/signin-customer", (req, res) => {
     res.render("signin-customer");
 });
+
+app.post("/signin-customer", (req, res) => {
+    let addInfo = {
+        username: req.body.username,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        gender: req.body.gender,
+        dob: req.body.dob,
+        pssword: req.body.pssword
+    };
+
+    let sql = `INSERT INTO userInfo (username, name, email, phone, gender, dob, pssword) VALUES ('${addInfo.username}', '${addInfo.name}', '${addInfo.email}', '${addInfo.phone}', '${addInfo.gender}', '${addInfo.dob}', '${addInfo.pssword}')`;
+    console.log(sql);
+    db.run(sql, (err) => {
+        if (err) {
+            return console.error('Error inserting data:', err.message);
+        }
+        console.log('Data inserted successful');
+        res.redirect("/");
+    });
+});
+
 // เสิร์ฟหน้า Sign-in(สำหรับผู้ขาย)
 app.get("/signin-provider", (req, res) => {
     res.render("signin-provider");
@@ -105,7 +129,7 @@ app.get("/product/:id", (req, res) => {
     `;
     db.all(query, (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         if (!rows || rows.length === 0) {
             console.log("❔ไม่พบสินค้า");
@@ -141,7 +165,7 @@ app.get("/product/:id", (req, res) => {
         if (!hasOptions) {
             product.options = null;
         }
-    
+
         // rows.forEach(row => {
         //     if (row.optionID) {
         //         product.options.push({
@@ -172,7 +196,7 @@ app.get("/all-product", (req, res) => {
     `;
     db.all(query, (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         res.render("all-product", { product: rows });
     });
@@ -193,7 +217,7 @@ app.get("/bed-room", (req, res) => {
     `;
     db.all(query, (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         res.render("bed-room", { product: rows });
     });
@@ -214,7 +238,7 @@ app.get("/living-room", (req, res) => {
     `;
     db.all(query, (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         res.render("living-room", { product: rows });
     });
@@ -235,7 +259,7 @@ app.get("/kitchen", (req, res) => {
     `;
     db.all(query, (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         res.render("kitchen", { product: rows });
     });
@@ -256,7 +280,7 @@ app.get("/dining-room", (req, res) => {
     `;
     db.all(query, (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         res.render("dining-room", { product: rows });
     });
@@ -277,7 +301,7 @@ app.get("/working-room", (req, res) => {
     `;
     db.all(query, (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         res.render("working-room", { product: rows });
     });
@@ -288,25 +312,166 @@ app.get("/cart", (req, res) => {
 });
 // เสิร์ฟหน้าเช็คเอาท์
 app.get("/checkout", (req, res) => {
-    res.render("checkout"); 
+    res.render("checkout");
 });
 
 // เสิร์ฟหน้าuser-profile
 app.get("/user-profile", (req, res) => {
-    res.render("user-profile");
+    const email = req.session.userEmail;
+
+    const query = 'SELECT * FROM userInfo WHERE email = ?';
+
+    db.get(query, [email], (err, row) => {
+        if (err) {
+            console.log(err.message);
+        }
+        console.log(row);
+        res.render('user-profile', { data: row });
+    });
 });
 // เสิร์ฟหน้าuser-payment
 app.get("/user-payment", (req, res) => {
-    res.render("user-payment");
+    const email = req.session.userEmail;
+
+    const query = `
+        SELECT 
+            up.cardname, up.cardnum
+        FROM 
+            userPayment up
+        LEFT JOIN 
+            userInfo ui
+        ON 
+            ui.email = up.email
+        WHERE 
+            ui.email = ?`;
+
+    db.all(query, [email], (err, rows) => {
+        if (err) {
+            console.log(err.message);
+            return res.status(500).send("Database Error");
+        }
+        const cards = rows.map(row => ({
+            name: row.cardname,
+            last4: row.cardnum.slice(-4)
+        }));
+
+        console.log('Cards:', cards);
+        res.render('user-payment', { cards });
+    });
 });
+
+app.post("/add-user-payment", (req, res) => {
+    let addInfo = {
+        cardname: req.body.cardname,
+        cardnum: req.body.cardnum,
+        cvv: req.body.cvv,
+        cardExpire: req.body.cardExpire
+    };
+
+    const email = req.session.userEmail;
+
+    let sql = `INSERT INTO userPayment (cardname, cardnum, cvv, cardExpire, email) VALUES ('${addInfo.cardname}', '${addInfo.cardnum}', '${addInfo.cvv}', '${addInfo.cardExpire}', '${email}')`;
+    console.log(sql);
+    db.run(sql, (err) => {
+        if (err) {
+            return console.error('Error inserting data:', err.message);
+        }
+        console.log('Data inserted successful');
+        res.redirect("/user-payment");
+    });
+});
+
 // เสิร์ฟหน้าuser-address
 app.get("/user-address", (req, res) => {
-    res.render("user-address");
+    const email = req.session.userEmail;
+
+    const query = `
+        SELECT 
+            ua.name, ua.phone, ua.address 
+        FROM 
+            userInfo ui
+        LEFT JOIN 
+            userAddress ua
+        ON 
+            ui.email = ua.email
+        WHERE 
+            ui.email = ?`;
+
+    db.all(query, [email], (err, rows) => {
+        if (err) {
+            console.log(err.message);
+            return res.status(500).send("Database Error");
+        }
+
+        console.log('Rows:', rows);
+        res.render('user-address', { data: rows });
+    });
+
 });
+
+//เพิ่มที่อยู่
+app.post("/add-user-address", (req, res) => {
+    let addInfo = {
+        name: req.body.name,
+        phone: req.body.phone,
+        address: req.body.address
+    };
+
+    const email = req.session.userEmail;
+
+    let sql = `INSERT INTO userAddress (name, phone, address, email) VALUES ('${addInfo.name}', '${addInfo.phone}', '${addInfo.address}', '${email}')`;
+    console.log(sql);
+    db.run(sql, (err) => {
+        if (err) {
+            return console.error('Error inserting data:', err.message);
+        }
+        console.log('Data inserted successful');
+        res.redirect("/user-address");
+    });
+});
+
 // เสิร์ฟหน้าuser-changepass
 app.get("/user-changepass", (req, res) => {
     res.render("user-changepass");
 });
+
+app.post("/user-changepass", (req, res) => {
+    let change = {
+        oldpass: req.body.oldpass,
+        newpass: req.body.newpass
+    };
+
+    const email = req.session.userEmail;
+
+    let sql = `SELECT pssword FROM userInfo WHERE email = ?`;
+    db.get(sql, [email], (err, row) => {
+        if (err) {
+            console.log(err.message);
+            return res.status(500).send("Database Error");
+        }
+
+        if (!row) {
+            return res.status(404).send("ีuser not found");
+        }
+
+        if (row.pssword !== change.oldpass) { 
+            return res.status(400).send("invalid password");
+        }
+
+        let updateSql = `UPDATE userInfo SET pssword = ? WHERE email = ?`; 
+        db.run(updateSql, [change.newpass, email], (err) => {
+            if (err) {
+                console.log(err.message);
+                return res.status(500).send("update database error");
+            }
+            console.log('Data updated successfully');
+            res.redirect("/user-changepass");
+        });
+    });
+});
+
+
+
 // เสิร์ฟหน้าcompare
 app.get("/compare", (req, res) => {
     res.render("compare");
@@ -326,9 +491,9 @@ app.get("/favorites", (req, res) => {
         JOIN productCategory pc ON sc.categoryID = pc.categoryID
         WHERE f.email = ?;
     `;
-    db.all(query,[res.locals.userEmail], (err, rows) => {
+    db.all(query, [res.locals.userEmail], (err, rows) => {
         if (err) {
-            console.log("❗"+err.message);
+            console.log("❗" + err.message);
         }
         res.render("favorites", { product: rows });
     });
@@ -420,7 +585,7 @@ app.post("/add-to-fav", (req, res) => {
                 INSERT INTO FavoriteList (productID, email) 
                 VALUES (?, ?);
             `;
-            
+
             db.run(insertQ, [productID, userEmail], function (err) {
                 if (err) {
                     console.log("❗ Error: " + err.message);

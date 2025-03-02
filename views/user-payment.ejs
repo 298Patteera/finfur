@@ -1,6 +1,7 @@
 <!-- userPayment.ejs -->
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
         function showAddCardForm() {
             document.getElementById('addCardForm').classList.toggle('hidden');
         }
-        
+
         function addNewCard() {
             let cardName = document.getElementById('cardName').value;
             let cardNumber = document.getElementById('cardNumber').value;
@@ -31,37 +32,40 @@
                 document.getElementById('addCardForm').classList.add('hidden');
             }
         }
-        
+
+
         function deleteCard(cardId) {
             document.getElementById(cardId).remove();
         }
-        
+
         function setDefault(cardId) {
             document.querySelectorAll('.default-text').forEach(el => el.innerText = '');
             document.getElementById(cardId).innerText = 'ค่าเริ่มต้น';
         }
 
-// 2
-function toggleSearch(event) {
-    event.preventDefault();
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    sessionStorage.setItem("searchMode", !searchMode);
+        // 2
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
 
-    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
-  }
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
 
-  function updateNavbar() {
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
-    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
-  }
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
 
-  // ตรวจสอบเมื่อโหลดหน้า
-  document.addEventListener("DOMContentLoaded", updateNavbar);
-//2
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+        //2
     </script>
 </head>
+
 <body class="bg-gray-100">
+
     <body class="bg-white">
         <div id="navbarContainer">
             <div id="defaultNavbar">
@@ -71,47 +75,71 @@ function toggleSearch(event) {
                 <%- include('partials/narbar_search') %>
             </div>
         </div>
-    
-    <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
-        <%- include('partials/aside_for_user') %>
-        <div class="flex max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
-            <aside class="w-1/4 p-5 bg-gray-200 rounded-l-lg">
-                <ul class="space-y-4">
-                    <li class="font-semibold">บัญชีของฉัน</li>
-                    <li><a href="/user-profile" class="text-gray-600">ข้อมูลของฉัน</a></li>
-                    <li><a href="/user-payment" class="text-gray-600">ช่องทางการชำระเงิน</a></li>
-                    <li><a href="/user-address" class="text-gray-600">ที่อยู่</a></li>
-                    <li><a href="/user-changepass" class="text-gray-600">เปลี่ยนรหัสผ่าน</a></li>
-                    <li><a href="/user-orderlist" class="text-gray-600 font-semibold">การซื้อของฉัน</a></li>
-                </ul>
-            </aside>
-        
-        <section class="w-3/4 p-5">
-            <h2 class="text-xl font-bold mb-4">บัตรเครดิต / บัตรเดบิต</h2>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="showAddCardForm()">เพิ่มบัตรใหม่</button>
-            
-            <div id="cardsContainer" class="mt-4">
-                <div id="card1" class="mb-4">
-                    <p class="font-semibold">Master Card <span id="default1" class="text-blue-500 default-text"></span></p>
-                    <p class="text-gray-600">**** **** **** 1321</p>
-                    <a href="#" class="text-blue-500" onclick="deleteCard('card1')">ลบ</a>
-                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('default1')">ตั้งเป็นค่าเริ่มต้น</button>
+
+        <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
+            <%- include('partials/aside_for_user') %>
+                <div class="flex max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
+                    <aside class="w-1/4 p-5 bg-gray-200 rounded-l-lg">
+                        <ul class="space-y-4">
+                            <li class="font-semibold">บัญชีของฉัน</li>
+                            <li><a href="/user-profile" class="text-gray-600">ข้อมูลของฉัน</a></li>
+                            <li><a href="/user-payment" class="text-gray-600">ช่องทางการชำระเงิน</a></li>
+                            <li><a href="/user-address" class="text-gray-600">ที่อยู่</a></li>
+                            <li><a href="/user-changepass" class="text-gray-600">เปลี่ยนรหัสผ่าน</a></li>
+                            <li><a href="/user-orderlist" class="text-gray-600 font-semibold">การซื้อของฉัน</a></li>
+                        </ul>
+                    </aside>
+
+                    <section class="w-3/4 p-5">
+                        <h2 class="text-xl font-bold mb-4">บัตรเครดิต / บัตรเดบิต</h2>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded"
+                            onclick="showAddCardForm()">เพิ่มบัตรใหม่</button>
+
+                            <div id="cardsContainer" class="mt-4">
+                                <% if (cards && cards.length > 0) { %>
+                                    <% cards.forEach((card, index) => { %>
+                                        <div id="card<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded">
+                                            <p class="font-semibold">
+                                                <%= card.name %> <span id="default<%= index + 1 %>" class="text-blue-500 default-text"></span>
+                                            </p>
+                                            <p class="text-gray-600">**** **** **** <%= card.last4 %></p>
+                                            <a href="#" class="text-blue-500" onclick="deleteCard('card<%= index + 1 %>')">ลบ</a>
+                                            <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
+                                        </div>
+                                    <% }) %>
+                                <% } %>
+                        </div>
+
+                        <form action="add-user-payment" method="post">
+                            <div id="addCardForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
+                                <h3 class="text-lg font-bold mb-2">เพิ่มบัตรใหม่</h3>
+                                <input type="text" id="cardName" name="cardname" placeholder="ชื่อบัตร"
+                                    class="w-full p-2 border border-gray-300 rounded mb-2">
+                                <input type="tel" id="cardNumber" name="cardnum" inputmode="numeric"
+                                    pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19"
+                                    placeholder="xxxx xxxx xxxx xxxx"
+                                    class="w-full p-2 border border-gray-300 rounded mb-2">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block font-medium text-black">วันหมดอายุ</label>
+                                        <input type="text" name="cardExpire" placeholder="MM/YY"
+                                            class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
+                                            required>
+                                    </div>
+                                    <div>
+                                        <label class="block font-medium text-black">cvv</label>
+                                        <input type="text" name="cvv" placeholder="xxx"
+                                            class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
+                                            required>
+                                    </div>
+                                </div> <br>
+                                <button type="submit" onclick="addNewCard()"
+                                    class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
+                            </div>
+                        </form>
+
+                    </section>
                 </div>
-                <div id="card2" class="mb-4">
-                    <p class="font-semibold">VISA <span id="default2" class="text-blue-500 default-text"></span></p>
-                    <p class="text-gray-600">**** **** **** 2321</p>
-                    <a href="#" class="text-blue-500" onclick="deleteCard('card2')">ลบ</a>
-                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('default2')">ตั้งเป็นค่าเริ่มต้น</button>
-                </div>
-            </div>
-            
-            <div id="addCardForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
-                <h3 class="text-lg font-bold mb-2">เพิ่มบัตรใหม่</h3>
-                <input type="text" id="cardName" placeholder="ชื่อบัตร" class="w-full p-2 border border-gray-300 rounded mb-2">
-                <input type="text" id="cardNumber" placeholder="หมายเลขบัตร" class="w-full p-2 border border-gray-300 rounded mb-2">
-                <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="addNewCard()">บันทึก</button>
-            </div>
-        </section>
-    </div>
-</body>
+    </body>
+
 </html>

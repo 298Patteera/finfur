@@ -34,7 +34,7 @@
 
             <h3 class="text-3xl font-bold text-black mb-4">สมัครสมาชิก</h3>
 
-            <form action="/signin-customer" method="POST" class="bg-white shadow-md rounded-lg p-6 space-y-4">
+            <!-- <form action="/signin-customer" method="POST" class="bg-white shadow-md rounded-lg p-6 space-y-4">
                 <div>
                     <label class="block font-medium text-black">เบอร์โทรศัพท์*</label>
                     <input type="text" name="phone-customer" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
@@ -63,7 +63,65 @@
                 <button type="submit" class="w-full bg-blue-600 text-white text-lg font-semibold py-3 rounded-lg hover:bg-blue-700">
                     สมัครสมาชิก
                 </button>
-            </form>
+            </form> -->
+
+            <!-- อันนี้เบ้นแก้ -->
+            <form action="/signin-customer" method="POST" class="bg-white shadow-md rounded-lg p-6 space-y-4">
+                <div>
+                    <label class="block font-medium text-black">username*</label>
+                    <input type="text" name="username" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+            
+                <div>
+                    <label class="block font-medium text-black">ชื่อ-นามสกุล*</label>
+                    <input type="text" name="name" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+            
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium text-black">อีเมล*</label>
+                        <input type="email" name="email" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-black">เบอร์โทรศัพท์*</label>
+                        <input type="text" name="phone" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                </div>
+            
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium text-black">เพศ*</label>
+                        <select name="gender" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                            <option value="male">ชาย</option>
+                            <option value="female">หญิง</option>
+                            <option value="other">อื่นๆ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-black">วันเกิด*</label>
+                        <input type="date" name="dob" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                    </div>
+                </div>
+            
+                <div>
+                    <label class="block font-medium text-black">รหัสผ่าน*</label>
+                    <input type="password" name="pssword" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+            
+                <div>
+                    <label class="block font-medium text-black">ยืนยันรหัสผ่าน*</label>
+                    <input type="password" name="confirmPssword" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
+                </div>
+            
+                <div class="flex items-center">
+                    <input type="checkbox" name="agree_terms" class="form-checkbox border border-gray-400 text-blue-600 rounded-md">
+                    <span class="ml-2 text-sm text-black">ยอมรับข้อกำหนดเงื่อนไขและ <a href="#" class="text-blue-600 underline">นโยบายความเป็นส่วนตัว</a></span>
+                </div>
+            
+                <button type="submit" class="w-full bg-blue-600 text-white text-lg font-semibold py-3 rounded-lg hover:bg-blue-700">
+                    สมัครสมาชิก
+                </button>
+            </form>            
         </div>
     </div>
     <script>

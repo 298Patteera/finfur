@@ -1,6 +1,7 @@
 <!-- userChangePassword.ejs -->
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,44 +10,45 @@
     <link rel="stylesheet" href="/public/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        function changePassword() {
+        function validateForm() {
             let currentPassword = document.getElementById('currentPassword').value;
             let newPassword = document.getElementById('newPassword').value;
             let confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             if (!currentPassword || !newPassword || !confirmPassword) {
                 alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
-                return;
+                return false;
             }
-            
+
             if (newPassword !== confirmPassword) {
                 alert('รหัสผ่านใหม่และยืนยันรหัสผ่านต้องตรงกัน');
-                return;
+                return false;
             }
-            
-            alert('รหัสผ่านของคุณถูกเปลี่ยนเรียบร้อยแล้ว!');
+            return true;
         }
         // 2
-  function toggleSearch(event) {
-    event.preventDefault();
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    sessionStorage.setItem("searchMode", !searchMode);
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
 
-    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
-  }
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
 
-  function updateNavbar() {
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
-    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
-  }
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
 
-  // ตรวจสอบเมื่อโหลดหน้า
-  document.addEventListener("DOMContentLoaded", updateNavbar);
-//2
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+        //2
     </script>
 </head>
+
 <body class="bg-gray-100">
+
     <body class="bg-white">
         <div id="navbarContainer">
             <div id="defaultNavbar">
@@ -56,40 +58,46 @@
                 <%- include('partials/narbar_search') %>
             </div>
         </div>
-    
-    <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
-        <%- include('partials/aside_for_user') %>
-        
-        <div class="flex max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
-            <aside class="w-1/4 p-5 bg-gray-200 rounded-l-lg">
-                <ul class="space-y-4">
-                    <li class="font-semibold">บัญชีของฉัน</li>
-                    <li><a href="/user-profile" class="text-gray-600">ข้อมูลของฉัน</a></li>
-                    <li><a href="/user-payment" class="text-gray-600">ช่องทางการชำระเงิน</a></li>
-                    <li><a href="/user-address" class="text-gray-600">ที่อยู่</a></li>
-                    <li><a href="/user-changepass" class="text-gray-600">เปลี่ยนรหัสผ่าน</a></li>
-                    <li><a href="/user-orderlist" class="text-gray-600 font-semibold">การซื้อของฉัน</a></li>
-                </ul>
-            </aside>
-        
-        <section class="w-3/4 p-5"> 
-            <h2 class="text-xl font-bold mb-4">เปลี่ยนรหัสผ่าน</h2>
-            <form class="space-y-4">
-                <div>
-                    <label class="block text-gray-700">รหัสผ่านปัจจุบัน</label>
-                    <input type="password" id="currentPassword" class="w-full p-2 border border-gray-300 rounded">
+
+        <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
+            <%- include('partials/aside_for_user') %>
+
+                <div class="flex max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
+                    <aside class="w-1/4 p-5 bg-gray-200 rounded-l-lg">
+                        <ul class="space-y-4">
+                            <li class="font-semibold">บัญชีของฉัน</li>
+                            <li><a href="/user-profile" class="text-gray-600">ข้อมูลของฉัน</a></li>
+                            <li><a href="/user-payment" class="text-gray-600">ช่องทางการชำระเงิน</a></li>
+                            <li><a href="/user-address" class="text-gray-600">ที่อยู่</a></li>
+                            <li><a href="/user-changepass" class="text-gray-600">เปลี่ยนรหัสผ่าน</a></li>
+                            <li><a href="/user-orderlist" class="text-gray-600 font-semibold">การซื้อของฉัน</a></li>
+                        </ul>
+                    </aside>
+
+                    <section class="w-3/4 p-5">
+                        <h2 class="text-xl font-bold mb-4">เปลี่ยนรหัสผ่าน</h2>
+                        <form class="space-y-4" action="/user-changepass" method="POST"
+                            onsubmit="return validateForm()">
+                            <div>
+                                <label class="block text-gray-700">รหัสผ่านปัจจุบัน</label>
+                                <input type="text" id="currentPassword" name="oldpass"
+                                    class="w-full p-2 border border-gray-300 rounded">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700">รหัสผ่านใหม่</label>
+                                <input type="text" id="newPassword" name="newpass"
+                                    class="w-full p-2 border border-gray-300 rounded">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700">ยืนยันรหัสผ่านใหม่</label>
+                                <input type="text" id="confirmPassword" name="newpass"
+                                    class="w-full p-2 border border-gray-300 rounded">
+                            </div>
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-4 py-2 rounded">เปลี่ยนรหัสผ่าน</button>
+                        </form>
+                    </section>
                 </div>
-                <div>
-                    <label class="block text-gray-700">รหัสผ่านใหม่</label>
-                    <input type="password" id="newPassword" class="w-full p-2 border border-gray-300 rounded">
-                </div>
-                <div>
-                    <label class="block text-gray-700">ยืนยันรหัสผ่านใหม่</label>
-                    <input type="password" id="confirmPassword" class="w-full p-2 border border-gray-300 rounded">
-                </div>
-                <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="changePassword()">เปลี่ยนรหัสผ่าน</button>
-            </form>
-        </section>
-    </div>
-</body>
+    </body>
+
 </html>
