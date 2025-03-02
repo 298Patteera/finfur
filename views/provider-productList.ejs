@@ -46,15 +46,17 @@
         <%- include('partials/menu_for_provider') %>
         <%- include('partials/categoryDropdown_for_provider') %>
         <div class="grid grid-cols-3 gap-4 mt-6">
+            <% product.forEach(item => { %>
                 <div class="bg-blue-100 p-4 rounded">
-                    <img src="product.image" alt="Product Image" class="w-full h-32 object-cover rounded">
-                    <p class="text-gray-700 font-semibold mt-2">product.category</p>
-                    <p class="text-gray-600">รหัสสินค้า: product.id</p>
-                    <p class="text-gray-600">ราคา: product.price บาท</p>
-                    <p class="text-gray-600">วันที่เพิ่มสินค้า: product.addedDate</p>
-                    <p class="text-gray-600">ยอดที่เพิ่มในรายการโปรด: product.favoritesCount</p>
+                    <img src="/images/allProduct/<%= item.productID %>.png" alt="<%= item.productID %>Image" class="w-full h-auto max-h-32 object-cover rounded">
+                    <p class="text-gray-700 font-semibold mt-2">หมวดหมู่ <%= item.categoryName %></p>
+                    <p class="text-gray-600">รหัสสินค้า: <%= item.productID %> </p>
+                    <p class="text-gray-600">ราคา: <%= item.price %> บาท</p>
+                    <p class="text-gray-600">วันที่เพิ่มสินค้า: <%= item.addedDate %> </p>
+                    <p class="text-gray-600">ยอดที่เพิ่มในรายการโปรด: <%= item.favoritesCount %></p>
                     <button class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded">แก้ไข</button>
                 </div>
+            <% }); %>
         </div>
     </div>
 <!-- เเก้ -->

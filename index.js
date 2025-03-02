@@ -59,6 +59,7 @@ app.post("/login", (req, res) => {
     const { "email-login": email, "password-login": pssword } = req.body;
 
     const query = `SELECT email, pssword FROM userInfo WHERE email = ? AND pssword = ?`;
+    const queryProvider = `SELECT email FROM providerList WHERE email = ?`;
 
     db.get(query, [email, pssword], (err, user) => {
         if (err) {
@@ -69,7 +70,19 @@ app.post("/login", (req, res) => {
         if (user) {
             req.session.userEmail = email;
             console.log("เข้าสู่ระบบสำเร็จ!");
-            return res.redirect("/");
+            //เช็คว่าเป็น customer or provider
+            db.get(queryProvider, [email], (err, provider) => {
+                if (err) {
+                    console.log(err.message);
+                    return res.redirect("/login");
+                }
+
+                if (provider) {
+                    return res.redirect("/provider-productList");
+                } else {
+                    return res.redirect("/");
+                }
+            });
         } else {
             console.log("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!");
             return res.redirect("/login");
@@ -505,7 +518,23 @@ app.get("/favorites", (req, res) => {
 
 // เสิร์ฟหน้า ของ productList
 app.get("/provider-productList", (req, res) => {
-    res.render("provider-productList");
+    const query = `
+        SELECT 
+            p.*, 
+			sc.subID,
+            sc.subName, 
+			pc.categoryID,
+            pc.categoryName 
+        FROM ProductList p
+        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
+        JOIN productCategory pc ON sc.categoryID = pc.categoryID;
+    `;
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.log("❗" + err.message);
+        }
+        res.render("provider-productList", { product: rows });
+    });
 });
 
 // เสิร์ฟหน้า ของ addProduct
@@ -569,7 +598,7 @@ app.post("/add-to-cart", (req, res) => {
 app.post("/add-to-fav", (req, res) => {
     const { productID, userEmail } = req.body;
     if (!userEmail) {
-        return res.redirect('/login'); // หรือหน้าอื่นที่คุณต้องการให้ไปถ้าผู้ใช้ยังไม่ล็อกอิน
+        return res.redirect('/login');
     }
 
     // ถ้าเคยเฟบแล้วจะลบออก
@@ -582,7 +611,6 @@ app.post("/add-to-fav", (req, res) => {
             console.log("❗ Error: " + err.message);
         }
         if (this.changes === 0) {
-            //ถ้าไม่เคยเฟบจะเพิ่มไปในรายการโปรด
             const insertQ = `
                 INSERT INTO FavoriteList (productID, email) 
                 VALUES (?, ?);
@@ -591,8 +619,22 @@ app.post("/add-to-fav", (req, res) => {
             db.run(insertQ, [productID, userEmail], function (err) {
                 if (err) {
                     console.log("❗ Error: " + err.message);
+                } else {
+                    const updateFavCountQ = `
+                        UPDATE ProductList 
+                        SET favoritesCount = favoritesCount + 1 
+                        WHERE productID = ?;
+                    `;
+                    db.run(updateFavCountQ, [productID]);
                 }
             });
+        } else {
+            const updateFavCountQ = `
+                UPDATE ProductList 
+                SET favoritesCount = favoritesCount - 1 
+                WHERE productID = ?;
+            `;
+            db.run(updateFavCountQ, [productID]);
         }
     });
 });
