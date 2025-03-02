@@ -100,22 +100,28 @@
             <h2 class="text-xl font-bold mb-4">ที่อยู่ของฉัน</h2>
             <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="showAddAddressForm()">เพิ่มที่อยู่</button>
             
-            <div id="addressesContainer" class="mt-4">
-                <% if (data.length > 0) { %>
-                    <% data.forEach((address, index) => { %>
-                        <div id="address<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded">
-                            <p class="font-semibold">
-                                <%= address.name %> (<%= address.phone %>)
-                                <span id="default<%= index + 1 %>" class="text-blue-500 default-text">ค่าเริ่มต้น</span>
-                            </p>
-                            <p class="text-gray-600 address-text"><%= address.address %></p>
-                            <button class="text-blue-500" onclick="editAddress('address<%= index + 1 %>')">แก้ไข</button>
-                            <button class="text-blue-500 ml-2" onclick="deleteAddress('address<%= index + 1 %>')">ลบ</button>
-                            <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
-                        </div>
+            
+                <% if (data && data.length > 0) { %>
+                    <div id="addressesContainer" class="mt-4">
+                        <% data.forEach((address, index) => { %>
+                            <div id="address<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded">
+                                <p class="font-semibold">
+                                    <%= address.name %> <%= address.phone %>
+                                    <% if (address.isDefault) { %>
+                                        <span class="text-blue-500">ค่าเริ่มต้น</span>
+                                    <% } %>
+                                </p>
+                                <p class="text-gray-600"><%= address.address %></p>
+                                <button class="text-blue-500" onclick="editAddress('address<%= index + 1 %>')">แก้ไข</button>
+                                <button class="text-blue-500 ml-2" onclick="deleteAddress('address<%= index + 1 %>')">ลบ</button>
+                                <% if (!address.isDefault) { %>
+                                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
+                                <% } %>
+                            </div>
                     <% }) %>
-                <% } %>
-            </div>
+                </div>
+            <% } %>
+            
             
 
             <form action="/add-user-address" method="post">
