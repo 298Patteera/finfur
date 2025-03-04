@@ -37,8 +37,8 @@
                     <div class="mt-2">
                         <p class="font-bold"><%= item.productName %> / <%= item.brand %></p> 
                         <p>
-                            <%= item.description.length > 20 ? item.description.substring(0, 20) + "..." : item.description %>
-                        </p> 
+                            <%= item.description && item.description.length > 20 ? item.description.substring(0, 20) + "..." : item.description || '' %>
+                        </p>                        
                         <h2 class="text-lg font-semibold text-red-500"><%= item.price %> ฿</h2>
                     </div> 
                     <div class="flex gap-4 items-center">
