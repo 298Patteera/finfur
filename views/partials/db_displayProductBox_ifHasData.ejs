@@ -1,3 +1,26 @@
+<script>
+    function changeFavorites(button) {
+    const icon = button.querySelector('img');
+    const currentSrc = icon.src;
+
+    if (currentSrc.includes("favorite_variant2.png")) {
+        icon.src = "/images/favorite_default.png";
+        alert("➖ ลบออกจากรายการโปรดแล้ว");
+    } else {
+        icon.src = "/images/favorite_variant2.png";
+        alert("✅ เพิ่มลงรายการโปรดสำเร็จ");
+    }
+}
+
+
+
+    function changeShopping(button) {
+        const icon = button.querySelector('img');
+        icon.src = (icon.src.includes("shopping_cart_variant2.png")) ? 
+                    "/images/shopping_cart_default.png" : 
+                    "/images/shopping_cart_variant2.png";
+    }
+</script>
 <div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex border border-gray-300 rounded-lg">
     <div class="p-4 ">
         <div class="flex flex-wrap gap-10 mt-10 ">
@@ -27,11 +50,13 @@
                             <input type="hidden" name="productID" value="<%= item.productID %>">
                             <input type="hidden" name="userEmail" value="<%= userEmail %>">
                             <button type="submit" onclick="changeFavorites(this)">
-                                <img class="w-5 h-5" src="/images/favorite_default.png" alt="เพิ่มในรายการโปรด">
+                                <img class="w-5 h-5" src="<%= item.isFavorited ? '/images/favorite_variant2.png' : '/images/favorite_default.png' %>" alt="เพิ่มในรายการโปรด">
                             </button>
                         </form>
 
                         <button onclick="changeShopping(this)">
+                            <input type="hidden" name="productID" value="<%= item.productID %>">
+                            <input type="hidden" name="userEmail" value="<%= userEmail %>">
                             <img class="w-8 h-8" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
                         </button>
                     </div>

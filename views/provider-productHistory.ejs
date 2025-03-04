@@ -24,21 +24,28 @@
         <%- include('partials/categoryDropdown_for_provider') %>
 <!-- เเก้ -->
         <div class="mt-6">
-                <div class="flex justify-between items-center bg-blue-100 p-4 rounded mb-4">
+            <% product.slice().reverse().forEach(item => { %>
+                <div class="flex justify-between items-center bg-gray-200 p-4 rounded mb-4">
                     <div class="flex items-center space-x-4">
-                        <img src="item.image" alt="Product Image" class="w-20 h-20 object-cover rounded">
+                        <!-- <img src="<%= item.image %>" alt="Product Image" class="w-20 h-20 object-cover rounded"> -->
                         <div>
-                            <p class="text-gray-700 font-semibold">item.productName </p>
+                            <p class="text-gray-700 font-semibold"><%= item.productID %> : <%= item.productName %></p>
                         </div>
                     </div>
                     <div>
-                        <p class="%= item.status === 'added' ? 'text-green-600' : 'text-red-600' %">
-                            = item.status === 'added' ? 'เพิ่มสินค้าสำเร็จ' : 'ลบสินค้าสำเร็จ' %
-                        </p>
-                        <p class="text-gray-600"> item.date </p>
-                        <p class="text-gray-600"> item.time </p>
+                        <% 
+                            const status = item.modifiedType.includes('เพิ่ม') ? 'text-green-600' : 'text-red-600'; 
+                        %>
+                        <!-- <p class="<%= item.status === 'added' ? 'text-green-600' : 'text-red-600' %>"> -->
+                        <p class="<%= status %>"><%= item.modifiedType %></p>
+                        <% 
+                            const date = new Date(item.modifiedTimestamp); 
+                            const time = date.toLocaleString("th-TH", { timeZone: "Asia/Bangkok" }); 
+                        %>
+                        <p class="text-gray-600"><%= time %></p>
                     </div>
                 </div>
+            <% }) %>
         </div>
     </div>
 <!-- เเก้ -->
