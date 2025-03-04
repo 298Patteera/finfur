@@ -1,0 +1,32 @@
+<div class="flex space-x-4 mt-4 border-b pb-2">
+    <a href="/user-orderlist" id="all-product" class="text-gray-600">ทั้งหมด</a>
+    <a href="/user-pending" id="pending" class="text-gray-600">ที่ต้องชำระ</a>
+    <a href="/user-shipping" id="shipping" class="text-gray-600">ที่ต้องได้รับ</a>
+    <a href="/user-completed" id="completed" class="text-gray-600">สำเร็จแล้ว</a>
+    <a href="/user-canceled" id="canceled" class="text-gray-600">ยกเลิก</a> <!-- แก้ id จาก profile เป็น canceled -->
+</div>
+
+<script>
+    window.onload = function () {
+        // ดึง URL ปัจจุบัน
+        const currentPath = window.location.pathname;
+
+        // กำหนดค่า Path และ Element ID ที่เกี่ยวข้อง
+        const menuItems = {
+            "/user-orderlist": "all-product",
+            "/user-pending": "pending",
+            "/user-shipping": "shipping",
+            "/user-completed": "completed",
+            "/user-canceled": "canceled" // ตรงกับ id ของ <a>
+        };
+
+        // ตรวจสอบว่ามีเมนูที่ตรงกับ path หรือไม่
+        if (menuItems[currentPath]) {
+            let activeItem = document.getElementById(menuItems[currentPath]);
+            if (activeItem) {
+                activeItem.classList.add("text-blue-600", "font-bold", "border-b-2", "pb-1");
+                activeItem.classList.remove("text-gray-600"); // ลบสีเทาออก
+            }
+        }
+    };
+</script>
