@@ -22,32 +22,16 @@
 <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
     <%- include('partials/aside_for_user') %>
     
-    <div class="flex max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
-        <aside class="w-1/4 p-5 bg-gray-200 rounded-l-lg">
-            <ul class="space-y-4">
-                <li class="font-semibold">บัญชีของฉัน</li>
-                <li><a href="/user-profile" class="text-gray-600">ข้อมูลของฉัน</a></li>
-                <li><a href="/user-payment" class="text-gray-600">ช่องทางการชำระเงิน</a></li>
-                <li><a href="/user-address" class="text-gray-600">ที่อยู่</a></li>
-                <li><a href="/user-changepass" class="text-gray-600">เปลี่ยนรหัสผ่าน</a></li>
-                <li><a href="/user-orderlist" class="text-gray-600 font-semibold">การซื้อของฉัน</a></li>
-            </ul>
-        </aside>
+    <div class="flex w-full mx-auto mt-10 bg-white shadow-lg rounded-lg">
         
-        <section class="w-3/4 p-5">
+        <div class="w-3/4 p-5">
             <h2 class="text-xl font-bold mb-4">รายการสำเร็จแล้ว</h2>
-            <div class="flex border-b pb-2 space-x-4">
-                <a href="/user-orderlist" class="text-gray-600">ทั้งหมด</a>
-                <a href="/user-pending" class="text-gray-600">ที่ต้องชำระ</a>
-                <a href="/user-completed" class="text-gray-600">ที่ต้องได้รับ</a>
-                <a href="/user-shipping" class="text-blue-600 border-b-2 border-blue-600 pb-1">สำเร็จแล้ว</a>
-                <a href="/user-canceled" class="text-gray-600">ยกเลิก</a>
-            </div>
+            <%- include('partials/menu_for_user_history') %>
             
             <div class="mt-4">
                     <div class="flex justify-between items-center bg-gray-100 p-4 rounded mb-4">
                         <div class="flex items-center space-x-4">
-                            <img src="<%= order.image %>" alt="Product Image" class="w-20 h-20 object-cover rounded">
+                            <img src=" order.image %>" alt="Product Image" class="w-20 h-20 object-cover rounded">
                             <div>
                                 <p class="text-gray-700 font-semibold">ชื่อสินค้า</p>
                                 <p class="text-gray-600">ตัวเลือกสินค้า</p>
@@ -61,7 +45,7 @@
                         </div>
                     </div>
             </div>
-        </section>
+        </div>
     </div>
 </body>
 </html>
