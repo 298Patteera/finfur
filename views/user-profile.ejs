@@ -7,7 +7,11 @@
     <title>โปรไฟล์ | FINFUR</title>
     <link rel="icon" type="image/png" href="/images/logo_main.png">
     <link rel="stylesheet" href="/public/style.css">
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
+    </script>
     <script>
         function enableEditing() {
             document.querySelectorAll('.editable').forEach(el => el.removeAttribute('disabled'));
@@ -41,8 +45,7 @@
 //2
     </script>
 </head>
-<body class="bg-gray-100">
-    <body class="bg-white">
+<body class="bg-gray-100 dark:bg-gray-900">
         <div id="navbarContainer">
             <div id="defaultNavbar">
                 <%- include('partials/narbar') %>
@@ -99,8 +102,8 @@
                     <label class="block text-gray-700">วัน/เดือน/ปี เกิด</label>
                     <input type="date" value="<%= data.dob %>" class="w-full p-2 border border-gray-300 rounded editable" disabled>
                 </div>
-                <button type="button" id="editBtn" class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="enableEditing()">แก้ไขข้อมูล</button>
-                <button type="button" id="saveBtn" class="bg-blue-600 text-white px-4 py-2 rounded hidden" onclick="saveData()">บันทึก</button>
+                <button type="button" id="editBtn" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="enableEditing()">แก้ไขข้อมูล</button>
+                <button type="button" id="saveBtn" class="bg-blue-500 text-white px-4 py-2 rounded hidden" onclick="saveData()">บันทึก</button>
             </form>
             <% } %>
         </section>
