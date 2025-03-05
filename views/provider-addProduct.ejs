@@ -22,14 +22,16 @@
         <%- include('partials/menu_for_provider') %>
         <%- include('partials/categoryDropdown_for_provider') %>
         
-        <table class="mt-6 w-full border">
+        <table class="mt-6 w-full border" style="table-layout: auto;">
             <thead>
                 <tr class="bg-blue-100">
-                    <th class="border p-2">หมวดหมู่</th>
-                    <th class="border p-2">รหัสสินค้า (5 หลัก)</th>
-                    <th class="border p-2">ชื่อสินค้า</th>
-                    <th class="border p-2">ราคา</th>
-                    <th class="border p-2">จำนวนที่ต้องการเพิ่ม/ลด</th>
+                    <th class="border p-2 ">หมวดหมู่</th>
+                    <th class="border p-2 ">รหัสสินค้า (5 หลัก)</th>
+                    <th class="border p-2 ">ชื่อสินค้า</th>
+                    <th class="border p-2 ">ยี่ห้อ</th>
+                    <th class="border p-2 ">ราคา</th>
+                    <th class="border p-2 ">คำอธิบาย</th>
+                    <th class="border p-2 ">รูปภาพสินค้า</th>
                 </tr>
             </thead>
             <tbody id="productTable">
@@ -47,11 +49,47 @@
                     </td>
                     <td class="border p-2"><input type="text" id="productID" class="w-full border"></td>
                     <td class="border p-2"><input type="text" id="productName" class="w-full border"></td>
-                    <td class="border p-2"><input type="number" id="productPrice" class="w-full border"></td>
-                    <td class="border p-2"><input type="number" id="productQuantity" class="w-full border"></td>
+                    <td class="border p-2"><input type="text" id="productBrand" class="w-full border"></td>
+                    <td class="border text-center p-2"><input type="number" id="productPrice" class="w-full border"></td>
+                    <td class="border p-2">
+                        <input type="text" id="productDescription" class="w-full border" onclick="openModal(this)">
+                    </td>
+                    <td class="border p-2">
+                        <!-- <input type="file" id="productImage" class="w-full border bg-blue-200" accept="image/*" onchange="previewImage(event)"> -->
+                        <div class="max-w-sm">
+                            <form>
+                              <label class="block">
+                                <span class="sr-only">Choose profile photo</span>
+                                <input type="file" id="productImage"
+                                accept="image/*" onchange="previewImage(event)"
+                                class="block w-full text-sm text-gray-500
+                                  file:me-4 file:py-2 file:px-4
+                                  file:rounded-lg file:border-0
+                                  file:text-sm file:font-semibold
+                                  file:bg-blue-600 file:text-white
+                                  hover:file:bg-blue-700
+                                  file:disabled:opacity-50 file:disabled:pointer-events-none
+                                ">
+                              </label>
+                            </form>
+                          </div>
+                        <img id="imagePreview" class="mt-2 w-20 h-20 object-cover hidden">
+                    </td>
                 </tr>
             </tbody>
         </table>
+
+        <!-- เเก้ -->
+        <div id="modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <div class="bg-white p-4 rounded-lg w-1/2">
+                <textarea id="modalInput" class="w-full h-40 border p-2"></textarea>
+                <div class="flex justify-end gap-2 mt-2">
+                    <button onclick="saveModal()" class="bg-green-500 text-white p-2 rounded">บันทึก</button>
+                    <button onclick="closeModal()" class="bg-gray-500 text-white p-2 rounded">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
+        <!-- เเก้ -->
         
         <div class="flex mt-4 space-x-4">
             <button class="bg-red-600 text-white px-4 py-2 rounded" onclick="delProduct()">ลบสินค้า</button>
@@ -60,6 +98,27 @@
     </div>
 
     <script>
+ let activeInput = null;
+
+function openModal(inputElement) {
+    activeInput = inputElement;
+    document.getElementById('modalInput').value = inputElement.value;
+    document.getElementById('modal').classList.remove('hidden');
+}
+
+function saveModal() {
+    if (activeInput) {
+        activeInput.value = document.getElementById('modalInput').value;
+    }
+    closeModal();
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.add('hidden');
+}
+
+
+// เเก้?
         document.addEventListener("DOMContentLoaded", function() {
             let categorySelect = document.getElementById('categorySelect');
             let productIDInput = document.getElementById('productID');
