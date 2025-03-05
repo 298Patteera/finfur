@@ -25,9 +25,9 @@
     <div class="p-4 ">
         <div class="flex flex-wrap gap-10 mt-10 ">
             <% product.forEach(item => { %>
-                <div id="<%= item.productID %>-box" class="p-5 bg-white w-[200px] h-auto min-w-[200px] min-h-[300px]">
+                <div id="<%= item.productID %>-box" class="p-5 bg-white w-[200px] h-auto min-w-[200px] min-h-[300px] dark:bg-gray-900">
                     <a href="/product/<%= item.productID %>">
-                        <img class="rounded-lg hover:shadow-lg active:shadow-xl transition-shadow duration-300 ease-in-out" 
+                        <img class="rounded-lg hover:shadow-lg active:shadow-xl transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 
                             src="/images/allProduct/<%= item.productID %>.png" alt="<%= item.productID %>Image">
                     </a>
                     <br>
@@ -50,14 +50,14 @@
                             <input type="hidden" name="productID" value="<%= item.productID %>">
                             <input type="hidden" name="userEmail" value="<%= userEmail %>">
                             <button type="submit" onclick="changeFavorites(this)">
-                                <img class="w-5 h-5" src="<%= item.isFavorited ? '/images/favorite_variant2.png' : '/images/favorite_default.png' %>" alt="เพิ่มในรายการโปรด">
+                                <img class="w-5 h-5 dark:invert dark:brightness-75" src="<%= item.isFavorited ? '/images/favorite_variant2.png' : '/images/favorite_default.png' %>" alt="เพิ่มในรายการโปรด">
                             </button>
                         </form>
 
                         <button onclick="changeShopping(this)">
                             <input type="hidden" name="productID" value="<%= item.productID %>">
                             <input type="hidden" name="userEmail" value="<%= userEmail %>">
-                            <img class="w-8 h-8" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
+                            <img class="w-8 h-8 dark:invert dark:brightness-75" src="/images/shopping_cart_default.png" alt="ตะกร้าสินค้า">
                         </button>
                     </div>
                 </div>
