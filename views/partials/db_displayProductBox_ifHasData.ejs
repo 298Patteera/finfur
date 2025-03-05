@@ -117,7 +117,7 @@
                             <input type="hidden" name="userEmail" value="<%= userEmail %>">
                             <button type="submit" onclick="changeFavorites(this)" 
                                 class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                                <img class="w-6 h-6 dark:invert dark:brightness-75"
+                                <img class="w-6 h-6 <%= item.isFavorited ? '' : 'dark:invert dark:brightness-75' %>"
                                     src="<%= item.isFavorited ? '/images/favorite_variant2.png' : '/images/favorite_default.png' %>" 
                                     alt="เพิ่มในรายการโปรด">
                             </button>
