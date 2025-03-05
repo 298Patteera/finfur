@@ -22,13 +22,16 @@
     <ul class="max-h-60 overflow-y-auto">
         <% product.forEach(function(item) { %>
             <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
-            data-id="<%= item.productID %>" 
-            data-name="<%= item.productName %>" 
-            data-price="<%= item.price %>">
+                data-id="<%= item.productID %>" 
+                data-name="<%= item.productName %>" 
+                data-price="<%= item.price %>" 
+                data-brand="<%= item.brand %>" 
+                data-description="<%= item.description %>">
                 <%= item.productID %> : <%= item.productName %>
             </li>
         <% }); %>
     </ul>
+    
 </div>
 
 <script>
@@ -60,12 +63,16 @@
             const productID = e.target.getAttribute('data-id');
             const productName = e.target.getAttribute('data-name');
             const productPrice = e.target.getAttribute('data-price');
+            const productBrand = e.target.getAttribute('data-brand');
+            const productDescription = e.target.getAttribute('data-description');
 
             document.getElementById('searchInput').value = productID + ' : ' + productName;
             document.getElementById('categorySelect').value = productID.substring(0, 2);
             document.getElementById('productID').value = productID;
             document.getElementById('productName').value = productName;
             document.getElementById('productPrice').value = productPrice;
+            document.getElementById('productBrand').value = productBrand;
+            document.getElementById('productDescription').value = productDescription;
 
             document.getElementById('searchResults').style.display = 'none'; 
         }

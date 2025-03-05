@@ -8,7 +8,11 @@
     <title>เปลี่ยนรหัสผ่าน | FINFUR</title>
     <link rel="icon" type="image/png" href="/images/logo_main.png">
     <link rel="stylesheet" href="/public/style.css">
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
+    </script>
     <script>
         function validateForm() {
             let currentPassword = document.getElementById('currentPassword').value;
@@ -47,9 +51,7 @@
     </script>
 </head>
 
-<body class="bg-gray-100">
-
-    <body class="bg-white">
+<body class="bg-gray-100 dark:bg-gray-900">
         <div id="navbarContainer">
             <div id="defaultNavbar">
                 <%- include('partials/narbar') %>

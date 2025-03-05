@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>รายการโปรด | FINFUR</title>
     <link rel="icon" type="image/png" href="/images/logo_main.png">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
+        </script>
 </head>
-<body>
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white">
     <!-- 1 -->
     <div id="navbarContainer">
         <div id="defaultNavbar">
@@ -50,15 +55,15 @@
     <% } else { %>
         <!-- หน้าที่ ลูกค้ายังไม่ได้บันทึกรายการโปรด -->
         <div class="px-10 mt-10" id="non_showFavorites">
-            <h1 class="text-3xl font-bold text-gray-900 mb-6">ดูเหมือนว่าคุณยังไม่มีสินค้าที่ถูกใจ</h1>
+            <h1 class="text-3xl font-bold text-gray-900 mb-6 dark:text-white">ดูเหมือนว่าคุณยังไม่มีสินค้าที่ถูกใจ</h1>
             <ul class="list-disc pl-6 space-y-2 text-gray-900">
-                <li class="font-semibold">บันทึกและจัดลำดับสินค้าที่คุณชื่นชอบ เพื่อให้เลือกได้ง่ายขึ้นเมื่อพร้อมซื้อ</li>
+                <li class="font-semibold dark:text-white">บันทึกและจัดลำดับสินค้าที่คุณชื่นชอบ เพื่อให้เลือกได้ง่ายขึ้นเมื่อพร้อมซื้อ</li>
                 <ul class="list-disc pl-6 text-gray-700">
-                    <li class="flex items-center space-x-2">
+                    <li class="flex items-center space-x-2 dark:text-gray-400">
                         <img src="/images/logo_favorite.png" class="bg-red-500 rounded-[50px] p-2 w-[40px]" alt="Favorite Icon">
                         <span>คลิกไอคอนรูปหัวใจเพื่อบันทึกสินค้า</span>
                     </li>
-                    <li class="flex items-center space-x-2 mt-2">
+                    <li class="flex items-center space-x-2 mt-2  dark:text-gray-400">
                         <img src="/images/logo_account.png" class="bg-blue-600 rounded-[50px] p-2 w-[40px]" alt="Account Icon">
                         <span>สมัครสมาชิกหรือลงชื่อเข้าใช้ เพื่อเข้าถึงสินค้าที่บันทึกไว้จากทุกอุปกรณ์</span>
                     </li>
@@ -71,9 +76,6 @@
             </button>         
         </div> -->
     <% } %>
-
-
-
 
 
   <script>
