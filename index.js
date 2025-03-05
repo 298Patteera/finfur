@@ -771,7 +771,7 @@ app.post("/add-to-fav", (req, res) => {
 });
 
 app.post("/add-to-productlist", (req, res) => {
-    const { productID, productName, categoryID, subID, price, stockNum, modifiedTimestamp } = req.body;
+    const { productID, productName, categoryID, subID, price, brand, description, modifiedTimestamp } = req.body;
     const userEmail = res.locals.userEmail;
 
     const checkProductQ = `
@@ -786,32 +786,33 @@ app.post("/add-to-productlist", (req, res) => {
         if (row) {
             const updateQ = `
                 UPDATE ProductList
-                SET productName = ?, categoryID = ?, price = ?, stockNum = stockNum + ?, subID = ?
+                SET productName = ?, categoryID = ?, price = ?, subID = ?, brand = ?, description = ?
                 WHERE productID = ?;
             `;
             
-            db.run(updateQ, [productName, categoryID, price, stockNum, subID, productID], function (err) {
+            db.run(updateQ, [productName, categoryID, price, subID, brand, description,  productID], function (err) {
                 if (err) {
                     console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
                 }
 
                 console.log(updateQ);
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มจำนวนสต็อค "+ String(stockNum)+" ชิ้น");
+                insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
+                return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
             });
         } else {
-            const newProductID = productID;
             const addedDate = new Date().toISOString();
 
             const insertQ = `
-                INSERT INTO ProductList (productID, productName, categoryID, price, stockNum, subID, addedDate)
-                VALUES (?, ?, ?, ?, ?, ?, ?);
+                INSERT INTO ProductList (productID, productName, categoryID, price, brand, description, subID, addedDate)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
             `;
 
-            db.run(insertQ, [newProductID, productName, categoryID, price, stockNum, subID, addedDate], function (err) {
+            db.run(insertQ, [productID, productName, categoryID, price, brand, description, subID, addedDate], function (err) {
                 if (err) {
                     console.log("❗เพิ่มข้อมูลไม่สำเร็จ Error: " + err.message);
                 }
-                insertEditHistory(newProductID, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่ และจำนวนสต็อค "+ String(stockNum)+" ชิ้น");
+                insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
+                return res.json({ success: true, message: "✅เพิ่มสินค้าใหม่สำเร็จ" });
             });
         }
     });
@@ -845,6 +846,7 @@ app.post("/del-to-productlist", (req, res) => {
             }
 
             insertEditHistory(productID, modifiedTimestamp, userEmail, `ลดจำนวนสต็อค ${stockNum} ชิ้น`);
+            
         });
     });
 });

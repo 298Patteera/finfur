@@ -119,94 +119,102 @@ function closeModal() {
 
 
 // เเก้?
-        document.addEventListener("DOMContentLoaded", function() {
-            let categorySelect = document.getElementById('categorySelect');
-            let productIDInput = document.getElementById('productID');
-            
-            categorySelect.addEventListener('change', function() {
-                let selectedValue = this.value;
-                productIDInput.value = selectedValue;
-            });
+    document.addEventListener("DOMContentLoaded", function() {
+        let categorySelect = document.getElementById('categorySelect');
+        let productIDInput = document.getElementById('productID');
+        
+        categorySelect.addEventListener('change', function() {
+            let selectedValue = this.value;
+            productIDInput.value = selectedValue;
         });
-        async function addProduct() {
-            let productData = getData();
-            if (!productData) return;
+    });
+    async function addProduct() {
+        let productData = getData();
+        if (!productData) return;
 
-            try {
-                let response = await fetch('/add-to-productlist', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(productData)
-                });
+        try {
+            let response = await fetch('/add-to-productlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData)
+            });
 
-                let result = await response.json();
-                if (result.success) {
-                    alert(result.message);
-                    location.reload();
-                } else {
-                    alert('❗' + result.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('ไม่สามารถเพิ่มสินค้าได้');
+            let result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert('❗' + result.message);
             }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('ไม่สามารถเพิ่มสินค้าได้');
+        }
+    }
+
+    async function delProduct() {
+        let productData = getData();
+        if (!productData) return;
+
+        try {
+            let response = await fetch('/del-to-productlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData)
+            });
+
+            let result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                location.reload();
+            } else {
+                alert('❗' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('ไม่สามารถลดสินค้าได้');
+        }
+    }
+
+    function getData() {
+        let productID = document.getElementById('productID').value.trim();
+        let name = document.getElementById('productName').value.trim();
+        let categoryID = parseInt(document.getElementById('categorySelect').value.substring(0, 1), 10);
+        let subID = parseInt(document.getElementById('categorySelect').value.substring(1), 10);
+        let price = parseFloat(document.getElementById('productPrice').value);
+        let brand = document.getElementById('productBrand').value.trim();
+        let description = document.getElementById('productDescription').value.trim();
+
+        if (!brand) {
+            brand = 'ไม่มียี่ห้อ'
+        }
+        if (!description) {
+            description = ''
+        }
+        if (!name || isNaN(categoryID) || isNaN(subID) || isNaN(price)) {
+            alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+            return null;
+        }
+        if (!productID || productID.trim().length !== 5) {
+            alert('รหัสสินค้าต้องมีความยาว 5 ตัวอักษร');
+            return null;
         }
 
-        async function delProduct() {
-            let productData = getData();
-            if (!productData) return;
 
-            try {
-                let response = await fetch('/del-to-productlist', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(productData)
-                });
+        let modifiedTimestamp = new Date().toISOString();
 
-                let result = await response.json();
-                if (result.success) {
-                    alert(result.message);
-                    location.reload();
-                } else {
-                    alert('❗' + result.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('ไม่สามารถลดสินค้าได้');
-            }
-        }
 
-        function getData() {
-            let productID = document.getElementById('productID').value.trim();
-            let name = document.getElementById('productName').value.trim();
-            let categoryID = parseInt(document.getElementById('categorySelect').value.substring(0, 1), 10);
-            let subID = parseInt(document.getElementById('categorySelect').value.substring(1), 10);
-            let price = parseFloat(document.getElementById('productPrice').value);
-            let stockNum = parseInt(document.getElementById('productQuantity').value, 10);
-
-            if (!productID || !name || isNaN(categoryID) || isNaN(subID) || isNaN(price) || isNaN(stockNum)) {
-                alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
-                return null;
-            }
-
-            function ThaiDate() {
-                const date = new Date();
-                const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Bangkok' };
-                return new Intl.DateTimeFormat('th-TH', options).format(date);
-            }
-
-            let modifiedTimestamp = ThaiDate();
-
-            return {
-                productID: productID,
-                productName: name,
-                categoryID: categoryID,
-                subID: subID,
-                price: price,
-                stockNum: stockNum,
-                modifiedTimestamp: modifiedTimestamp
-            };
-        }
+        return {
+            productID: productID,
+            productName: name,
+            categoryID: categoryID,
+            subID: subID,
+            price: price,
+            brand: brand,
+            description: description,
+            modifiedTimestamp: modifiedTimestamp
+        };
+    }
 
     </script>
 </body>
