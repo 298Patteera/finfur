@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตะกร้าสินค้า | FINFUR</title>
+    <link rel="icon" type="image/png" href="/images/logo_main.png">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
+    </script>
 
     <!-- Swiper.js CSS (สำหรับ Carousel) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
@@ -15,7 +18,7 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="/style.css">
 </head>
-<body>
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white">
 <div id="navbarContainer">
         <div id="defaultNavbar">
             <%- include('partials/narbar') %>
@@ -29,7 +32,7 @@
     <h1 class="text-2xl font-bold text-center my-4">ตะกร้าสินค้า</h1>
 
     <!-- Table Header -->
-    <div class="bg-gray-200 p-2 rounded-lg flex items-center">
+    <div class="bg-blue-100 p-2 rounded-lg flex items-center dark:bg-gray-700">
         <input type="checkbox" class="mr-2">
         <span class="w-1/2">สินค้า</span>
         <span class="w-1/4 text-center">ราคา/หน่วย</span>
@@ -44,7 +47,7 @@
 
     <!-- ปุ่มควบคุม -->
     <div class="flex justify-between items-center mt-6">
-        <a href="/" class="px-4 py-2 bg-white border rounded-lg flex items-center">
+        <a href="/" class="px-4 py-2 border rounded-lg flex items-center">
             <span class="mr-2">⬅</span> เลือกซื้อสินค้าต่อ
         </a>
 
