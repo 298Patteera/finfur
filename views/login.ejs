@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เข้าสู่ระบบ | FINFUR</title>
+    <link rel="icon" type="image/png" href="/images/logo_main.png">
 
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
+    </script>
 
     <!-- เชื่อม CSS -->
     <link rel="stylesheet" href="/style.css">
 </head>
 
-<body class="bg-white flex justify-center items-center h-screen">
+<body class="bg-white flex justify-center items-center h-screen dark:bg-gray-900 dark:text-white">
     <div id="navbarContainer" class="w-full fixed top-0 left-0 z-50 bg-white shadow-md">
             <div id="defaultNavbar">
                 <%- include('partials/narbar') %>
@@ -24,16 +28,16 @@
     <div class="w-full max-w-md">
         
         
-        <h3 class="text-2xl font-bold text-center text-black mb-6">ลงชื่อเข้าใช้บัญชีของคุณ</h3>
+        <h3 class="text-2xl font-bold text-center text-black mb-6 dark:text-white">ลงชื่อเข้าใช้บัญชีของคุณ</h3>
 
-        <form action="/login" method="POST" class="bg-white shadow-md rounded-lg p-6 space-y-4">
+        <form action="/login" method="POST" class="border shadow-md rounded-lg p-6 space-y-4">
             <div>
-                <label class="block font-medium text-black">อีเมล</label>
+                <label class="block font-medium text-black  dark:text-white">อีเมล</label>
                 <input type="email" name="email-login" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
             </div>
 
             <div>
-                <label class="block font-medium text-black">รหัสผ่าน</label>
+                <label class="block font-medium text-black  dark:text-white">รหัสผ่าน</label>
                 <input type="password" name="password-login" class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300" required>
             </div>
 
@@ -46,7 +50,7 @@
             </button>
         </form>
 
-        <p class="text-center mt-4 text-sm text-gray-700">
+        <p class="text-center mt-4 text-sm text-gray-700 dark:text-white">
             หากคุณยังไม่มีบัญชีสามารถ <a href="/signin-customer" class="text-blue-600 font-medium hover:underline">สมัครสมาชิก</a> ได้ที่นี่
         </p>
     </div>
