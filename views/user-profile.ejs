@@ -1,6 +1,7 @@
 <!-- userProfile.ejs -->
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,34 +15,63 @@
             document.getElementById('saveBtn').classList.remove('hidden');
             document.getElementById('editBtn').classList.add('hidden');
         }
-        
+
         function saveData() {
-            document.querySelectorAll('.editable').forEach(el => el.setAttribute('disabled', true));
-            document.getElementById('saveBtn').classList.add('hidden');
-            document.getElementById('editBtn').classList.remove('hidden');
+            const formData = new FormData();
+            
+            document.querySelectorAll(".editable").forEach(el => {
+                if (el.type === "radio") {
+                    if (el.checked) {
+                        formData.append(el.name, el.value);
+                    }
+                } else {
+                    formData.append(el.name, el.value);
+                }
+            });
+
+            fetch("/update-profile", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(Object.fromEntries(formData)) // แปลง FormData เป็น JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("บันทึกข้อมูลเรียบร้อย");
+                    document.querySelectorAll(".editable").forEach(el => el.setAttribute("disabled", true));
+                    document.getElementById("saveBtn").classList.add("hidden");
+                    document.getElementById("editBtn").classList.remove("hidden");
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
         }
 
+
         // 2
-  function toggleSearch(event) {
-    event.preventDefault();
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    sessionStorage.setItem("searchMode", !searchMode);
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
 
-    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
-  }
+            updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+        }
 
-  function updateNavbar() {
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
-    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
-  }
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
 
-  // ตรวจสอบเมื่อโหลดหน้า
-  document.addEventListener("DOMContentLoaded", updateNavbar);
-//2
+        // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", updateNavbar);
+        //2
     </script>
 </head>
+
 <body class="bg-gray-100">
+
     <body class="bg-white">
         <div id="navbarContainer">
             <div id="defaultNavbar">
@@ -51,59 +81,69 @@
                 <%- include('partials/narbar_search') %>
             </div>
         </div>
-    
-    <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
-        <%- include('partials/aside_for_user') %>
-        <div class="flex w-full mx-auto mt-10 bg-white shadow-lg rounded-lg">
-        
-        <section class="w-3/4 p-5">
-            <h2 class="text-xl font-bold mb-4">ข้อมูลของฉัน</h2>
-            <% if (data) { %>
-            <form class="space-y-4">
-                <div>
-                    <label class="block text-gray-700">ชื่อผู้ใช้</label>
-                    <input type="text" name="username" value="<%= data.username %>" class="w-full p-2 border border-gray-300 rounded editable" disabled>
+
+        <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
+            <%- include('partials/aside_for_user') %>
+                <div class="flex w-full mx-auto mt-10 bg-white shadow-lg rounded-lg">
+
+                    <section class="w-3/4 p-5">
+                        <h2 class="text-xl font-bold mb-4">ข้อมูลของฉัน</h2>
+                        <% if (data) { %>
+                            <form class="space-y-4">
+                                <div>
+                                    <label class="block text-gray-700">ชื่อผู้ใช้</label>
+                                    <input type="text" name="username" value="<%= data.username %>"
+                                        class="w-full p-2 border border-gray-300 rounded editable" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700">ชื่อ</label>
+                                    <input type="text" name="name" value="<%= data.name %>"
+                                        class="w-full p-2 border border-gray-300 rounded editable" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700">อีเมล</label>
+                                    <input type="email" name="email" value="<%= data.email %>"
+                                        class="w-full p-2 border border-gray-300 rounded editable" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700">หมายเลขโทรศัพท์</label>
+                                    <input type="text" name="phone" value="<%= data.phone %>"
+                                        class="w-full p-2 border border-gray-300 rounded editable" disabled>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700">เพศ</label>
+                                    <div class="flex space-x-4">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio" name="gender" value="male" <%=data.gender==='male'
+                                                ? 'checked' : '' %> class="form-radio editable" disabled>
+                                            <span>ชาย</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio" name="gender" value="female" <%=data.gender==='female'
+                                                ? 'checked' : '' %> class="form-radio editable" disabled>
+                                            <span>หญิง</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="radio" name="gender" value="other" <%=data.gender==='others'
+                                                ? 'checked' : '' %> class="form-radio editable" disabled>
+                                            <span>อื่นๆ</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700">วัน/เดือน/ปี เกิด</label>
+                                    <input type="date" name="dob" value="<%= data.dob %>"
+                                        class="w-full p-2 border border-gray-300 rounded editable" disabled>
+                                </div>
+                                <button type="button" id="editBtn" class="bg-yellow-500 text-white px-4 py-2 rounded"
+                                    onclick="enableEditing()">แก้ไขข้อมูล</button>
+                                <button type="button" id="saveBtn"
+                                    class="bg-blue-600 text-white px-4 py-2 rounded hidden"
+                                    onclick="saveData()">บันทึก</button>
+                            </form>
+                            <% } %>
+                    </section>
                 </div>
-                <div>
-                    <label class="block text-gray-700">ชื่อ</label>
-                    <input type="text" name="name" value="<%= data.name %>" class="w-full p-2 border border-gray-300 rounded editable" disabled>
-                </div>
-                <div>
-                    <label class="block text-gray-700">อีเมล</label>
-                    <input type="email" name="email" value="<%= data.email %>" class="w-full p-2 border border-gray-300 rounded editable" disabled>
-                    <a href="#" class="text-blue-500 text-sm">เปลี่ยน</a>
-                </div>
-                <div>
-                    <label class="block text-gray-700">หมายเลขโทรศัพท์</label>
-                    <input type="text" name="phone" value="<%= data.phone %>" class="w-full p-2 border border-gray-300 rounded editable" disabled>
-                    <a href="#" class="text-blue-500 text-sm">เปลี่ยน</a>
-                </div>
-                <div>
-                    <label class="block text-gray-700">เพศ</label>
-                    <div class="flex space-x-4">
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="gender" value="male" <%= data.gender === 'male' ? 'checked' : '' %> class="form-radio editable" disabled>
-                            <span>ชาย</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="gender" value="female" <%= data.gender === 'female' ? 'checked' : '' %> class="form-radio editable" disabled>
-                            <span>หญิง</span>
-                        </label>
-                        <label class="flex items-center space-x-2">
-                            <input type="radio" name="gender" value="other" <%= data.gender === 'other' ? 'checked' : '' %> class="form-radio editable" disabled>
-                            <span>อื่นๆ</span>
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-gray-700">วัน/เดือน/ปี เกิด</label>
-                    <input type="date" value="<%= data.dob %>" class="w-full p-2 border border-gray-300 rounded editable" disabled>
-                </div>
-                <button type="button" id="editBtn" class="bg-yellow-500 text-white px-4 py-2 rounded" onclick="enableEditing()">แก้ไขข้อมูล</button>
-                <button type="button" id="saveBtn" class="bg-blue-600 text-white px-4 py-2 rounded hidden" onclick="saveData()">บันทึก</button>
-            </form>
-            <% } %>
-        </section>
-    </div>
-</body>
+    </body>
+
 </html>

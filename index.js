@@ -362,6 +362,8 @@ app.get("/checkout", (req, res) => {
 app.get("/user-profile", (req, res) => {
     const email = req.session.userEmail;
 
+    console.log(req.session.userEmail);
+
     const query = 'SELECT * FROM userInfo WHERE email = ?';
 
     db.get(query, [email], (err, row) => {
@@ -372,6 +374,25 @@ app.get("/user-profile", (req, res) => {
         res.render('user-profile', { data: row });
     });
 });
+
+// เสิร์ฟหน้าuser-editprofile
+ app.post('/update-profile', (req, res) => {
+    const email = req.session.userEmail;
+
+    const { username, name, phone, gender, dob } = req.body;
+
+    const sql = `UPDATE userInfo SET username = ?, name = ?, phone = ?, gender = ?, dob = ? WHERE email = ?`;
+
+    db.run(sql, [username, name, phone, gender, dob, email], function (err) {
+        if (err) {
+            return res.json({ success: false, message: err.message });
+        }
+        console.log('Data updated successfully');
+    });
+});
+
+
+
 // เสิร์ฟหน้าuser-payment
 app.get("/user-payment", (req, res) => {
     const email = req.session.userEmail;
@@ -403,6 +424,7 @@ app.get("/user-payment", (req, res) => {
     });
 });
 
+//เพิ่ม user-payment-card
 app.post("/add-user-payment", (req, res) => {
     let addInfo = {
         cardname: req.body.cardname,
@@ -423,6 +445,35 @@ app.post("/add-user-payment", (req, res) => {
         res.redirect("/user-payment");
     });
 });
+
+//ลบ user-payment-card
+app.post('/delete-card', (req, res) => {
+    const cardnum = req.body.cardnum;  // รับค่าจาก cardnum
+    const email = req.session.userEmail;
+
+    // ตรวจสอบค่าของ cardnum และ email ที่ส่งมา
+    console.log('Received cardnum:', cardnum);
+    console.log('User email:', email);
+
+    const sql = `DELETE FROM userPayment WHERE cardnum = ? AND email = ?`;
+
+    db.run(sql, [cardnum, email], function (err) {
+        if (err) {
+            console.error("เกิดข้อผิดพลาด:", err.message);
+            return res.json({ success: false, message: err.message });
+        }
+
+        if (this.changes === 0) {
+            return res.json({ success: false, message: "ไม่พบบัตรที่ต้องการลบ" });
+        }
+
+        res.json({ success: true, message: "ลบบัตรสำเร็จ" });
+        console.log(`ลบบัตร ${cardnum} สำเร็จ`);
+    });
+});
+
+
+
 
 // เสิร์ฟหน้าuser-address
 app.get("/user-address", (req, res) => {

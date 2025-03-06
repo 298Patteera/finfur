@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="th">
 
+<!-- เพลงดู function deleteCard กับบรรทัดที่ 30 ให้เค้าด้วยย ฝั่งโค้ดใน index เค้าว่าไม่มีปัญหาอะไรละ-->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,17 +18,17 @@
 
         function addNewCard() {
             let cardName = document.getElementById('cardName').value;
-            let cardNumber = document.getElementById('cardNumber').value;
-            if (cardName && cardNumber) {
-                let cardId = 'card' + Math.floor(Math.random() * 10000);
+            let cardnumber = document.getElementById('cardnumber').value;
+            if (cardName && cardnumber) {
+                let cardnum = 'card' + Math.floor(Math.random() * 10000);
                 let newCard = document.createElement('div');
-                newCard.id = cardId;
+                newCard.id = cardnum;
                 newCard.className = 'mb-4';
                 newCard.innerHTML = `
-                    <p class="font-semibold">${cardName} <span id="${cardId}_default" class="text-blue-500 default-text"></span></p>
-                    <p class="text-gray-600">**** **** **** ${cardNumber.slice(-4)}</p>
-                    <a href="#" class="text-blue-500" onclick="deleteCard('${cardId}')">ลบ</a>
-                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('${cardId}_default')">ตั้งเป็นค่าเริ่มต้น</button>
+                    <p class="font-semibold">${cardName} <span id="${cardnum}_default" class="text-blue-500 default-text"></span></p>
+                    <p class="text-gray-600">**** **** **** ${cardnumber.slice(-4)}</p>
+                    <a href="#" class="text-blue-500" onclick="deleteCard('{cardnum}')">ลบ</a>
+                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('${cardnum}_default')">ตั้งเป็นค่าเริ่มต้น</button>
                 `;
                 document.getElementById('cardsContainer').appendChild(newCard);
                 document.getElementById('addCardForm').classList.add('hidden');
@@ -34,14 +36,29 @@
         }
 
 
-        function deleteCard(cardId) {
-            document.getElementById(cardId).remove();
+        function deleteCard(cardnum) {
+            console.log('Sending cardnum to server:', cardnum);
+            fetch("/delete-card", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cardnum: cardnum })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector(`[data-card-num="${cardnum}"]`).remove();
+                        alert("Payment successfully deleted");
+                    } else {
+                        alert("error: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
         }
 
-        function setDefault(cardId) {
-            document.querySelectorAll('.default-text').forEach(el => el.innerText = '');
-            document.getElementById(cardId).innerText = 'ค่าเริ่มต้น';
-        }
+
+
+
+
 
         // 2
         function toggleSearch(event) {
@@ -85,19 +102,25 @@
                         <button class="bg-blue-600 text-white px-4 py-2 rounded"
                             onclick="showAddCardForm()">เพิ่มบัตรใหม่</button>
 
-                            <div id="cardsContainer" class="mt-4">
-                                <% if (cards && cards.length > 0) { %>
-                                    <% cards.forEach((card, index) => { %>
-                                        <div id="card<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded">
-                                            <p class="font-semibold">
-                                                <%= card.name %> <span id="default<%= index + 1 %>" class="text-blue-500 default-text"></span>
-                                            </p>
-                                            <p class="text-gray-600">**** **** **** <%= card.last4 %></p>
-                                            <a href="#" class="text-blue-500" onclick="deleteCard('card<%= index + 1 %>')">ลบ</a>
-                                            <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
-                                        </div>
+                        <div id="cardsContainer" class="mt-4">
+                            <% if (cards && cards.length> 0) { %>
+                                <% cards.forEach((card, index)=> { %>
+                                    <div id="card<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded"
+                                        data-card-num="<%= card.cardnum %>">
+                                        <p class="font-semibold">
+                                            <%= card.name %> <span id="default<%= index + 1 %>"
+                                                    class="text-blue-500 default-text"></span>
+                                        </p>
+                                        <p class="text-gray-600">**** **** **** <%= card.last4 %>
+                                        </p>
+                                        <a href="#" class="text-blue-500"
+                                            onclick="deleteCard('<%= card.cardnum %>')">ลบ</a>
+                                        <button class="ml-2 px-3 py-1 bg-gray-300 rounded"
+                                            onclick="setDefault('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
+                                    </div>
+
                                     <% }) %>
-                                <% } %>
+                                        <% } %>
                         </div>
 
                         <form action="add-user-payment" method="post">
@@ -105,7 +128,7 @@
                                 <h3 class="text-lg font-bold mb-2">เพิ่มบัตรใหม่</h3>
                                 <input type="text" id="cardName" name="cardname" placeholder="ชื่อบัตร"
                                     class="w-full p-2 border border-gray-300 rounded mb-2">
-                                <input type="tel" id="cardNumber" name="cardnum" inputmode="numeric"
+                                <input type="tel" id="cardnumber" name="cardnum" inputmode="numeric"
                                     pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19"
                                     placeholder="xxxx xxxx xxxx xxxx"
                                     class="w-full p-2 border border-gray-300 rounded mb-2">
