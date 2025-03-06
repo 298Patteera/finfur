@@ -448,18 +448,18 @@ app.post("/add-user-payment", (req, res) => {
 
 //ลบ user-payment-card
 app.post('/delete-card', (req, res) => {
-    const cardnum = req.body.cardnum;  // รับค่าจาก cardnum
+    const cardnum = req.body.cardnum;
     const email = req.session.userEmail;
 
-    // ตรวจสอบค่าของ cardnum และ email ที่ส่งมา
-    console.log('Received cardnum:', cardnum);
-    console.log('User email:', email);
+    // ตรวจสอบ cardnum และ email 
+    console.log('cardnum:', cardnum);
+    console.log('email:', email);
 
     const sql = `DELETE FROM userPayment WHERE cardnum = ? AND email = ?`;
 
     db.run(sql, [cardnum, email], function (err) {
         if (err) {
-            console.error("เกิดข้อผิดพลาด:", err.message);
+            console.error(err.message);
             return res.json({ success: false, message: err.message });
         }
 

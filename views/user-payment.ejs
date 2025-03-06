@@ -55,10 +55,10 @@
                 .catch(error => console.error("Error:", error));
         }
 
-
-
-
-
+        function setDefault(cardId) {
+            document.querySelectorAll('.default-text').forEach(el => el.innerText = '');
+            document.getElementById(cardId).innerText = 'ค่าเริ่มต้น';
+        }
 
         // 2
         function toggleSearch(event) {
