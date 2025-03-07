@@ -43,6 +43,35 @@
     <!-- พื้นที่สำหรับสินค้า -->
     <div id="cart-items" class="my-4 space-y-4">
         <!-- เว้นที่ไว้เพื่อเพิ่มสินค้า -->
+        <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md">
+            
+            <div class="w-16 h-16 bg-purple-300 rounded-lg"></div>
+          
+            <div class="flex-1">
+              <h2 class="text-lg font-semibold"> productName </h2>
+              <p class="text-sm text-gray-500">ตัวเลือกของสินค้า</p>
+              
+              <div class="flex items-center gap-2 mt-2">
+                <input 
+                  type="text" 
+                  class="p-2 bg-gray-100 rounded-md flex-1"
+                  value="customValue"
+                  readonly
+                >
+                <button class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn">
+                  ลบสินค้า
+                </button>
+              </div>
+            </div>
+          
+            <!-- จำนวนสินค้า-->
+            <div class="flex items-center gap-2">
+              <button class="px-2 py-1 bg-gray-200 rounded-md">-</button>
+              <span class="px-3 py-1 bg-gray-100 rounded-md">1</span>
+              <button class="px-2 py-1 bg-gray-200 rounded-md">+</button>
+            </div>
+          </div>
+          
     </div>
 
     <!-- ปุ่มควบคุม -->
@@ -55,7 +84,7 @@
             <button class="px-4 py-2 border rounded-lg flex items-center">
                 🗑 ลบทั้งหมด
             </button>
-            <a href="/checkout" class="px-6 py-2 bg-red-500 text-white rounded-lg">
+            <a href="/checkout" class="px-6 py-2 bg-green-500 text-white rounded-lg">
                 ดำเนินการสั่งซื้อ
             </a>
         </div>

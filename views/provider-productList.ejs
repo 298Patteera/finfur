@@ -45,20 +45,200 @@
     <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
         <%- include('partials/menu_for_provider') %>
         <%- include('partials/categoryDropdown_for_provider') %>
+        <script>
+            //searchbar
+        function searchProducts() {
+            const searchInput = document.getElementById('searchInput').value.trim();
+            const productCards = document.querySelectorAll('.grid .bg-blue-100');
+
+            productCards.forEach(card => {
+                const productID = card.id ? card.id.replace('product', '') : "";
+                const productNameInput = card.querySelector('input[id^="name"]');
+                
+                const inputs = card.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.style.display = 'block';
+                });
+
+                if (searchInput === "") {
+                    card.style.display = '';
+                } else {
+                    const productName = productNameInput ? productNameInput.value.trim() : "";
+
+                    if (productID.includes(searchInput) || productName.includes(searchInput)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+        </script>
+
         <div class="grid grid-cols-3 gap-4 mt-6">
             <% product.forEach(item => { %>
-                <div class="bg-blue-100 p-4 rounded">
+                <div id="product<%= item.productID %>" class="bg-blue-100 p-4 rounded">
                     <img src="/images/allProduct/<%= item.productID %>.png" alt="<%= item.productID %>Image" class="w-full h-auto max-h-32 object-cover rounded">
-                    <p class="text-gray-700 font-semibold mt-2">หมวดหมู่ <%= item.categoryName %></p>
-                    <p class="text-gray-600">รหัสสินค้า: <%= item.productID %> </p>
-                    <p class="text-gray-600">ราคา: <%= item.price %> บาท</p>
-                    <p class="text-gray-600">วันที่เพิ่มสินค้า: <%= item.addedDate %> </p>
-                    <p class="text-gray-600">ยอดที่เพิ่มในรายการโปรด: <%= item.favoritesCount %></p>
-                    <button class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded">แก้ไข</button>
+                    <p class="text-gray-700 font-semibold mt-2">หมวดหมู่ <%= item.categoryName %> : <%= item.subName %></p>
+                    <p class="text-gray-600">รหัสสินค้า: <%= item.productID %></p>
+                    <p class="text-gray-600">
+                        วันที่เพิ่มสินค้า: <%= item.addedDate && item.addedDate.length > 10 ? item.addedDate.substring(0, 10) : item.addedDate || '' %> 
+                    </p>
+                    <p class="text-gray-600">
+                        ยอดที่เพิ่มในรายการโปรด: <%= item.favoritesCount %> ผู้ใช้
+                    </p>
+
+                    <p class="text-gray-600 flex items-center">
+                        <span class="mr-2 w-28">ชื่อสินค้า:</span>
+                        <input type="text" value="<%= item.productName %>" class="bg-blue-100 px-2 py-1 rounded w-full" readonly id="name<%= item.productID %>">
+                    </p>
+                    <p class="text-gray-600 flex items-center">
+                        <span class="mr-2 w-28">ยี่ห้อ:</span>
+                        <input type="text" value="<%= item.brand %>" class="bg-blue-100 px-2 py-1 rounded w-full" readonly id="brand<%= item.productID %>">
+                    </p>
+                    <p class="text-gray-600 flex items-center">
+                        <span class="mr-2 w-28">ราคา:</span>
+                        <input type="text" value="<%= item.price %>" class="bg-blue-100 px-2 py-1 rounded w-full" readonly id="price<%= item.productID %>">
+                    </p>
+                    <p class="text-gray-600 flex items-center">
+                        <span class="mr-2 w-28">คำอธิบาย:</span>
+                        <input type="text" value="<%= item.description %>" class="bg-blue-100 px-2 py-1 rounded w-full" readonly id="description<%= item.productID %>" onclick="openModal(this)">
+                    </p>
+                    
+                    
+                    <button onclick="toggleEdit('<%= item.productID %>')" class="mt-2 bg-yellow-400 text-black px-4 py-2 rounded">
+                        แก้ไข
+                    </button>
+                    <button onclick="saveChanges('<%= item.productID %>')" class="mt-2 bg-green-400 text-white px-4 py-2 rounded hidden" id="saveBtn<%= item.productID %>">
+                        บันทึก
+                    </button>
                 </div>
             <% }); %>
         </div>
-    </div>
+        
+        <div id="modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+            <div class="bg-white p-4 rounded-lg w-1/2">
+                <textarea id="modalInput" class="w-full h-40 border p-2"></textarea>
+                <div class="flex justify-end gap-2 mt-2">
+                    <button onclick="saveModal()" class="bg-green-500 text-white p-2 rounded">บันทึก</button>
+                    <button onclick="closeModal()" class="bg-gray-500 text-white p-2 rounded">ยกเลิก</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            //edit-save
+            function openModal(inputElement) {
+                activeInput = inputElement;
+                document.getElementById('modalInput').value = inputElement.value;
+                document.getElementById('modal').classList.remove('hidden');
+            }
+
+            function saveModal() {
+                if (activeInput) {
+                    activeInput.value = document.getElementById('modalInput').value;
+                }
+                closeModal();
+            }
+
+            function closeModal() {
+                document.getElementById('modal').classList.add('hidden');
+            }
+            function toggleEdit(productID) { 
+                const priceInput = document.getElementById('price' + productID);
+                const nameInput = document.getElementById('name' + productID);
+                const brandInput = document.getElementById('brand' + productID);
+                const descriptionInput = document.getElementById('description' + productID);
+                const saveBtn = document.getElementById('saveBtn' + productID);
+
+                if (priceInput.readOnly) {
+                    priceInput.readOnly = false;
+                    nameInput.readOnly = false;
+                    brandInput.readOnly = false;
+                    descriptionInput.readOnly = false;
+                    
+                    priceInput.classList.add('bg-white');
+                    nameInput.classList.add('bg-white');
+                    brandInput.classList.add('bg-white');
+                    descriptionInput.classList.add('bg-white');
+                    priceInput.classList.remove('bg-blue-100');
+                    nameInput.classList.remove('bg-blue-100');
+                    brandInput.classList.remove('bg-blue-100');
+                    descriptionInput.classList.remove('bg-blue-100');
+                    saveBtn.classList.remove('hidden');
+                } else {
+                    priceInput.readOnly = true;
+                    nameInput.readOnly = true;
+                    brandInput.readOnly = true;
+                    descriptionInput.readOnly = true;
+                    
+                    priceInput.classList.remove('bg-white');
+                    nameInput.classList.remove('bg-white');
+                    brandInput.classList.remove('bg-white');
+                    descriptionInput.classList.remove('bg-white');
+                    priceInput.classList.add('bg-blue-100');
+                    nameInput.classList.add('bg-blue-100');
+                    brandInput.classList.add('bg-blue-100');
+                    descriptionInput.classList.add('bg-blue-100');
+                    saveBtn.classList.add('hidden');
+                }
+            }
+        
+            async function saveChanges(productID) {
+                const priceInput = document.getElementById('price' + productID);
+                const nameInput = document.getElementById('name' + productID);
+                const brandInput = document.getElementById('brand' + productID);
+                const descriptionInput = document.getElementById('description' + productID);
+                
+                let modifiedTimestamp = new Date().toISOString();
+
+                const updatedProductData = {
+                    productID: productID,
+                    productName: nameInput.value,
+                    price: priceInput.value,
+                    brand: brandInput.value,
+                    description: descriptionInput.value,
+                    modifiedTimestamp: modifiedTimestamp
+                };
+
+                console.log("บันทึกการเปลี่ยนแปลงสินค้า " + productID);
+                console.log(updatedProductData);
+                try {
+                    let response = await fetch('/update-to-productlist', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedProductData)
+                    });
+
+                    let result = await response.json();
+                    if (result.success) {
+                        alert(result.message);
+                    } else {
+                        alert('❗' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('ไม่สามารถบันทึกการเปลี่ยนแปลงได้' + error);
+                }
+
+                priceInput.readOnly = true;
+                nameInput.readOnly = true;
+                brandInput.readOnly = true;
+                descriptionInput.readOnly = true;
+
+                priceInput.classList.remove('bg-white');
+                nameInput.classList.remove('bg-white');
+                brandInput.classList.remove('bg-white');
+                descriptionInput.classList.remove('bg-white');
+                priceInput.classList.add('bg-blue-100');
+                nameInput.classList.add('bg-blue-100');
+                brandInput.classList.add('bg-blue-100');
+                descriptionInput.classList.add('bg-blue-100');
+
+                document.getElementById('saveBtn' + productID).classList.add('hidden');
+            }
+        </script>
+        
 <!-- เเก้ -->
 </body>
 </html>

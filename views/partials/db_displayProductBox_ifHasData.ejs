@@ -124,6 +124,7 @@
                         </form>
 
                         <!- ปุ่มตะกร้าสินค้า ->
+                        <a href="/product/<%= item.productID %>">
                         <button onclick="changeShopping(this)" 
                             class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
                             <input type="hidden" name="productID" value="<%= item.productID %>">
@@ -132,6 +133,7 @@
                                     src="/images/shopping_cart_default.png" 
                                     alt="ตะกร้าสินค้า">
                         </button>
+                        </a>
                     </div>
                 </div>
             <% }); %>

@@ -1,3 +1,43 @@
+<div class="mt-4 flex items-center space-x-4">
+    <input type="text" id="searchInput" placeholder="กรอกรหัสสินค้า หรือ ชื่อสินค้า" 
+    class="w-full p-2 border border-gray-300 rounded" onkeyup="searchProducts()">
+
+    <select id="categoryDropdown" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="searchProducts()">
+        <option value="" selected disabled>หมวดหมู่</option>
+        <% Object.entries(categories).forEach(([categoryID, category]) => { %>
+            <optgroup label="<%= category.categoryName %>">
+                <% Object.entries(category.subCategories).forEach(([subID, subName]) => { %>
+                    <option value="<%= categoryID %><%= subID %>"><%= subName %></option>
+                <% }); %>
+            </optgroup>
+        <% }); %>
+    </select>
+</div>
+<div id="searchResults" class="mt-2 border border-gray-300 bg-white w-full max-w-lg absolute z-10 hidden">
+    <ul class="max-h-60 overflow-y-auto">
+        <% product.forEach(function(item) { %>
+            <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
+                data-id="<%= item.productID %>" 
+                data-name="<%= item.productName %>" 
+                data-price="<%= item.price %>" 
+                data-brand="<%= item.brand %>" 
+                data-description="<%= item.description %>">
+                <%= item.productID %> : <%= item.productName %>
+            </li>
+        <% }); %>
+    </ul>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let categoryDropdown = document.getElementById('categoryDropdown');
+        let searchInput = document.getElementById('searchInput');
+        
+        categoryDropdown.addEventListener('change', function() {
+            let selectedValue = this.value;
+            searchInput.value = selectedValue;
+        });
+    });
+</script>
 <!-- <div class="mt-4 flex items-center space-x-4">
     <input type="text" placeholder="กรอกรหัสสินค้า หรือ ชื่อสินค้า" class="w-full p-2 border border-gray-300 rounded">
     <div class="relative">
@@ -13,68 +53,3 @@
     </div>
     <button class="bg-black text-white px-4 py-2 rounded">ค้นหา</button>
 </div> -->
-<div class="mt-4 flex items-center space-x-4">
-    <input type="text" id="searchInput" placeholder="กรอกรหัสสินค้า หรือ ชื่อสินค้า" 
-    class="w-full p-2 border border-gray-300 rounded" onkeyup="searchProducts()">
-</div>
-
-<div id="searchResults" class="mt-2 border border-gray-300 bg-white w-full absolute z-10 hidden">
-    <ul class="max-h-60 overflow-y-auto">
-        <% product.forEach(function(item) { %>
-            <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
-                data-id="<%= item.productID %>" 
-                data-name="<%= item.productName %>" 
-                data-price="<%= item.price %>" 
-                data-brand="<%= item.brand %>" 
-                data-description="<%= item.description %>">
-                <%= item.productID %> : <%= item.productName %>
-            </li>
-        <% }); %>
-    </ul>
-    
-</div>
-
-<script>
-    function searchProducts() {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const searchResults = document.getElementById('searchResults');
-        const resultItems = searchResults.querySelectorAll('li');
-        
-        if (searchInput === "") {
-            searchResults.style.display = "none";
-        } else {
-            searchResults.style.display = "block";
-            resultItems.forEach(item => {
-                const productID = item.getAttribute('data-id').toLowerCase();
-                const productName = item.getAttribute('data-name').toLowerCase();
-                
-                if (productID.includes(searchInput) || productName.includes(searchInput)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-    }
-
-    // auto input อันนี้ลองใน addProduct
-    document.getElementById('searchResults').addEventListener('click', function(e) {
-        if (e.target && e.target.tagName === 'LI') {
-            const productID = e.target.getAttribute('data-id');
-            const productName = e.target.getAttribute('data-name');
-            const productPrice = e.target.getAttribute('data-price');
-            const productBrand = e.target.getAttribute('data-brand');
-            const productDescription = e.target.getAttribute('data-description');
-
-            document.getElementById('searchInput').value = productID + ' : ' + productName;
-            document.getElementById('categorySelect').value = productID.substring(0, 2);
-            document.getElementById('productID').value = productID;
-            document.getElementById('productName').value = productName;
-            document.getElementById('productPrice').value = productPrice;
-            document.getElementById('productBrand').value = productBrand;
-            document.getElementById('productDescription').value = productDescription;
-
-            document.getElementById('searchResults').style.display = 'none'; 
-        }
-    });
-</script>

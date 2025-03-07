@@ -22,6 +22,27 @@
     <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
         <%- include('partials/menu_for_provider') %>
         <%- include('partials/categoryDropdown_for_provider') %>
+        <script>
+            //searchbar
+            function searchProducts() {
+                const searchInput = document.getElementById('searchInput').value.trim();
+                const productCards = document.querySelectorAll('.flex.justify-between.items-center.bg-gray-200.p-4.rounded.mb-4');
+
+                productCards.forEach(card => {
+                    const productText = card.querySelector('p.text-gray-700.font-semibold');
+                    
+                    if (productText) {
+                        const productInfo = productText.innerText.trim();
+                        if (searchInput === "" || productInfo.includes(searchInput)) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+        </script>
 <!-- เเก้ -->
         <div class="mt-6">
             <% product.slice().reverse().forEach(item => { %>
@@ -35,7 +56,9 @@
                     </div>
                     <div>
                         <% 
-                            const status = item.modifiedType.includes('เพิ่ม') ? 'text-green-600' : 'text-red-600'; 
+                            const status = item.modifiedType.includes('เพิ่ม') ? 'text-green-600'
+                            : item.modifiedType.includes('แก้ไข') ? 'text-yellow-600'
+                            : 'text-red-600';
                         %>
                         <!-- <p class="<%= item.status === 'added' ? 'text-green-600' : 'text-red-600' %>"> -->
                         <p class="<%= status %>"><%= item.modifiedType %></p>
@@ -53,6 +76,7 @@
 
 
     <script>
+        
         function toggleCategoryDropdown() {
             document.getElementById('categoryDropdown').classList.toggle('hidden');
         }

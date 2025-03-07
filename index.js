@@ -132,23 +132,22 @@ app.get("/product/:id", (req, res) => {
     const query = `
         SELECT 
             p.*,
-            po.optionType, 
-            po.optionName, 
-            po.addPrice,
-			po.imgURL
+            po.*
         FROM ProductList p
         LEFT JOIN productOption po ON p.productID = po.productID
-		WHERE p.productID = ${productId};
+        WHERE p.productID = ?;
     `;
-    db.all(query, (err, rows) => {
+
+    db.all(query, [productId], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
+            return res.status(500).send("Internal Server Error");
         }
         if (!rows || rows.length === 0) {
-            console.log("❔ไม่พบสินค้า");
+            console.log("❔ ไม่พบสินค้า");
+            return res.status(404).send("Product Not Found");
         }
-        //console.log(row);
-        //ตัดหมวดหมู่ออก
+
         const product = {
             productID: rows[0].productID,
             productName: rows[0].productName,
@@ -158,42 +157,29 @@ app.get("/product/:id", (req, res) => {
             favoritesCount: rows[0].favoritesCount,
             addedDate: rows[0].addedDate,
             description: rows[0].description,
-            options: []
+            options: {}
         };
-        let hasOptions = false;
-        //ทำ obj array ไว้ใช้สร้างปุ่มตามหมวดหมู่ optionType
+
         rows.forEach(row => {
             if (row.optionType) {
                 if (!product.options[row.optionType]) {
                     product.options[row.optionType] = [];
                 }
                 product.options[row.optionType].push({
+                    optionID: row.optionID,
                     optionName: row.optionName,
                     addPrice: row.addPrice,
-                    imgURL: row.imgURL
+                    imgURL: row.imgURL,
+                    recommendedSize: row.recommendedSize,
+                    optionType: row.optionType
                 });
-                hasOptions = true;
             }
         });
-        if (!hasOptions) {
-            product.options = null;
-        }
-
-        // rows.forEach(row => {
-        //     if (row.optionID) {
-        //         product.options.push({
-        //             optionID: row.optionID,
-        //             optionType: row.optionType,
-        //             optionName: row.optionName,
-        //             addPrice: row.addPrice,
-        //             addPrice: row.imgURL
-        //         });
-        //     }
-        // });
 
         res.render("product-detail", { product });
     });
 });
+
 // เสิร์ฟหน้า สินค้าทั้งหมด
 app.get("/all-product", (req, res) => {
     const query = `
@@ -351,6 +337,7 @@ app.get("/working-room", (req, res) => {
 });
 // เสิร์ฟหน้าตะกร้าสินค้า (Cart Page)
 app.get("/cart", (req, res) => {
+    
     res.render("cart");
 });
 // เสิร์ฟหน้าเช็คเอาท์
@@ -598,7 +585,7 @@ app.get("/provider-productList", (req, res) => {
                 categories[row.categoryID].subCategories[row.subID] = row.subName;
             });
 
-            res.render("provider-productList", { product: rows, categories: categories });
+            res.render("provider-productList", { product: rows, categories: categories});
         });
     });
 });
@@ -665,22 +652,107 @@ app.get("/provider-productHistory", (req, res) => {
             p.productName
         FROM providerEditHistory h
         INNER JOIN ProductList p ON h.productID = p.productID;
-
-
     `;
+    const categoryQuery = `
+        SELECT 
+            pc.categoryID, 
+            pc.categoryName, 
+            sc.subID, 
+            sc.subName
+        FROM 
+            productCategory pc
+        JOIN 
+            subCategory sc ON pc.categoryID = sc.categoryID;
+    `;
+
     db.all(query, (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
             return;
         }
 
-            res.render("provider-productHistory", { product: rows });
+        db.all(categoryQuery, (err, categoryRows) => {
+            if (err) {
+                console.log("❗" + err.message);
+                return;
+            }
+
+            const categories = {};
+            categoryRows.forEach((row) => {
+                if (!categories[row.categoryID]) {
+                    categories[row.categoryID] = {
+                        categoryName: row.categoryName,
+                        subCategories: {}
+                    };
+                }
+                categories[row.categoryID].subCategories[row.subID] = row.subName;
+            });
+
+            res.render("provider-productHistory", { product: rows, categories: categories});
+        });
     });
 });
 
 // เสิร์ฟหน้า ของ orderHistory
 app.get("/provider-orderHistory", (req, res) => {
-    res.render("provider-orderHistory");
+    const query = `
+        SELECT 
+            p.*, 
+            sc.subID, 
+            sc.subName, 
+            pc.categoryID, 
+            pc.categoryName 
+        FROM ProductList p
+        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
+        JOIN productCategory pc ON sc.categoryID = pc.categoryID;
+    `;
+    const categoryQuery = `
+        SELECT 
+            pc.categoryID, 
+            pc.categoryName, 
+            sc.subID, 
+            sc.subName
+        FROM 
+            productCategory pc
+        JOIN 
+            subCategory sc ON pc.categoryID = sc.categoryID;
+    `;
+    ;
+
+    const userQ = 'SELECT * FROM userInfo';
+    
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.log("❗" + err.message);
+            return;
+        }
+
+        db.all(categoryQuery, (err, categoryRows) => {
+            if (err) {
+                console.log("❗" + err.message);
+                return;
+            }
+
+            const categories = {};
+            categoryRows.forEach((row) => {
+                if (!categories[row.categoryID]) {
+                    categories[row.categoryID] = {
+                        categoryName: row.categoryName,
+                        subCategories: {}
+                    };
+                }
+                categories[row.categoryID].subCategories[row.subID] = row.subName;
+            });
+            db.all(userQ, (err, userRows) => {
+                if (err) {
+                    console.log("❗" + err.message);
+                    return;
+                }
+
+                res.render("provider-orderHistory", { product: rows, categories: categories, user: userRows});
+            });
+        });
+    });
 });
 
 // เสิร์ฟหน้า ของ orderlist
@@ -709,23 +781,70 @@ app.get("/user-canceled", (req, res) => {
 });
 
 app.post("/add-to-cart", (req, res) => {
-    const { productID, email } = req.body;
-    if (!email) {
-        return res.json({ message: "❌ กรุณาเข้าสู่ระบบก่อน" });
+
+    const userEmail = res.locals.userEmail || null;
+    if (!userEmail) {
+        return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
     }
+
+    const { productID, selectedOptions } = req.body;
+    //จากใน js
+    //selectedOptions[optionType] = { optionName, addPrice };
+    //selectedOptions[optionName] = { optionName, customValue, addPrice: 0 };
+    if (!productID || !selectedOptions) {
+        return res.status(400).json({ error: "ข้อมูลไม่ครบ" });
+    }
+
+    let totalPrice = 0;
+
+    let selectedOptionsArray;
+
+    try {
+        selectedOptionsArray = JSON.parse(selectedOptions); // แปลงกลับเป็นอาร์เรย์
+    } catch (error) {
+        return res.status(400).json({ error: "รูปแบบข้อมูลไม่ถูกต้อง" });
+    }
+    for (let option of selectedOptionsArray) {
+        totalPrice += option.addPrice || 0;
+    }
+
+    let optionsString = JSON.stringify(selectedOptionsArray);
+    for (let key in selectedOptionsArray) {
+        let { customName, customValue, addPrice } = selectedOptionsArray[key];
+        totalPrice += addPrice;
+    // for (let key in selectedOptions) {
+    //     let { optionName, customValue, addPrice } = selectedOptions[key];
+    //     totalPrice += addPrice;
+        
+    //     //แปลงปุ่มกด จาก optionType, optionName -> customName, customValue
+    //     let selectedOptionName = customValue ? optionName : optionName;
+    //     let selectedCustomValue = customValue || optionName;
+    
+    //     values.push(`('${userEmail}', '${productID}', '${selectedOptionName}', '${selectedCustomValue}', ${addPrice})`);
+     }
+    console.log(optionsString);
+    // const query = `
+    //             INSERT INTO CustomerCart (email, productID, customName, customValue, addPrice, quantities)
+    //             VALUES ${values.map(v => v.replace(/\)$/, ", 1)")).join(", ")}
+    //             ON CONFLICT(email, productID, customName, customValue)
+    //             DO UPDATE SET quantities = quantities + 1;
+    //             `;
     const query = `
-                INSERT INTO CustomerCart (productID, email, quantities) 
-                VALUES (?, ?, 1) 
-                ON CONFLICT(email, productID) 
-                DO UPDATE SET quantities = quantities + 1;
-                `;
-    db.run(query, [productID, email], function (err) {
+                    INSERT INTO CustomerCart (email, productID, customValue, quantities)
+                    VALUES ( ? ,  ? ,  ? , 1)
+                    ON CONFLICT(email, productID, customValue)
+                    DO UPDATE SET quantities = quantities + 1;
+                    `;
+
+    db.run(query, [userEmail, productID, optionsString] , function (err) {
         if (err) {
-            console.log("❗ Error: " + err.message);
+            console.log(err.message);
+            return res.status(500).json({ error: err.message });
         }
-        res.json({ message: "✅ เพิ่มสินค้าในตะกร้าสำเร็จ!" });
+        res.json({ success: true, message: "เพิ่มลงตะกร้าเรียบร้อย", totalPrice });
     });
 });
+
 app.post("/add-to-fav", (req, res) => {
     const { productID, userEmail } = req.body;
     if (!userEmail) {
@@ -818,6 +937,27 @@ app.post("/add-to-productlist", (req, res) => {
     });
 });
 
+app.post("/update-to-productlist", (req, res) => {
+    const { productID, productName, price, brand, description, modifiedTimestamp } = req.body;
+    const userEmail = res.locals.userEmail;
+            const updateQ = `
+                UPDATE ProductList
+                SET productName = ?, price = ?, brand = ?, description = ?
+                WHERE productID = ?;
+            `;
+            
+            db.run(updateQ, [productName, price, brand, description,  productID], function (err) {
+                if (err) {
+                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
+                    return res.status(500).json({ success: false, message: "❌เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า" });
+                }
+
+                console.log(updateQ);
+                insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
+                return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
+            });
+});
+
 app.post("/del-to-productlist", (req, res) => {
     const { productID, productName, categoryID, subID, price, stockNum, modifiedTimestamp } = req.body;
     const userEmail = res.locals.userEmail;
@@ -827,26 +967,26 @@ app.post("/del-to-productlist", (req, res) => {
     db.get(checkProductQ, [productID], (err, row) => {
         if (err) {
             console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
+            return res.status(500).json({ success: false, message: "❗เช็คไม่สำเร็จ Error: " + err.message});
         }
         if (!row) {
             console.log("ไม่พบข้อมูลสินค้า");
+            return res.status(500).json({ success: false, message: "❌ไม่พบข้อมูลสินค้า" });
         }
-        if (stockNum > row.stockNum) {
-            console.log("จำนวนที่ต้องการลดมีมากกว่าจำนวนในสต็อคปัจจุบัน");
-        }
-
-        const updateQ = `
-            UPDATE ProductList
-            SET productName = ?, categoryID = ?, price = ?, stockNum = stockNum - ?, subID = ?
-            WHERE productID = ?;
-        `;
-        db.run(updateQ, [productName, categoryID, price, stockNum, subID, productID], function (err) {
-            if (err) {
-                console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
-            }
-
-            insertEditHistory(productID, modifiedTimestamp, userEmail, `ลดจำนวนสต็อค ${stockNum} ชิ้น`);
-            
+        db.serialize(() => {
+            db.run(`DELETE FROM "productOption" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "orderDetails" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "productImage" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "FavoriteList" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "ProductList" WHERE "productID" = ?;`, [productID], function (err) {
+                if (err) {
+                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
+                    return res.status(500).json({ success: false, message: "❗อัปเดตไม่สำเร็จ " + err.message });
+                }
+        
+                insertEditHistory(productID, modifiedTimestamp, userEmail, `ลบสินค้า`);
+                return res.json({ success: true, message: "✅ ลบข้อมูลสินค้าสำเร็จ" });
+            });
         });
     });
 });

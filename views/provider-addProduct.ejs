@@ -21,6 +21,50 @@
     <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
         <%- include('partials/menu_for_provider') %>
         <%- include('partials/categoryDropdown_for_provider') %>
+        <script>
+            function searchProducts() {
+                const searchInput = document.getElementById('searchInput').value.toLowerCase();
+                const searchResults = document.getElementById('searchResults');
+                const resultItems = searchResults.querySelectorAll('li');
+                
+                if (searchInput === "") {
+                    searchResults.style.display = "none";
+                } else {
+                    searchResults.style.display = "block";
+                    resultItems.forEach(item => {
+                        const productID = item.getAttribute('data-id').toLowerCase();
+                        const productName = item.getAttribute('data-name').toLowerCase();
+                        
+                        if (productID.includes(searchInput) || productName.includes(searchInput)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+            }
+        
+            document.getElementById('searchResults').addEventListener('click', function(e) {
+                if (e.target && e.target.tagName === 'LI') {
+                    const productID = e.target.getAttribute('data-id');
+                    const productName = e.target.getAttribute('data-name');
+                    const productPrice = e.target.getAttribute('data-price');
+                    const productBrand = e.target.getAttribute('data-brand');
+                    const productDescription = e.target.getAttribute('data-description');
+        
+                    document.getElementById('searchInput').value = productID + ' : ' + productName;
+                    document.getElementById('categorySelect').value = productID.substring(0, 2);
+                    document.getElementById('productID').value = productID;
+                    document.getElementById('productName').value = productName;
+                    document.getElementById('productPrice').value = productPrice;
+                    document.getElementById('productBrand').value = productBrand;
+                    document.getElementById('productDescription').value = productDescription;
+        
+                    document.getElementById('searchResults').style.display = 'none'; 
+                }
+            });
+        </script>
+        
         
         <table class="mt-6 w-full border" style="table-layout: auto;">
             <thead>
@@ -38,6 +82,7 @@
                 <tr>
                     <td class="border p-2">
                         <select id="categorySelect" class="w-full border">
+                            <option value="" selected disabled>หมวดหมู่</option>
                             <% Object.entries(categories).forEach(([categoryID, category]) => { %>
                                 <optgroup label="<%= category.categoryName %>">
                                     <% Object.entries(category.subCategories).forEach(([subID, subName]) => { %>
@@ -153,6 +198,7 @@ function closeModal() {
     }
 
     async function delProduct() {
+        if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้?')) return;
         let productData = getData();
         if (!productData) return;
 
@@ -177,10 +223,17 @@ function closeModal() {
     }
 
     function getData() {
+
+        let categoryData = document.getElementById('categorySelect').value;
+        if (categoryData == "") {
+            alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
+            return null;
+        }
+        
         let productID = document.getElementById('productID').value.trim();
         let name = document.getElementById('productName').value.trim();
-        let categoryID = parseInt(document.getElementById('categorySelect').value.substring(0, 1), 10);
-        let subID = parseInt(document.getElementById('categorySelect').value.substring(1), 10);
+        let categoryID = parseInt(categoryData.substring(0, 1), 10);
+        let subID = parseInt(categoryData.substring(1), 10);
         let price = parseFloat(document.getElementById('productPrice').value);
         let brand = document.getElementById('productBrand').value.trim();
         let description = document.getElementById('productDescription').value.trim();
