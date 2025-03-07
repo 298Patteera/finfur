@@ -337,8 +337,21 @@ app.get("/working-room", (req, res) => {
 });
 // เสิร์ฟหน้าตะกร้าสินค้า (Cart Page)
 app.get("/cart", (req, res) => {
-    
-    res.render("cart");
+    const query = `
+        SELECT c.*,
+            p.productName,
+            p.price
+            FROM CustomerCart c
+            JOIN ProductList p ON c.productID = p.productID
+            WHERE c.email = ?;
+    `;
+    const userEmail = res.locals.userEmail || null;
+    db.all(query,[userEmail], (err, rows) => {
+        if (err) {
+            console.log("❗" + err.message);
+        }
+        res.render("cart", { product: rows, userEmail });
+    });
 });
 // เสิร์ฟหน้าเช็คเอาท์
 app.get("/checkout", (req, res) => {
@@ -990,8 +1003,6 @@ app.post("/del-to-productlist", (req, res) => {
         });
     });
 });
-
-
 function insertEditHistory(productID, modifiedTimestamp, userEmail, modifiedType) {
     const historyQ = `
         INSERT INTO providerEditHistory (productID, modifiedTimestamp, email, modifiedType)
@@ -1006,6 +1017,86 @@ function insertEditHistory(productID, modifiedTimestamp, userEmail, modifiedType
         }
     });
 }
+
+//post ตะกร้าสินค้า
+app.post("/del-from-cart", (req, res) => {
+    const { productID, customValue, products } = req.body;
+    const customStr = JSON.stringify(customValue);
+    const userEmail = res.locals.userEmail;
+    if (!userEmail) {
+        return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
+    }
+
+    if (products) {
+        //ลบหลายชิ้น
+        const deleteQ = "DELETE FROM CustomerCart WHERE email = ? AND productID = ? AND customValue = ?";
+
+        db.serialize(() => {
+            const qLoops = db.prepare(deleteQ);
+            products.forEach(product => {
+                qLoops.run(userEmail, product.productID, JSON.stringify(product.customValue));
+            });
+            qLoops.finalize();
+        });
+
+        return res.json({ success: true });
+    }
+
+    if (productID && customValue) {
+        const deleteQuery = "DELETE FROM CustomerCart WHERE email = ? AND productID = ? AND customValue = ?";
+        db.run(deleteQuery, [userEmail, productID, customStr], function (err) {
+            if (err) {
+
+                console.error("❗ Error: ", err);
+                return res.status(500).json({ success: false, message: "ไม่สามารถลบสินค้าได้" });
+            }
+            res.json({ success: true });
+        });
+    } else {
+        res.json({ success: false });
+    }
+});
+app.post("/update-quantity", (req, res) => {
+    const { productID, customValue, action } = req.body;
+    const customStr = JSON.stringify(customValue);
+    const userEmail = res.locals.userEmail;
+    db.get(
+        "SELECT quantities FROM CustomerCart WHERE email = ? AND productID = ? AND customValue = ?",
+        [userEmail, productID, customStr],
+        (err, row) => {
+            if (err) {
+                console.error(err);
+                return res.json({ success: false });
+            }
+            if (!row) return res.json({ success: false, message: "สินค้าไม่พบ" });
+
+            let newQuantity = row.quantities;
+            if (action === "increase") newQuantity++;
+            else if (action === "decrease") newQuantity--;
+
+            if (newQuantity <= 0) {
+                db.run(
+                    "DELETE FROM CustomerCart WHERE email = ? AND productID = ? AND customValue = ?",
+                    [userEmail, productID, customStr],
+                    (err) => {
+                        if (err) return res.json({ success: false });
+                        res.json({ success: true, deleted: true });
+                    }
+                );
+            } else {
+                db.run(
+                    "UPDATE CustomerCart SET quantities = ? WHERE email = ? AND productID = ? AND customValue = ?",
+                    [newQuantity, userEmail, productID, customStr],
+                    (err) => {
+                        if (err) return res.json({ success: false });
+                        res.json({ success: true, newQuantity });
+                    }
+                );
+            }
+        }
+    );
+});
+
 
 // เริ่มเซิร์ฟเวอร์
 app.listen(port, () => {

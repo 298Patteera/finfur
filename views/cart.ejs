@@ -33,45 +33,67 @@
 
     <!-- Table Header -->
     <div class="bg-blue-100 p-2 rounded-lg flex items-center dark:bg-gray-700">
-        <input type="checkbox" class="mr-2">
+        <input type="checkbox" id='selectAll' class="mr-2">
         <span class="w-1/2">สินค้า</span>
         <span class="w-1/4 text-center">ราคา/หน่วย</span>
         <span class="w-1/6 text-center">จำนวน</span>
         <span class="w-1/6 text-right">ราคาสินค้ารวม</span>
     </div>
-
+    
     <!-- พื้นที่สำหรับสินค้า -->
     <div id="cart-items" class="my-4 space-y-4">
-        <!-- เว้นที่ไว้เพื่อเพิ่มสินค้า -->
-        <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md">
+        <% if (userEmail) { %>
+            <% product.forEach(item => { 
+                let customStr = item.customValue;
+                let customObj = JSON.parse(customStr);
+                let customText = customObj.map(option => `${option.customName}: ${option.customValue}`).join(", ");
+
+                let basePrice = Number(item.price) || 0;
+                let addPrice = customObj.reduce((sum, option) => sum + (Number(option.addPrice) || 0), 0);
+                let totalPrice = (basePrice + addPrice) * Number(item.quantities);
+            %>
+                <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md">
+                    <input type="checkbox" class="productCheckbox" data-price="<%= totalPrice %>">
+
+                    <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md">
+                        <img 
+                            src="/images/allProduct/<%= item.productID %>.png" 
+                            alt="<%= item.productName %>" 
+                            class="w-16 h-16 rounded-lg object-cover">
+                    </div>
+                    
+                    <div class="flex-1">
+                        <h2 class="text-lg font-semibold"><%= item.productName %></h2>
+                        <p class="text-sm text-gray-500">ตัวเลือกของสินค้า</p>
             
-            <div class="w-16 h-16 bg-purple-300 rounded-lg"></div>
-          
-            <div class="flex-1">
-              <h2 class="text-lg font-semibold"> productName </h2>
-              <p class="text-sm text-gray-500">ตัวเลือกของสินค้า</p>
-              
-              <div class="flex items-center gap-2 mt-2">
-                <input 
-                  type="text" 
-                  class="p-2 bg-gray-100 rounded-md flex-1"
-                  value="customValue"
-                  readonly
-                >
-                <button class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn">
-                  ลบสินค้า
-                </button>
-              </div>
-            </div>
-          
-            <!-- จำนวนสินค้า-->
-            <div class="flex items-center gap-2">
-              <button class="px-2 py-1 bg-gray-200 rounded-md">-</button>
-              <span class="px-3 py-1 bg-gray-100 rounded-md">1</span>
-              <button class="px-2 py-1 bg-gray-200 rounded-md">+</button>
-            </div>
-          </div>
-          
+                        <div class="flex items-center gap-2 mt-2">
+                            <input 
+                                type="text" 
+                                class="p-2 bg-gray-100 rounded-md flex-1"
+                                value="<%= customText %>"
+                                readonly
+                            >
+                            <button class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn" 
+                                    data-productid="<%= item.productID %>" 
+                                    data-customvalue='<%= customStr %>'>
+                                ลบสินค้า
+                            </button>
+                        </div>
+                    </div>
+            
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg font-semibold text-gray-700">฿<%= totalPrice.toLocaleString() %></span>
+                        <div class="flex items-center gap-2">
+                            <button class="px-2 py-1 bg-gray-200 rounded-md update-quantity" data-action="decrease" data-productid="<%= item.productID %>" data-customvalue='<%= customStr %>'>-</button>
+                        
+                            <span class="px-3 py-1 bg-gray-100 rounded-md quantity-display" data-productid="<%= item.productID %>"><%= item.quantities %></span>
+                        
+                            <button class="px-2 py-1 bg-gray-200 rounded-md update-quantity" data-action="increase" data-productid="<%= item.productID %>" data-customvalue='<%= customStr %>'>+</button>
+                        </div>
+                        
+                    </div>
+                </div>
+        <% });} %>
     </div>
 
     <!-- ปุ่มควบคุม -->
@@ -81,10 +103,10 @@
         </a>
 
         <div class="flex space-x-4">
-            <button class="px-4 py-2 border rounded-lg flex items-center">
+            <button id="deleteAllBtn" class="px-4 py-2 border rounded-lg flex items-center bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn">
                 🗑 ลบทั้งหมด
             </button>
-            <a href="/checkout" class="px-6 py-2 bg-green-500 text-white rounded-lg">
+            <a href="/checkout" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
                 ดำเนินการสั่งซื้อ
             </a>
         </div>
@@ -92,7 +114,7 @@
 
     <!-- ราคาสุทธิ -->
     <div class="text-right mt-4 text-lg font-bold">
-        ราคารวมทั้งหมด: <span id="total-price">$sum price บาท</span>
+        ราคารวมทั้งหมด: <span id="total-price">0 บาท</span>
     </div>
     <script>
         function toggleSearch(event) {
@@ -111,6 +133,134 @@
 
         // ตรวจสอบเมื่อโหลดหน้า
         document.addEventListener("DOMContentLoaded", updateNavbar);
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectAllCheckbox = document.getElementById("selectAll");
+            const checkboxes = document.querySelectorAll(".productCheckbox");
+            const sumPriceE = document.getElementById("total-price");
+            const deleteButtons = document.querySelectorAll(".delete-btn");
+            const deleteAllBtn = document.getElementById("deleteAllBtn");
+
+            function updateTotal() {
+                let total = 0;
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        total += parseFloat(checkbox.getAttribute("data-price")) || 0;
+                    }
+                });
+                sumPriceE.textContent = total.toLocaleString() + " บาท";
+            }
+
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener("change", function () {
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                    updateTotal();
+                });
+            }
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function () {
+                    if (selectAllCheckbox) {
+                        selectAllCheckbox.checked = [...checkboxes].every(cb => cb.checked);
+                    }
+                    updateTotal();
+                });
+            });
+            //delBtn
+            async function deleteProduct(productID, customValue) {
+                try {
+                    const response = await fetch("/del-from-cart", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ productID, customValue })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert("ลบสินค้าไม่สำเร็จ");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("เกิดข้อผิดพลาด");
+                }
+            }
+
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const productID = this.getAttribute("data-productid");
+                    const customValue = JSON.parse(this.getAttribute("data-customvalue"));
+                    deleteProduct(productID, customValue);
+                });
+            });
+
+            if (deleteAllBtn) {
+                deleteAllBtn.addEventListener("click", function () {
+                    const selectedProducts = Array.from(checkboxes)
+                        .filter(checkbox => checkbox.checked)
+                        .map(checkbox => ({
+                            productID: checkbox.getAttribute("data-productid"),
+                            customValue: JSON.parse(checkbox.getAttribute("data-customvalue"))
+                        }));
+
+                    if (selectedProducts.length === 0) {
+                        alert("กรุณาเลือกสินค้าที่ต้องการลบ");
+                        return;
+                    }
+
+                    fetch("/del-from-cart", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ products: selectedProducts })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert("ลบสินค้าไม่สำเร็จ");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("เกิดข้อผิดพลาด");
+                    });
+                });
+            }
+        });
+
+        const quantityButtons = document.querySelectorAll(".update-quantity");
+        async function updateQuantity(productID, customValue, action) {
+            try {
+                const response = await fetch("/update-quantity", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ productID, customValue, action })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert("อัปเดตจำนวนไม่สำเร็จ");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("เกิดข้อผิดพลาด");
+            }
+        }
+
+        quantityButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const productID = this.getAttribute("data-productid");
+                const customValue = JSON.parse(this.getAttribute("data-customvalue"));
+                const action = this.getAttribute("data-action");
+
+                updateQuantity(productID, customValue, action);
+            });
+        });
+       
     </script>
 </main>
 </body>
