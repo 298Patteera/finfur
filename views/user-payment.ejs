@@ -171,8 +171,8 @@
                     </div>
 
                     <form action="add-user-payment" method="post">
-                        <div id="addCardForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
-                            <h3 class="text-lg font-bold mb-2">เพิ่มบัตรใหม่</h3>
+                        <div id="addCardForm" class="hidden mt-4 p-4  bg-blue-200 dark:bg-gray-500 rounded">
+                            <h3 class="text-lg font-bold mb-2 dark:text-white">เพิ่มบัตรใหม่</h3>
                             <input type="text" id="cardName" name="cardname" placeholder="ชื่อบัตร"
                                 class="w-full p-2 border border-gray-300 rounded mb-2">
                             <input type="tel" id="cardnumber" name="cardnum" inputmode="numeric" maxlength="16"
@@ -180,13 +180,13 @@
                                 class="w-full p-2 border border-gray-300 rounded mb-2">
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block font-medium text-black">วันหมดอายุ</label>
+                                    <label class="block font-medium text-black dark:text-white">วันหมดอายุ</label>
                                     <input type="text" name="cardExpire" placeholder="MM/YY"
                                         class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
                                         required>
                                 </div>
                                 <div>
-                                    <label class="block font-medium text-black">cvv</label>
+                                    <label class="block font-medium text-black dark:text-white">cvv</label>
                                     <input type="text" name="cvv" placeholder="xxx" maxlength="3"
                                         class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
                                         required>
