@@ -86,10 +86,22 @@
 <!-- 2 เนยเเก้ -->
 <div class="max-w-screen-lg mx-auto mt-10 min-h-[400px] flex border border-gray-300 rounded-lg bg-white dark:bg-gray-900 shadow-lg p-6">
     <div class="p-4 w-full">
+        <h2 id="subName" class="text-3xl font-bold text-gray-600 mb-4 dark:text-white">
+            <% if (typeof subID !== 'undefined' && subID) { %>
+                <%= product[0].subName %>
+            <% } else { %>
+                รวม
+            <% } %>
+            </h2>
+            
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <% product.forEach(item => { %>
                 <div id="<%= item.productID %>-box" 
-                    class="p-5 bg-white dark:bg-gray-800 w-[220px] min-h-[340px] rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl">
+                    class="productbox p-5 bg-white dark:bg-gray-800 w-[220px] min-h-[340px] rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
+                    data-productid="<%= item.productID %>"
+                    data-productName="<%= item.productName %>"
+                    data-productBrand="<%= item.brand %>" 
+                    >
                     
                     <a href="/product/<%= item.productID %>">
                         <img class="rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 

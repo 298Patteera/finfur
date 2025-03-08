@@ -143,7 +143,17 @@ app.get("/signin-provider", (req, res) => {
 // เสิร์ฟหน้า Home 💢💢💢
 app.get("/", (req, res) => {
     let showSearchBar = req.query.search === "true"; // ถ้าส่งค่า ?search=true จะแสดง navbar_search
-    res.render("home", { showSearchBar });
+    const query = `
+        SELECT * FROM ProductList;
+    `;
+    const userEmail = res.locals.userEmail || null;
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.log("❗" + err.message);
+        }
+        
+        res.render("home", { product: rows, userEmail, showSearchBar });
+    });
 });
 // เสิร์ฟหน้า Product Details
 app.get("/product/:id", (req, res) => {
@@ -172,7 +182,6 @@ app.get("/product/:id", (req, res) => {
             productName: rows[0].productName,
             brand: rows[0].brand,
             price: rows[0].price,
-            stockNum: rows[0].stockNum,
             favoritesCount: rows[0].favoritesCount,
             addedDate: rows[0].addedDate,
             description: rows[0].description,
@@ -217,143 +226,58 @@ app.get("/all-product", (req, res) => {
         LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query, [userEmail], (err, rows) => {
+    db.all(query,[userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
         res.render("all-product", { product: rows, userEmail });
     });
 });
-// เสิร์ฟหน้า ห้องนอน
-app.get("/bed-room", (req, res) => {
-    const query = `
-        SELECT 
-            p.*, 
-            sc.subID,
-            sc.subName, 
-            pc.categoryID,
-            pc.categoryName,
-            CASE 
-                WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
-            END AS isFavorited
-        FROM ProductList p
-        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
-        JOIN productCategory pc ON sc.categoryID = pc.categoryID
-        LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?
-        WHERE pc.categoryID = 1;
-    `;
-    const userEmail = res.locals.userEmail || null;
-    db.all(query, [userEmail], (err, rows) => {
-        if (err) {
-            console.log("❗" + err.message);
-        }
-        res.render("bed-room", { product: rows, userEmail });
+
+//รวบโค้ดห้องทั้งหมด
+const roomCategories = [
+    { path: "bed-room", categoryID: 1 },
+    { path: "living-room", categoryID: 2 },
+    { path: "kitchen", categoryID: 3 },
+    { path: "dining-room", categoryID: 4 },
+    { path: "working-room", categoryID: 5 },
+];
+
+roomCategories.forEach(({ path, categoryID }) => {
+    app.get(`/${path}/:id?`, (req, res) => {
+        const subID = req.params.id || null;
+        const userEmail = res.locals.userEmail || null;
+
+        const query = `
+            SELECT 
+                p.*, 
+                sc.subID,
+                sc.subName, 
+                pc.categoryID,
+                pc.categoryName,
+                CASE 
+                    WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
+                END AS isFavorited
+            FROM ProductList p
+            JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
+            JOIN productCategory pc ON sc.categoryID = pc.categoryID
+            LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?
+            WHERE pc.categoryID = ?
+            ${subID ? "AND sc.subID = ?" : ""};
+        `;
+
+        const valueQ = subID ? [userEmail, categoryID, subID] : [userEmail, categoryID];
+
+        db.all(query, valueQ, (err, rows) => {
+            if (err) {
+                console.error("❗" + err.message);
+                return res.status(500).send("Internal Server Error");
+            }
+            res.render(path, { product: rows, subID: subID, userEmail });
+        });
     });
 });
-// เสิร์ฟหน้า ห้องนั่งเล่น
-app.get("/living-room", (req, res) => {
-    const query = `
-        SELECT 
-            p.*, 
-            sc.subID,
-            sc.subName, 
-            pc.categoryID,
-            pc.categoryName,
-            CASE 
-                WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
-            END AS isFavorited
-        FROM ProductList p
-        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
-        JOIN productCategory pc ON sc.categoryID = pc.categoryID
-        LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?
-        WHERE pc.categoryID = 2;
-    `;
-    const userEmail = res.locals.userEmail || null;
-    db.all(query, [userEmail], (err, rows) => {
-        if (err) {
-            console.log("❗" + err.message);
-        }
-        res.render("living-room", { product: rows, userEmail });
-    });
-});
-// เสิร์ฟหน้า ห้องครัว
-app.get("/kitchen", (req, res) => {
-    const query = `
-        SELECT 
-            p.*, 
-            sc.subID,
-            sc.subName, 
-            pc.categoryID,
-            pc.categoryName,
-            CASE 
-                WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
-            END AS isFavorited
-        FROM ProductList p
-        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
-        JOIN productCategory pc ON sc.categoryID = pc.categoryID
-        LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?
-        WHERE pc.categoryID = 3;
-    `;
-    const userEmail = res.locals.userEmail || null;
-    db.all(query, [userEmail], (err, rows) => {
-        if (err) {
-            console.log("❗" + err.message);
-        }
-        res.render("kitchen", { product: rows, userEmail });
-    });
-});
-// เสิร์ฟหน้า ห้องรับประทานอาหาร
-app.get("/dining-room", (req, res) => {
-    const query = `
-        SELECT 
-            p.*, 
-            sc.subID,
-            sc.subName, 
-            pc.categoryID,
-            pc.categoryName,
-            CASE 
-                WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
-            END AS isFavorited
-        FROM ProductList p
-        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
-        JOIN productCategory pc ON sc.categoryID = pc.categoryID
-        LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?
-        WHERE pc.categoryID = 4;
-    `;
-    const userEmail = res.locals.userEmail || null;
-    db.all(query, [userEmail], (err, rows) => {
-        if (err) {
-            console.log("❗" + err.message);
-        }
-        res.render("dining-room", { product: rows, userEmail });
-    });
-});
-// เสิร์ฟหน้า ห้องทำงาน
-app.get("/working-room", (req, res) => {
-    const query = `
-        SELECT 
-            p.*, 
-            sc.subID,
-            sc.subName, 
-            pc.categoryID,
-            pc.categoryName,
-            CASE 
-                WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
-            END AS isFavorited
-        FROM ProductList p
-        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
-        JOIN productCategory pc ON sc.categoryID = pc.categoryID
-        LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?
-        WHERE pc.categoryID = 5;
-    `;
-    const userEmail = res.locals.userEmail || null;
-    db.all(query, [userEmail], (err, rows) => {
-        if (err) {
-            console.log("❗" + err.message);
-        }
-        res.render("working-room", { product: rows, userEmail });
-    });
-});
+
 // เสิร์ฟหน้าตะกร้าสินค้า (Cart Page)
 app.get("/cart", (req, res) => {
     const query = `
@@ -365,7 +289,7 @@ app.get("/cart", (req, res) => {
             WHERE c.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query, [userEmail], (err, rows) => {
+    db.all(query,[userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -382,20 +306,20 @@ app.get("/checkout", (req, res) => {
     if (!orderDetail) {
         console.log("/checkout : ไม่พบข้อมูล orderDetail");
     } else {
-        const totalPrice = orderDetail.reduce((sum, item) => { return sum + Number(item.eachTotalPrice); }, 0);
+        const totalPrice = orderDetail.reduce((sum, item) => {return sum + Number(item.eachTotalPrice);}, 0);
         const query = `
         SELECT * FROM userAddress
         WHERE email = ?;
     `;
-        db.all(query, [userEmail], (err, rows) => {
-            if (err) {
-                console.log("❗" + err.message);
-            }
-            console.log("/checkout : ", orderDetail);
-            res.render("checkout", { userData: rows, userEmail, orderDetail, totalPrice });
-        });
+    db.all(query, [userEmail], (err, rows) => {
+        if (err) {
+            console.log("❗" + err.message);
+        }
+        console.log("/checkout : ", orderDetail);
+        res.render("checkout", { userData: rows, userEmail, orderDetail, totalPrice });
+    });
     }
-
+    
     //console.log("/checkout session: ", req.session);
 
 });
@@ -954,11 +878,11 @@ app.post("/add-to-cart", (req, res) => {
         // for (let key in selectedOptions) {
         //     let { optionName, customValue, addPrice } = selectedOptions[key];
         //     totalPrice += addPrice;
-
+            
         //     //แปลงปุ่มกด จาก optionType, optionName -> customName, customValue
         //     let selectedOptionName = customValue ? optionName : optionName;
         //     let selectedCustomValue = customValue || optionName;
-
+        
         //     values.push(`('${userEmail}', '${productID}', '${selectedOptionName}', '${selectedCustomValue}', ${addPrice})`);
     }
     console.log(optionsString);

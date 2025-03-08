@@ -19,19 +19,37 @@
            <div class="relative flex items-center px-2 py-2 rounded-lg max-w-2xl">
            <div class="relative flex items-center px-4 py-2 w-[200px] sm:w-[250px] md:w-[600px] ">
                 <!-- ช่องค้นหา -->
-                <input type="text" id="searchBar" placeholder="ค้นหาสินค้าที่คุณสนใจ..." 
+                <input type="text" id="searchBar" placeholder="ค้นหาสินค้าที่คุณสนใจ..."
+                onkeyup="searchProducts()" 
                 class="flex-grow pl-4 pr-14 py-2 border rounded-lg text-black focus:outline-none w-full h-auto text-[10px] sm:text-[15px] md:text-auto">
-            
+
                 <!-- ปุ่มไอคอน Search -->
                 <button class="absolute right-4 w-5 h-8 sm:w-6 sm:h-8 md:w-8 md:h-9 bg-[#FFEF00] dark:bg-[#FFBE4F] rounded-lg flex items-center justify-center shadow">
                     <img src="/images/logo_search_black.png" alt="search" class="w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 object-contain" >
                 </button>
+                <div id="searchResults" class="mt-2 border border-gray-300 text-black bg-white top-full w-full max-w-xl absolute z-10 hidden left-0">
+                    <ul class="max-h-60 overflow-y-auto">
+                        <% if (typeof product !== 'undefined' && Array.isArray(product) && product.length > 0) { %>
+                            <% product.forEach(function(item) { %>
+                                <li class="border-b p-2 hover:bg-gray-100 cursor-pointer"
+                                    data-id="<%= item.productID %>"
+                                    data-name="<%= item.productName %>"
+                                    data-brand="<%= item.brand %>">
+                                    <%= item.productName %> / <%= item.brand %>
+                                    <div class="text-gray-500 text-sm">(รหัสสินค้า: <%= item.productID %>)</div>
+                                </li>
+                            <% }); %>
+                        <% } else { %>
+                            <li class="p-2 text-gray-500">ไม่พบสินค้า</li>
+                        <% } %>
+                    </ul>
+                </div>
             </div>
                 <div>
                     <a href="#" onclick="toggleSearch(event)" alt="close" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow text-[7px] sm:text-[8px] md:text-[15px] text-black font-bold">X</a>
                 </div>
             </div>
-
+            
           <ul class="flex gap-1 md:gap-3 items-center">
             <li><a href="#" onclick="toggleSearch(event)"><img src="/images/logo_search.png" alt="search" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" ></a></li>
             <li><a href="/login"><img src="/images/logo_account.png" alt="account" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" ></a></li>
@@ -41,9 +59,84 @@
             <li><a href="/cart"><img src="/images/logo_shopping_cart.png" alt="หน้าแรก" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" ></a></li>
           </ul>
         </div>
+        <!-- <div id="searchResults" class="mt-2 border border-gray-300 bg-white w-full max-w-lg absolute z-10 hidden left-0">
+            <ul class="max-h-60 overflow-y-auto">
+                <% if (typeof product !== 'undefined' && Array.isArray(product) && product.length > 0) { %>
+                    <% product.forEach(function(item) { %>
+                        <li class="border-b p-2 hover:bg-gray-100 cursor-pointer"
+                            data-id="<%= item.productID %>"
+                            data-name="<%= item.productName %>"
+                            data-brand="<%= item.brand %>">
+                            <%= item.productName %> / <%= item.brand %>" (รหัสสินค้า: <%= item.productID %>)
+                        </li>
+                    <% }); %>
+                <% } else { %>
+                    <li class="p-2 text-gray-500">ไม่พบสินค้า</li>
+                <% } %>
+            </ul>
+        </div> -->
       </nav>
 
       
 
 </body>
 </html>
+        <script>
+            // document.addEventListener("DOMContentLoaded", function() {
+            //     let categoryDropdown = document.getElementById('categoryDropdown');
+            //     let searchInput = document.getElementById('searchBar');
+                
+            //     categoryDropdown.addEventListener('change', function() {
+            //         let selectedValue = this.value;
+            //         searchInput.value = selectedValue;
+            //     });
+            // });
+            function searchProducts() {
+                const searchInput = document.getElementById('searchBar').value.toLowerCase();
+                const searchResults = document.getElementById('searchResults');
+                const resultItems = searchResults.querySelectorAll('li');
+                console.log(searchInput);
+                if (searchInput === "") {
+                    searchResults.style.display = "none";
+                } else {
+                    searchResults.style.display = "block";
+                    resultItems.forEach(item => {
+                        const productID = item.getAttribute('data-id').toLowerCase();
+                        const productName = item.getAttribute('data-name').toLowerCase();
+                        const productBrand = item.getAttribute('data-brand').toLowerCase();
+                        
+                        if (productID.includes(searchInput) || productName.includes(searchInput) || productBrand.includes(searchInput)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+
+                //ซ่อนสินค้าที่ไม่ตรงกับใน search
+                const productCards = document.querySelectorAll('.productbox');
+
+                productCards.forEach(card => {
+                    const productid = card.getAttribute("data-productid");
+                    const productName = card.getAttribute("data-productName");
+                    const productBrand = card.getAttribute("data-productBrand");
+
+                    if (searchInput === "" || productid.includes(searchInput) || productName.includes(searchInput) || productBrand.includes(searchInput)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        
+            document.getElementById('searchResults').addEventListener('click', function(e) {
+                if (e.target && e.target.tagName === 'LI') {
+
+                    const productID = e.target.getAttribute('data-id');
+                    const nextURL = "/product/"+productID;
+                    window.location.href = nextURL;
+        
+                    document.getElementById('searchResults').style.display = 'none'; 
+                }
+            });
+        </script>
