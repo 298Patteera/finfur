@@ -1,25 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+    <nav class="bg-blue-600 text-white p-4 h-[110px] flex justify-between items-center">
+        <div class="flex space-x-4 items-center" id="hamburger_bar">
+            <img src="/images/logo_hamburger_bar.png" class="w-8 h-8" onclick="toggleMenu()">
+        </div>
+        <!-- โลโก้ตรงกลาง -->
+        <a href="#" class="absolute left-1/2 transform -translate-x-1/2">
+            <img src="/images/logo_main.png" width="150px" class="min-w-[80px]">
+        </a>
+    
+        <!-- ปุ่มเข้าสู่ระบบ (อยู่ขวา) -->
+        <div class="flex relative gap-3 justify-between ml-auto">
 
-<div class="flex space-x-4 mt-4 border-b pb-2">
-    <a href="/provider-productList" id="ProductList" class="text-gray-600">สินค้าทั้งหมด</a>
-    <a href="/provider-addProduct" id="AddProduct" class="text-gray-600">เพิ่ม/ลบ สินค้า</a>
-    <a href="/provider-productHistory" id="ProductHistory" class="text-gray-600">ประวัติ</a>
-    <a href="/provider-orderHistory" id="OrderHistory" class="text-gray-600">ประวัติการสั้งซื้อ</a>
-</div>
+            <div><a href="#" onclick="toggleSearchOne(event)"><img src="/images/logo_search.png" alt="search" id="searchOne"
+                class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 "></a>
+            </div>
+            
+            <div class="relative flex items-center px-2 py-2 rounded-lg max-w-2xl hidden" id="searchBar">
+                <div class="relative flex items-center px-4 py-2 w-[200px] sm:w-[250px] md:w-[600px]">
+                    <!-- ช่องค้นหา -->
+                    <input type="text" placeholder="ค้นหาสินค้าที่คุณสนใจ..." 
+                    class="flex-grow pl-4 pr-14 py-2 border rounded-lg text-black focus:outline-none w-full h-auto text-[10px] sm:text-[15px] md:text-auto">
+                    
+                    <!-- ปุ่มไอคอน Search -->
+                    <button class="absolute right-4 w-5 h-8 sm:w-6 sm:h-8 md:w-8 md:h-9 bg-[#FFEF00] dark:bg-[#FFBE4F] rounded-lg flex items-center justify-center shadow">
+                        <img src="/images/logo_search_black.png" alt="search2" class="w-4 h-4 sm:w-5 sm:h-5 md:w-7 md:h-7 object-contain" >
+                    </button>
+                </div>
+                <div>
+                    <a href="#" onclick="toggleSearchBack(event)" alt="close" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow text-[7px] sm:text-[8px] md:text-[15px] text-black font-bold">X</a>
+                </div>
+            </div>
+            
+            <button onclick="toggleLoginOptions()" class="bg-white text-blue-600 px-4 py-2 rounded-lg shadow-md hover:bg-blue-100">
+                เข้าสู่ระบบ
+            </button>
+    
+            <!-- กรอบตัวเลือก (ซ่อนเริ่มต้น) -->
+            <div id="loginOptions" class="hidden absolute right-0 mt-2 bg-blue-300 text-black p-4 rounded-lg shadow-lg border w-[200px]">
+                <a href="/" class="bg-white w-full py-2 mb-2 rounded-lg hover:bg-blue-100 transition block text-center">
+                    เข้าสู่ระบบ User
+                </a>
+            
+                <a href="/provider-productList" 
+                   class="bg-white w-full py-2 rounded-lg hover:bg-blue-100 transition block text-center" >
+                    เข้าสู่ระบบ Provider
+                </a>                
+            </div>
+        </div>
+    </nav>
+    
 
-<script>
-    // ดึง URL ปัจจุบัน
-    const currentPath = window.location.pathname;
+    <!-- Sidebar -->
+    <div id="sidebar"
+        class="dark:bg-black fixed top-0 left-0 h-full w-[250px] bg-white dark:text-white  shadow-lg transform -translate-x-full transition-transform duration-300 overflow-y-auto z-50">
+        <div class="p-4 border-b flex justify-between items-center">
+            <h2 class="text-xl font-bold">หมวดหมู่เฟอร์นิเจอร์</h2>
+            <button onclick="toggleMenu()" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+        </div>
+        <ul class="p-4 space-y-4 text-lg">
+            <!-- ห้องนอน -->
+            <li>
+                <a href="/bed-room" class="block hover:text-blue-500 flex justify-between items-center">
+                    ห้องนอน
+                    <span id="bedroomToggle" onclick="toggleItems('bedroomItems', 'bedroomToggle')"
+                        class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
+                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                    </span>
+                </a>
+                <ul id="bedroomItems" class="pl-4 hidden">
+                    <li><a href="#" class="block hover:text-blue-500">เตียงนอน</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ตู้เสื้อผ้า</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">โต๊ะข้างเตียง</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">เก้าอี้อำนวยความสะดวก</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">โคมไฟนอน</a></li>
+                </ul>
+            </li>
 
-    // กำหนดค่า Path และ Element ID ที่เกี่ยวข้อง
-    const menuItems = {
-        "/provider-productList": "ProductList",
-        "/provider-addProduct": "AddProduct",
-        "/provider-productHistory": "ProductHistory",
-        "/provider-orderHistory": "OrderHistory"
-    };
+            <!-- ห้องนั่งเล่น -->
+            <li>
+                <a href="/living-room" class="block hover:text-blue-500 flex justify-between items-center">
+                    ห้องนั่งเล่น
+                    <span id="livingRoomToggle" onclick="toggleItems('livingRoomItems', 'livingRoomToggle')"
+                        class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
+                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                    </span>
+                </a>
+                <ul id="livingRoomItems" class="pl-4 hidden">
+                    <li><a href="#" class="block hover:text-blue-500">โซฟา</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">โต๊ะกาแฟ</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ชั้นวางทีวี</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">โคมไฟตั้งพื้น</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">เก้าอี้เอนหลัง</a></li>
+                </ul>
+            </li>
 
-    // เช็คว่าหน้านี้ตรงกับเมนูไหน
-    if (menuItems[currentPath]) {
-        document.getElementById(menuItems[currentPath]).classList.add("text-blue-600", "font-bold","border-b-2","pb-1");
+            <!-- ห้องครัว -->
+            <li>
+                <a href="/kitchen" class="block hover:text-blue-500 flex justify-between items-center">
+                    ห้องครัว
+                    <span id="kitchenToggle" onclick="toggleItems('kitchenItems', 'kitchenToggle')"
+                        class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
+                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                    </span>
+                </a>
+                <ul id="kitchenItems" class="pl-4 hidden">
+                    <li><a href="#" class="block hover:text-blue-500">เตาแก๊ส</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ซิงค์ล้างจาน</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ตู้เย็น</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ไมโครเวฟ</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">เครื่องดูดควัน</a></li>
+                </ul>
+            </li>
+
+            <!-- ห้องรับประทานอาหาร -->
+            <li>
+                <a href="/dining-room" class="block hover:text-blue-500 flex justify-between items-center">
+                    ห้องรับประทานอาหาร
+                    <span id="diningRoomToggle" onclick="toggleItems('diningRoomItems', 'diningRoomToggle')"
+                        class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
+                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                    </span>
+                </a>
+                <ul id="diningRoomItems" class="pl-4 hidden">
+                    <li><a href="#" class="block hover:text-blue-500">โต๊ะรับประทานอาหาร</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">เก้าอี้รับประทานอาหาร</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ตู้เก็บของ</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">โคมไฟห้องอาหาร</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ชั้นวางไวน์</a></li>
+                </ul>
+            </li>
+
+            <!-- ห้องทำงาน -->
+            <li>
+                <a href="/working-room" class="block hover:text-blue-500 flex justify-between items-center">
+                    ห้องทำงาน
+                    <span id="officeToggle" onclick="toggleItems('officeItems', 'officeToggle')"
+                        class="cursor-pointer transition-all duration-300 dark:invert dark:brightness-75">
+                        <img src="/images/lineUp.png" alt="Toggle Icon" width="10px">
+                    </span>
+                </a>
+                <ul id="officeItems" class="pl-4 hidden">
+                    <li><a href="#" class="block hover:text-blue-500">โต๊ะทำงาน</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">เก้าอี้ทำงาน</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ชั้นวางเอกสาร</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">ตู้เก็บเอกสาร</a></li>
+                    <li><a href="#" class="block hover:text-blue-500">โคมไฟทำงาน</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+    <script>
+        function toggleLoginOptions() {
+            const options = document.getElementById("loginOptions");
+            options.classList.toggle("hidden"); // สลับแสดง/ซ่อน
+        }
+        function toggleItems(itemId, toggleId) {
+            // หยุดไม่ให้ลิงก์ทำงาน
+            event.preventDefault();
+            // Get the list to toggle visibility
+            const items = document.getElementById(itemId);
+            // Get the icon element to change its image
+            const toggleIcon = document.getElementById(toggleId).querySelector('img');
+
+            // Check if the items are hidden
+            if (items.classList.contains('hidden')) {
+                items.classList.remove('hidden');
+                toggleIcon.src = "/images/lineDown.png";  // Change icon to down (V)
+
+            } else {
+                items.classList.add('hidden');
+                toggleIcon.src = "/images/lineUp.png";    // Change icon to up (>)
+            }
+        }
+function toggleSearchOne(event) {
+
+    const searchBar = document.getElementById("searchBar");
+    const searchOne = document.getElementById("searchOne");
+    searchOne.classList.add('hidden');  // ซ่อนช่องค้นหากลับเมื่อกดปุ่ม 'X'
+    searchBar.classList.remove('hidden');  // ซ่อนช่องค้นหากลับเมื่อกดปุ่ม 'X'
+}
+
+function toggleSearchBack(event) {
+
+    const searchBar = document.getElementById("searchBar");
+    const searchOne = document.getElementById("searchOne");
+    searchBar.classList.add('hidden');  // ซ่อนช่องค้นหากลับเมื่อกดปุ่ม 'X'
+    searchOne.classList.remove('hidden');  // ซ่อนช่องค้นหากลับเมื่อกดปุ่ม 'X'
+}
+
+    function toggleMenu() {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("-translate-x-full");
     }
-</script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const hamburgerBar = document.getElementById("hamburger_bar");
+    const searchOne = document.getElementById("searchOne");
+    
+    if (window.location.pathname.startsWith("/provider")) {
+        if (hamburgerBar,searchOne) {
+            hamburgerBar.classList.add("hidden"); // ซ่อน hamburger bar
+            searchOne.classList.add("hidden"); // ซ่อน hamburger bar
+        }
+    }
+    });
+    </script>
+
+</body>
+</html>
