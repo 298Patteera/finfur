@@ -47,11 +47,15 @@
             let cardnumber = document.getElementById('cardnumber').value;
             if (cardName && cardnumber) {
                 let cardnum = cardnumber; // ใช้ cardnumber เป็น cardnum
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                 let newCard = document.createElement('div');
                 newCard.id = cardId;
                 newCard.className = 'mb-4';
                 newCard.innerHTML = `
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                     <p class="font-semibold">${cardName} <span id="${cardId}_default" class="text-blue-500 default-text"></span></p>
                     <p class="text-gray-600">**** **** **** ${cardNumber.slice(-4)}</p>
@@ -59,11 +63,16 @@
                     <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('${cardId}_default')">ตั้งเป็นค่าเริ่มต้น</button>
                 `;
 =======
+=======
+>>>>>>> Stashed changes
             <p class="font-semibold">${cardName} <span id="${cardnum}_default" class="text-blue-500 default-text"></span></p>
             <p class="text-gray-600">**** **** **** ${cardnumber.slice(-4)}</p>
             <a href="#" class="text-blue-500" onclick="deleteCard('${cardnum}')">ลบ</a>
             <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('${cardnum}_default')">ตั้งเป็นค่าเริ่มต้น</button>
         `;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                 document.getElementById('cardsContainer').appendChild(newCard);
                 document.getElementById('addCardForm').classList.add('hidden');
@@ -71,10 +80,13 @@
         }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
         function deleteCard(cardId) {
             document.getElementById(cardId).remove();
 =======
+=======
+>>>>>>> Stashed changes
         function deleteCard(cardnum) {
             console.log('Sending cardnum to server:', cardnum);
 
@@ -210,8 +222,12 @@
                                 <input type="text" id="cardName" name="cardname" placeholder="ชื่อบัตร"
                                     class="w-full p-2 border border-gray-300 rounded mb-2">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                                 <input type="tel" id="cardNumber" name="cardnum" inputmode="numeric"
                                     pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19"
+=======
+                                <input type="tel" id="cardnumber" name="cardnum" inputmode="numeric" maxlength="16"
+>>>>>>> Stashed changes
 =======
                                 <input type="tel" id="cardnumber" name="cardnum" inputmode="numeric" maxlength="16"
 >>>>>>> Stashed changes

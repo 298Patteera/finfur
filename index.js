@@ -521,6 +521,9 @@ app.post('/delete-card', (req, res) => {
 
 
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 // เสิร์ฟหน้าuser-address
 app.get("/user-address", (req, res) => {
