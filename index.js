@@ -217,7 +217,7 @@ app.get("/all-product", (req, res) => {
         LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -243,7 +243,7 @@ app.get("/bed-room", (req, res) => {
         WHERE pc.categoryID = 1;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -269,7 +269,7 @@ app.get("/living-room", (req, res) => {
         WHERE pc.categoryID = 2;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -295,7 +295,7 @@ app.get("/kitchen", (req, res) => {
         WHERE pc.categoryID = 3;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -321,7 +321,7 @@ app.get("/dining-room", (req, res) => {
         WHERE pc.categoryID = 4;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -347,7 +347,7 @@ app.get("/working-room", (req, res) => {
         WHERE pc.categoryID = 5;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -365,7 +365,7 @@ app.get("/cart", (req, res) => {
             WHERE c.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -382,20 +382,20 @@ app.get("/checkout", (req, res) => {
     if (!orderDetail) {
         console.log("/checkout : ไม่พบข้อมูล orderDetail");
     } else {
-        const totalPrice = orderDetail.reduce((sum, item) => {return sum + Number(item.eachTotalPrice);}, 0);
+        const totalPrice = orderDetail.reduce((sum, item) => { return sum + Number(item.eachTotalPrice); }, 0);
         const query = `
         SELECT * FROM userAddress
         WHERE email = ?;
     `;
-    db.all(query, [userEmail], (err, rows) => {
-        if (err) {
-            console.log("❗" + err.message);
-        }
-        console.log("/checkout : ", orderDetail);
-        res.render("checkout", { userData: rows, userEmail, orderDetail, totalPrice });
-    });
+        db.all(query, [userEmail], (err, rows) => {
+            if (err) {
+                console.log("❗" + err.message);
+            }
+            console.log("/checkout : ", orderDetail);
+            res.render("checkout", { userData: rows, userEmail, orderDetail, totalPrice });
+        });
     }
-    
+
     //console.log("/checkout session: ", req.session);
 
 });
@@ -415,11 +415,11 @@ app.get("/user-profile", (req, res) => {
         res.render('user-profile', { data: row });
     });
 });
-<<<<<<< Updated upstream
-=======
+// <<<<<<< Updated upstream
+// =======
 
 // เสิร์ฟหน้าuser-editprofile
- app.post('/update-profile', (req, res) => {
+app.post('/update-profile', (req, res) => {
     const email = req.session.userEmail;
 
     const { username, name, phone, gender, dob } = req.body;
@@ -433,12 +433,12 @@ app.get("/user-profile", (req, res) => {
         console.log('Data updated successfully');
         res.redirect('/user-profile');
     });
-    
+
 });
 
 
 
->>>>>>> Stashed changes
+// >>>>>>> Stashed changes
 // เสิร์ฟหน้าuser-payment
 app.get("/user-payment", (req, res) => {
     const email = req.session.userEmail;
@@ -492,8 +492,6 @@ app.post("/add-user-payment", (req, res) => {
     });
 });
 
-<<<<<<< Updated upstream
-=======
 //ลบ user-payment-card
 app.post('/delete-card', (req, res) => {
     console.log("Received request body:", req.body);
@@ -507,25 +505,18 @@ app.post('/delete-card', (req, res) => {
 
     db.run(sql, [cardnum, email], function (err) {
         if (err) {
-            console.error( err.message);
+            console.error(err.message);
             return res.status(500).json({ success: false, message: "Database Error: " + err.message });
         }
-
-
         console.log(`ลบบัตร ${cardnum} สำเร็จ`);
         return res.json({ success: true, message: "ลบบัตรสำเร็จ" });
     });
+
 });
 
 
 
 
-
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-// เสิร์ฟหน้าuser-address
 app.get("/user-address", (req, res) => {
     const email = req.session.userEmail;
 
@@ -578,12 +569,12 @@ app.post("/add-user-address", (req, res) => {
         if (row) {
             return res.status(400).send("เบอร์โทรซ้ำ กรุณาใช้เบอร์โทรอื่น");
         }
-        
+
         let sql = `INSERT INTO userAddress (name, phone, address, email) VALUES (?, ?, ?, ?)`;
         db.run(sql, [addInfo.name, addInfo.phone, addInfo.address, email], (err) => {
             if (err) {
                 console.error('Error inserting data:', err.message);
-                return res.status(500).send("Error inserting data" );
+                return res.status(500).send("Error inserting data");
             }
             console.log('Data inserted successfully');
             res.redirect("/user-address");
@@ -611,10 +602,11 @@ app.delete("/delete-user-address", (req, res) => {
 
 //แก้ไขที่อยู่
 app.post("/edit-user-address", (req, res) => {
-    const { name, phone, address } = req.body;
-    
+    const phone = req.body.phone;
+
     const sql = `UPDATE userAddress SET name = ?, address = ? WHERE phone = ?`;
 
+    console.log(`${phone}`)
     db.run(sql, [name, address, phone], (err) => {
         if (err) {
             console.error("Error updating address:", err.message);
@@ -653,11 +645,11 @@ app.post("/user-changepass", (req, res) => {
             return res.status(404).send("user not found");
         }
 
-        if (row.pssword !== change.oldpass) { 
+        if (row.pssword !== change.oldpass) {
             return res.status(400).send("invalid password");
         }
 
-        let updateSql = `UPDATE userInfo SET pssword = ? WHERE email = ?`; 
+        let updateSql = `UPDATE userInfo SET pssword = ? WHERE email = ?`;
         db.run(updateSql, [change.newpass, email], (err) => {
             if (err) {
                 console.log(err.message);
@@ -694,7 +686,7 @@ app.get("/favorites", (req, res) => {
         WHERE f.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -752,7 +744,7 @@ app.get("/provider-productList", (req, res) => {
                 categories[row.categoryID].subCategories[row.subID] = row.subName;
             });
 
-            res.render("provider-productList", { product: rows, categories: categories});
+            res.render("provider-productList", { product: rows, categories: categories });
         });
     });
 });
@@ -855,7 +847,7 @@ app.get("/provider-productHistory", (req, res) => {
                 categories[row.categoryID].subCategories[row.subID] = row.subName;
             });
 
-            res.render("provider-productHistory", { product: rows, categories: categories});
+            res.render("provider-productHistory", { product: rows, categories: categories });
         });
     });
 });
@@ -887,7 +879,7 @@ app.get("/provider-orderHistory", (req, res) => {
     ;
 
     const userQ = 'SELECT * FROM userInfo';
-    
+
     db.all(query, (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
@@ -916,7 +908,7 @@ app.get("/provider-orderHistory", (req, res) => {
                     return;
                 }
 
-                res.render("provider-orderHistory", { product: rows, categories: categories, user: userRows});
+                res.render("provider-orderHistory", { product: rows, categories: categories, user: userRows });
             });
         });
     });
@@ -979,16 +971,16 @@ app.post("/add-to-cart", (req, res) => {
     for (let key in selectedOptionsArray) {
         let { customName, customValue, addPrice } = selectedOptionsArray[key];
         totalPrice += addPrice;
-    // for (let key in selectedOptions) {
-    //     let { optionName, customValue, addPrice } = selectedOptions[key];
-    //     totalPrice += addPrice;
-        
-    //     //แปลงปุ่มกด จาก optionType, optionName -> customName, customValue
-    //     let selectedOptionName = customValue ? optionName : optionName;
-    //     let selectedCustomValue = customValue || optionName;
-    
-    //     values.push(`('${userEmail}', '${productID}', '${selectedOptionName}', '${selectedCustomValue}', ${addPrice})`);
-     }
+        // for (let key in selectedOptions) {
+        //     let { optionName, customValue, addPrice } = selectedOptions[key];
+        //     totalPrice += addPrice;
+
+        //     //แปลงปุ่มกด จาก optionType, optionName -> customName, customValue
+        //     let selectedOptionName = customValue ? optionName : optionName;
+        //     let selectedCustomValue = customValue || optionName;
+
+        //     values.push(`('${userEmail}', '${productID}', '${selectedOptionName}', '${selectedCustomValue}', ${addPrice})`);
+    }
     console.log(optionsString);
     // const query = `
     //             INSERT INTO CustomerCart (email, productID, customName, customValue, addPrice, quantities)
@@ -1003,7 +995,7 @@ app.post("/add-to-cart", (req, res) => {
                     DO UPDATE SET quantities = quantities + 1;
                     `;
 
-    db.run(query, [userEmail, productID, optionsString] , function (err) {
+    db.run(query, [userEmail, productID, optionsString], function (err) {
         if (err) {
             console.log(err.message);
             return res.status(500).json({ error: err.message });
@@ -1075,8 +1067,8 @@ app.post("/add-to-productlist", (req, res) => {
                 SET productName = ?, categoryID = ?, price = ?, subID = ?, brand = ?, description = ?
                 WHERE productID = ?;
             `;
-            
-            db.run(updateQ, [productName, categoryID, price, subID, brand, description,  productID], function (err) {
+
+            db.run(updateQ, [productName, categoryID, price, subID, brand, description, productID], function (err) {
                 if (err) {
                     console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
                 }
@@ -1107,22 +1099,22 @@ app.post("/add-to-productlist", (req, res) => {
 app.post("/update-to-productlist", (req, res) => {
     const { productID, productName, price, brand, description, modifiedTimestamp } = req.body;
     const userEmail = res.locals.userEmail;
-            const updateQ = `
+    const updateQ = `
                 UPDATE ProductList
                 SET productName = ?, price = ?, brand = ?, description = ?
                 WHERE productID = ?;
             `;
-            
-            db.run(updateQ, [productName, price, brand, description,  productID], function (err) {
-                if (err) {
-                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
-                    return res.status(500).json({ success: false, message: "❌เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า" });
-                }
 
-                console.log(updateQ);
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
-                return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
-            });
+    db.run(updateQ, [productName, price, brand, description, productID], function (err) {
+        if (err) {
+            console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
+            return res.status(500).json({ success: false, message: "❌เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า" });
+        }
+
+        console.log(updateQ);
+        insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
+        return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
+    });
 });
 
 app.post("/del-to-productlist", (req, res) => {
@@ -1134,7 +1126,7 @@ app.post("/del-to-productlist", (req, res) => {
     db.get(checkProductQ, [productID], (err, row) => {
         if (err) {
             console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
-            return res.status(500).json({ success: false, message: "❗เช็คไม่สำเร็จ Error: " + err.message});
+            return res.status(500).json({ success: false, message: "❗เช็คไม่สำเร็จ Error: " + err.message });
         }
         if (!row) {
             console.log("ไม่พบข้อมูลสินค้า");
@@ -1150,7 +1142,7 @@ app.post("/del-to-productlist", (req, res) => {
                     console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
                     return res.status(500).json({ success: false, message: "❗อัปเดตไม่สำเร็จ " + err.message });
                 }
-        
+
                 insertEditHistory(productID, modifiedTimestamp, userEmail, `ลบสินค้า`);
                 return res.json({ success: true, message: "✅ ลบข้อมูลสินค้าสำเร็จ" });
             });
@@ -1252,11 +1244,11 @@ app.post("/update-quantity", (req, res) => {
 });
 app.post("/cart-checkout", (req, res) => {
     const { products } = req.body;
-    console.log("/cart-checkout : ",products)
+    console.log("/cart-checkout : ", products)
     //req.session.orderDetail = JSON.stringify(products);
     req.session.orderDetail = products;
-    console.log("/cart-checkout session: ",req.session.orderDetail)
-    
+    console.log("/cart-checkout session: ", req.session.orderDetail)
+
     const userEmail = res.locals.userEmail;
     if (!userEmail) {
         return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
@@ -1265,11 +1257,11 @@ app.post("/cart-checkout", (req, res) => {
 });
 app.post("/checkout-address", (req, res) => {
     const { products } = req.body;
-    console.log("/checkout-address : ",products)
+    console.log("/checkout-address : ", products)
     //req.session.orderDetail = JSON.stringify(products);
     req.session.orderDetail = products;
-    console.log("/cart-checkout session: ",req.session.orderDetail)
-    
+    console.log("/cart-checkout session: ", req.session.orderDetail)
+
     const userEmail = res.locals.userEmail;
     if (!userEmail) {
         return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });

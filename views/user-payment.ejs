@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ช่องทางการชำระเงิน | FINFUR</title>
+    <title>รายการที่สำเร็จแล้ว | FINFUR</title>
     <link rel="icon" type="image/png" href="/images/logo_main.png">
     <link rel="stylesheet" href="/public/style.css">
     <!-- Tailwind CSS CDN -->
@@ -26,12 +26,12 @@
         //         let newCard = document.createElement('div');
         //         newCard.id = cardnum;
         //         newCard.className = 'mb-4';
-        //         newCard.innerHTML = `
+        //         newCard.innerHTML = 
         //             <p class="font-semibold">${cardName} <span id="${cardnum}_default" class="text-blue-500 default-text"></span></p>
         //             <p class="text-gray-600">**** **** **** ${cardnumber.slice(-4)}</p>
         //             <a href="#" class="text-blue-500" onclick="deleteCard('{cardnum}')">ลบ</a>
         //             <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('${cardnum}_default')">ตั้งเป็นค่าเริ่มต้น</button>
-        //         `;
+        //         ;
         //         document.getElementById('cardsContainer').appendChild(newCard);
         //         document.getElementById('addCardForm').classList.add('hidden');
         //     }
@@ -39,61 +39,31 @@
 
         function addNewCard() {
             let cardName = document.getElementById('cardName').value;
-<<<<<<< Updated upstream
-            let cardNumber = document.getElementById('cardNumber').value;
-            if (cardName && cardNumber) {
-                let cardId = 'card' + Math.floor(Math.random() * 10000);
-=======
             let cardnumber = document.getElementById('cardnumber').value;
             if (cardName && cardnumber) {
-                let cardnum = cardnumber; // ใช้ cardnumber เป็น cardnum
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+                let cardnum = cardnumber;
                 let newCard = document.createElement('div');
-                newCard.id = cardId;
+                newCard.id = cardnum;
                 newCard.className = 'mb-4';
                 newCard.innerHTML = `
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                    <p class="font-semibold">${cardName} <span id="${cardId}_default" class="text-blue-500 default-text"></span></p>
-                    <p class="text-gray-600">**** **** **** ${cardNumber.slice(-4)}</p>
-                    <a href="#" class="text-blue-500" onclick="deleteCard('${cardId}')">ลบ</a>
-                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('${cardId}_default')">ตั้งเป็นค่าเริ่มต้น</button>
-                `;
-=======
-=======
->>>>>>> Stashed changes
             <p class="font-semibold">${cardName} <span id="${cardnum}_default" class="text-blue-500 default-text"></span></p>
             <p class="text-gray-600">**** **** **** ${cardnumber.slice(-4)}</p>
             <a href="#" class="text-blue-500" onclick="deleteCard('${cardnum}')">ลบ</a>
             <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('${cardnum}_default')">ตั้งเป็นค่าเริ่มต้น</button>
         `;
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                 document.getElementById('cardsContainer').appendChild(newCard);
                 document.getElementById('addCardForm').classList.add('hidden');
             }
         }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
-        function deleteCard(cardId) {
-            document.getElementById(cardId).remove();
-=======
-=======
->>>>>>> Stashed changes
         function deleteCard(cardnum) {
             console.log('Sending cardnum to server:', cardnum);
 
             fetch("/delete-card", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ cardnum: cardnum })  // ส่ง cardnum ไปยัง backend
+                body: JSON.stringify({ cardnum: cardnum })
             })
                 .then(response => {
                     if (response.redirected) {
@@ -104,22 +74,21 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        // ลบการ์ดออกจาก DOM
-                        const cardElement = document.querySelector(`[data-card-num="${cardnum}"]`);
+                        const cardElement = document.getElementById(cardnum);
                         if (cardElement) {
                             cardElement.remove();
+
                         } else {
                             console.log("ไม่พบ cardnum ที่ต้องการลบ:", cardnum);
                         }
-
-                        alert("ลบบัตรเรียบร้อย");
+                        window.location.reload();
                     } else {
                         alert("เกิดข้อผิดพลาด: " + data.message);
                     }
                 })
                 .catch(error => console.error("Error:", error));
->>>>>>> Stashed changes
         }
+
 
         function setDefault(cardId) {
             document.querySelectorAll('.default-text').forEach(el => el.innerText = '');
@@ -127,7 +96,7 @@
             localStorage.setItem("defaultCard", cardId);
         }
 
-        //ตรวจสอบ localStorage 
+        // ตรวจสอบ localStorage
         document.addEventListener("DOMContentLoaded", function () {
             const defaultCard = localStorage.getItem("defaultCard");
             if (defaultCard) {
@@ -160,100 +129,76 @@
     </script>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900">
-        <div id="navbarContainer">
-            <div id="defaultNavbar">
-                <%- include('partials/narbar') %>
-            </div>
-            <div id="searchNavbar" style="display: none;">
-                <%- include('partials/narbar_search') %>
-            </div>
+<body class="bg-gray-100">
+
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
         </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
 
-        <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
-            <%- include('partials/aside_for_user') %>
-                <div class="flex w-full mx-auto mt-10 bg-white shadow-lg rounded-lg">
+    <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
+        <%- include('partials/aside_for_user') %>
+            <div class="flex w-full mx-auto mt-10 bg-white shadow-lg rounded-lg">
 
-                    <section class="w-3/4 p-5">
-                        <h2 class="text-xl font-bold mb-4">บัตรเครดิต / บัตรเดบิต</h2>
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded"
-                            onclick="showAddCardForm()">เพิ่มบัตรใหม่</button>
+                <section class="w-3/4 p-5">
+                    <h2 class="text-xl font-bold mb-4">บัตรเครดิต / บัตรเดบิต</h2>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded"
+                        onclick="showAddCardForm()">เพิ่มบัตรใหม่</button>
 
-<<<<<<< Updated upstream
-                            <div id="cardsContainer" class="mt-4">
-                                <% if (cards && cards.length > 0) { %>
-                                    <% cards.forEach((card, index) => { %>
-                                        <div id="card<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded">
-                                            <p class="font-semibold">
-                                                <%= card.name %> <span id="default<%= index + 1 %>" class="text-blue-500 default-text"></span>
-                                            </p>
-                                            <p class="text-gray-600">**** **** **** <%= card.last4 %></p>
-                                            <a href="#" class="text-blue-500" onclick="deleteCard('card<%= index + 1 %>')">ลบ</a>
-                                            <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefault('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
-                                        </div>
-=======
-                        <div id="cardsContainer" class="mt-4">
-                            <% if (cards && cards.length> 0) { %>
-                                <% cards.forEach((card, index)=> { %>
-                                    <div id="card<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded"
-                                        data-card-num="<%= card.cardnum %>">
-                                        <p class="font-semibold">
-                                            <%= card.name %> <span id="default<%= index + 1 %>"
-                                                    class="text-blue-500 default-text"></span>
-                                        </p>
-                                        <p class="text-gray-600">**** **** **** <%= card.last4 %>
-                                        </p>
+                    <div id="cardsContainer" class="mt-4">
+                        <% if (cards && cards.length> 0) { %>
+                            <% cards.forEach((card, index)=> { %>
+                                <div id="card<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded"
+                                    data-card-num="<%= card.cardnum %>">
+                                    <p class="font-semibold">
+                                        <%= card.name %>
+                                            <span id="default<%= index + 1 %>"
+                                                class="text-blue-500 default-text"></span>
+                                    </p>
+                                    <p class="text-gray-600">**** **** **** <%= card.last4 %>
+                                    </p>
+                                    <a href="#" class="text-blue-500" onclick="deleteCard('<%= card.cardnum %>')">ลบ</a>
+                                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded"
+                                        onclick="setDefault('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
+                                </div>
 
-                                        <a href="#" class="text-blue-500"
-                                            onclick="deleteCard('<%= card.cardnum %>')">ลบ</a>
+                                <% }) %>
+                                    <% } %>
+                    </div>
 
-                                        <button class="ml-2 px-3 py-1 bg-gray-300 rounded"
-                                            onclick="setDefault('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
-                                    </div>
-
->>>>>>> Stashed changes
-                                    <% }) %>
-                                <% } %>
+                    <form action="add-user-payment" method="post">
+                        <div id="addCardForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
+                            <h3 class="text-lg font-bold mb-2">เพิ่มบัตรใหม่</h3>
+                            <input type="text" id="cardName" name="cardname" placeholder="ชื่อบัตร"
+                                class="w-full p-2 border border-gray-300 rounded mb-2">
+                            <input type="tel" id="cardnumber" name="cardnum" inputmode="numeric" maxlength="16"
+                                placeholder="xxxx xxxx xxxx xxxx"
+                                class="w-full p-2 border border-gray-300 rounded mb-2">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-medium text-black">วันหมดอายุ</label>
+                                    <input type="text" name="cardExpire" placeholder="MM/YY"
+                                        class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
+                                        required>
+                                </div>
+                                <div>
+                                    <label class="block font-medium text-black">cvv</label>
+                                    <input type="text" name="cvv" placeholder="xxx" maxlength="3"
+                                        class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
+                                        required>
+                                </div>
+                            </div> <br>
+                            <button type="submit" onclick="addNewCard()"
+                                class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
                         </div>
+                    </form>
 
-                        <form action="add-user-payment" method="post">
-                            <div id="addCardForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
-                                <h3 class="text-lg font-bold mb-2">เพิ่มบัตรใหม่</h3>
-                                <input type="text" id="cardName" name="cardname" placeholder="ชื่อบัตร"
-                                    class="w-full p-2 border border-gray-300 rounded mb-2">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                                <input type="tel" id="cardNumber" name="cardnum" inputmode="numeric"
-                                    pattern="[0-9\s]{13,19}" autocomplete="cc-number" maxlength="19"
-=======
-                                <input type="tel" id="cardnumber" name="cardnum" inputmode="numeric" maxlength="16"
->>>>>>> Stashed changes
-=======
-                                <input type="tel" id="cardnumber" name="cardnum" inputmode="numeric" maxlength="16"
->>>>>>> Stashed changes
-                                    placeholder="xxxx xxxx xxxx xxxx"
-                                    class="w-full p-2 border border-gray-300 rounded mb-2">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block font-medium text-black">วันหมดอายุ</label>
-                                        <input type="text" name="cardExpire" placeholder="MM/YY" 
-                                            class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
-                                            required>
-                                    </div>
-                                    <div>
-                                        <label class="block font-medium text-black">cvv</label>
-                                        <input type="text" name="cvv" placeholder="xxx" maxlength="3"
-                                            class="w-full border border-gray-300 rounded-lg p-2 mt-1 focus:ring focus:ring-blue-300"
-                                            required>
-                                    </div>
-                                </div> <br>
-                                <button type="submit" onclick="addNewCard()"
-                                    class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
-                            </div>
-                        </form>
-
-                    </section>
-                </div>
-    </body>
+                </section>
+            </div>
+</body>
 
 </html>

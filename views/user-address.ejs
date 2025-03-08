@@ -11,15 +11,13 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
         tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
     </script>
     <script>
         function showAddAddressForm() {
             document.getElementById('addAddressForm').classList.toggle('hidden');
         }
-        
+
         // function addNewAddress() {
         //     let name = document.getElementById('newName').value;
         //     let phone = document.getElementById('newPhone').value;
@@ -40,16 +38,14 @@
         //         document.getElementById('addAddressForm').classList.add('hidden');
         //     }
         // }
-        
-        function editAddress(addressId) {
-            let addressBlock = document.getElementById(addressId);
-            let addressText = addressBlock.querySelector('.address-text');
-            let newAddress = prompt('แก้ไขที่อยู่:', addressText.innerText);
-            if (newAddress) {
-                addressText.innerText = newAddress;
-=======
-=======
->>>>>>> Stashed changes
+
+        // function editAddress(addressId) {
+        //     let addressBlock = document.getElementById(addressId);
+        //     let addressText = addressBlock.querySelector('.address-text');
+        //     let newAddress = prompt('แก้ไขที่อยู่:', addressText.innerText);
+        //     if (newAddress) {
+        //         addressText.innerText = newAddress;
+
         function addNewAddress() {
             let name = document.getElementById('newName').value;
             let phone = document.getElementById('newPhone').value;
@@ -78,10 +74,6 @@
                 `;
                 document.getElementById('addressesContainer').appendChild(newBlock);
                 document.getElementById('addAddressForm').classList.add('hidden');
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
             }
         }
 
@@ -92,7 +84,7 @@
         }
 
 
-       // ตรวจสอบเมื่อโหลดหน้า
+        // ตรวจสอบ localStorage
         document.addEventListener("DOMContentLoaded", function () {
             const defaultAddress = localStorage.getItem("defaultAddress");
             if (defaultAddress) {
@@ -116,6 +108,7 @@
                 return;
             }
 
+            // ส่งข้อมูลไปที่เซิร์ฟเวอร์
             fetch("/edit-user-address", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -132,13 +125,16 @@
                     if (data.success) {
                         location.reload();
                     } else {
-                        alert("เกิดข้อผิดพลาดในการแก้ไขที่อยู่");
+                        alert("เกิดข้อผิดพลาดในการแก้ไขที่อยู่: " + (data.message || "ไม่ทราบข้อผิดพลาด"));
                     }
-
                 })
-
-                .catch(error => console.error("Error:", error));
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
+                });
         });
+
+
 
 
         function showAddAddressForm() {
@@ -166,7 +162,6 @@
                 .then(data => {
                     if (data.success) {
                         document.getElementById(`address-${phone}`).remove();
-                        alert("ลบที่อยู่เรียบร้อย");
                     } else {
                         alert("เกิดข้อผิดพลาด: " + data.message);
                     }
@@ -189,28 +184,11 @@
 
     </script>
 </head>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<body class="bg-gray-100 dark:bg-gray-900">
-        <div id="navbarContainer">
-            <div id="defaultNavbar">
-                <%- include('partials/narbar') %>
-            </div>
-            <div id="searchNavbar" style="display: none;">
-                <%- include('partials/narbar_search') %>
-            </div>
-=======
-=======
->>>>>>> Stashed changes
 
 <body class="bg-gray-100">
     <div id="navbarContainer">
         <div id="defaultNavbar">
             <%- include('partials/narbar') %>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         </div>
         <div id="searchNavbar" style="display: none;">
             <%- include('partials/narbar_search') %>
@@ -266,7 +244,7 @@
                                 <h3 class="text-lg font-bold mb-2">แก้ไขที่อยู่</h3>
                                 <input type="text" id="editName" name="name" placeholder="ชื่อ-นามสกุล"
                                     class="w-full p-2 border rounded mb-2">
-                                <textarea id="editAddress" name="address" placeholder="ที่อยู่"
+                                <textarea type="text" id="editAddress" name="address" placeholder="ที่อยู่"
                                     class="w-full p-2 border rounded mb-2"></textarea>
                                 <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
                             </form>
