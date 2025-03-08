@@ -37,20 +37,21 @@
                     onkeyup="searchProducts()"
                     class="flex-grow pl-4 pr-14 py-2 border rounded-lg text-black focus:outline-none w-full h-auto text-[10px] sm:text-[15px] md:text-auto"
                     >
-                    <div id="searchResults" class="mt-2 border border-gray-300 text-black bg-white top-full w-full max-w-xl absolute z-10 hidden left-0">
+                    <div id="searchResults" class=" mt-2 border border-gray-300 text-black bg-white top-full w-full absolute z-10 hidden left-0 rounded-lg shadow-lg">
                         <ul class="max-h-60 overflow-y-auto">
                             <% if (typeof product !== 'undefined' && Array.isArray(product) && product.length > 0) { %>
                                 <% product.forEach(function(item) { %>
-                                    <li class="border-b p-2 hover:bg-gray-100 cursor-pointer"
+                                    <li class="border-b p-3 hover:bg-gray-100 cursor-pointer rounded-md transition duration-300"
                                         data-id="<%= item.productID %>"
                                         data-name="<%= item.productName %>"
                                         data-brand="<%= item.brand %>">
-                                        <%= item.productName %> / <%= item.brand %>
-                                        <div class="text-gray-500 text-sm">(รหัสสินค้า: <%= item.productID %>)</div>
+                                        <span class="font-semibold text-gray-800 "><%= item.productName %></span>
+                                        <span class="text-gray-500 "><%= item.brand %></span>
+                                        <div class="text-sm text-gray-400 ">(รหัสสินค้า: <%= item.productID %>)</div>
                                     </li>
                                 <% }); %>
                             <% } else { %>
-                                <li class="p-2 text-gray-500">ไม่พบสินค้า</li>
+                                <li class="p-3 text-center text-gray-500 ">ไม่พบสินค้า</li>
                             <% } %>
                         </ul>
                     </div>
