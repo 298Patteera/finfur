@@ -415,30 +415,6 @@ app.get("/user-profile", (req, res) => {
         res.render('user-profile', { data: row });
     });
 });
-<<<<<<< Updated upstream
-=======
-
-// เสิร์ฟหน้าuser-editprofile
- app.post('/update-profile', (req, res) => {
-    const email = req.session.userEmail;
-
-    const { username, name, phone, gender, dob } = req.body;
-
-    const sql = `UPDATE userInfo SET username = ?, name = ?, phone = ?, gender = ?, dob = ? WHERE email = ?`;
-
-    db.run(sql, [username, name, phone, gender, dob, email], function (err) {
-        if (err) {
-            return res.json({ success: false, message: err.message });
-        }
-        console.log('Data updated successfully');
-        res.redirect('/user-profile');
-    });
-    
-});
-
-
-
->>>>>>> Stashed changes
 // เสิร์ฟหน้าuser-payment
 app.get("/user-payment", (req, res) => {
     const email = req.session.userEmail;
@@ -492,8 +468,7 @@ app.post("/add-user-payment", (req, res) => {
     });
 });
 
-<<<<<<< Updated upstream
-=======
+
 //ลบ user-payment-card
 app.post('/delete-card', (req, res) => {
     console.log("Received request body:", req.body);
@@ -521,10 +496,7 @@ app.post('/delete-card', (req, res) => {
 
 
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
 // เสิร์ฟหน้าuser-address
 app.get("/user-address", (req, res) => {
     const email = req.session.userEmail;
