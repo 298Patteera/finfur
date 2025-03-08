@@ -16,4 +16,12 @@ body {
   transition: transform 0.4s ease-in-out;
 }
 
+#searchResults::-webkit-scrollbar {
+  display: none;  /* ซ่อนแถบเลื่อน */
+}
 
+#searchResults {
+  padding-right: 5px;  /* เพิ่ม padding ด้านขวาเพื่อให้แถบเลื่อนขยับเข้าใกล้ */
+  -ms-overflow-style: none;  /* ซ่อนแถบเลื่อนใน IE */
+  scrollbar-width: none;  /* ซ่อนแถบเลื่อนใน Firefox */
+}
