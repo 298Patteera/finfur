@@ -2,6 +2,9 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const port = 3000;
+const promptpay = require('promptpay-qr');
+const QRCode = require('qrcode');
+const multer = require('multer');
 
 // ตั้งค่า View Engine เป็น EJS
 app.set("view engine", "ejs");
@@ -1189,6 +1192,52 @@ app.post("/checkout-address", (req, res) => {
     //     return res.json({ success: true });
     // }
 
+});
+
+//prompay
+// หมายเลขพร้อมเพย์และจำนวนเงิน
+const phoneNumber = "0655047562";
+const amount = 300.00; // จำนวนเงินที่ fix คงที่
+
+app.get('/qr', async (req, res) => {
+    try {
+        const qrData = promptpay(phoneNumber, amount); // ส่งหมายเลขพร้อมเพย์และจำนวนเงินคงที่ไปยังฟังก์ชัน promptpay
+        const qrImage = await QRCode.toDataURL(qrData);
+        res.send(`<img src="${qrImage}" alt="PromptPay QR Code">`);
+    } catch (error) {
+        console.error("Error:", error.message);
+        res.status(500).send("❌ ไม่สามารถสร้าง QR Code ได้ ");
+    }
+});
+
+// กำหนดโฟลเดอร์เก็บไฟล์อัปโหลด
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+        cb(null, 'slip_' + Date.now() + path.extname(file.originalname)); // ตั้งชื่อไฟล์ที่อัปโหลด
+    }
+});
+const upload = multer({ storage });
+
+// API สำหรับอัปโหลดสลิป
+app.post('/upload', upload.single('slip'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('❌ กรุณาอัปโหลดไฟล์');
+    }
+    res.send('✅ อัปโหลดสลิปสำเร็จ! ไฟล์: ' + req.file.filename);
+});
+
+// เสิร์ฟหน้า ของ PromptPay
+app.get('/prompay', (req, res) => {
+    // ส่งข้อมูล amount ไปยัง EJS
+    res.render('prompay', { amount }); 
+});
+//prompay
+
+// เสิร์ฟหน้า ของ PromptPay
+app.get('/debit', (req, res) => {
+    // ส่งข้อมูล amount ไปยัง EJS
+    res.render('debit'); 
 });
 
 // เริ่มเซิร์ฟเวอร์
