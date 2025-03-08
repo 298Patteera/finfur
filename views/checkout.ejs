@@ -28,23 +28,22 @@
 
         <!-- ตัวเลือกที่อยู่ -->
         <div class="space-y-4">
-            <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
-                <input type="radio" name="address" class="mr-2">
-                <!-- ตรงนี้เอา database address มาใส่ -->
-                <div>
-                    <strong>นายชนกิจ ถุกษ์ดี</strong> | (+66) 94 865 1221<br>
-                    42/296 หมู่บ้านคาซ่าลีน่า2 ถนน นิมิตใหม่ ซอย 20, แขวง ทรายกองดิน, เขตคลองสามวา กทม. 10510
-                </div>
-            </div>
-
-            <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
-                <input type="radio" name="address" class="mr-2">
-                <!-- ตรงนี้เอา database address มาใส่ -->
-                <div>
-                    <strong>นายชนกิจ ถุกษ์ดี</strong> | (+66) 94 865 1221<br>
-                    42/296 หมู่บ้านคาซ่าลีน่า2 ถนน นิมิตใหม่ ซอย 20, แขวง ทรายกองดิน, เขตคลองสามวา กทม. 10510
-                </div>
-            </div>
+            <% if (userEmail) { %>
+                <% userData.forEach(item => { %>
+                    <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
+                        <input type="radio" name="address" class="mr-2" 
+                        data-name="<%= item.name %>"
+                        data-phone="<%= item.phone %>"
+                        data-address="<%= item.address %>"
+                        data-totalPrice="<%= totalPrice %>"
+                        >
+                        <!-- ตรงนี้เอา database address มาใส่ -->
+                        <div>
+                            <strong><%= item.name %></strong> | (+66) <%= (item.phone) %><br>
+                            <%= item.address %>
+                        </div>
+                    </div>
+                <% });}%>
         </div>
 
         <!-- ปุ่มดำเนินการ -->
@@ -52,14 +51,59 @@
             <a href="/cart" class="px-4 py-2 border rounded-lg flex items-center">
                 <span class="mr-2">⬅</span> เลือกซื้อสินค้าต่อ
             </a>
-            <button class="px-6 py-2 bg-red-500 text-white rounded-lg">
+            <button id="checkoutBtn" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
                 ยืนยันคำสั่งซื้อ
             </button>
         </div>
 
         <div class="text-right mt-4 text-lg font-bold">
-            ราคารวมทั้งหมด: <span id="total-price">$sum price บาท</span>
+            ราคารวมทั้งหมด: <span id="total-price"><%= totalPrice.toLocaleString() %> บาท</span>
         </div>
     </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectAllCheckbox = document.getElementById("selectAll");
+            const checkboxes = document.querySelectorAll(".productCheckbox");
+            const sumPriceE = document.getElementById("total-price");
+            const deleteButtons = document.querySelectorAll(".delete-btn");
+            const deleteAllBtn = document.getElementById("deleteAllBtn");
+            const checkoutBtn = document.getElementById("checkoutBtn");
+
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener("click", function () {
+                    const selectedAddress = Array.from(checkboxes)
+                        .filter(checkbox => checkbox.checked)
+                        .map(checkbox => ({
+                            name: checkbox.getAttribute("data-name"),
+                            phone: checkbox.getAttribute("data-phone"),
+                            address: checkbox.getAttribute("data-address"),
+                            totalPrice: checkbox.getAttribute("data-totalPrice")
+                        }));
+                    if (selectedAddress.length === 0) {
+                        //alert("ไม่มีสินค้าที่ถูกเลือก");
+                        return;
+                    }
+
+                    fetch("/checkout-address", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ userAddress: selectedAddress })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert("สั่งซื้อสินค้าไม่สำเร็จ");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("เกิดข้อผิดพลาด");
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -242,26 +242,30 @@
         async function addToCart() {
             let productID = "<%= product.productID %>";
             let selectedOptionsArray = []; 
+            const customInputs = document.querySelectorAll(".custom-input");
+            if (customInputs.length > 0) {
+                console.log("customInputs.length > 0");
+                document.querySelectorAll(".custom-input").forEach(input => {
+                    let optionType = input.name;
+                    let customValue = input.value.trim();
+                    
+                    // ถ้าว่าง ใช้ค่าแนะนำ
+                    let recommendedSize = input.getAttribute("placeholder").split(" (")[0];
+                    if (!customValue) {
+                        customValue = recommendedSize;
+                    }
 
-            document.querySelectorAll(".custom-input").forEach(input => {
-                let optionType = input.name;
-                let customValue = input.value.trim();
-                
-                // ถ้าว่าง ใช้ค่าแนะนำ
-                let recommendedSize = input.getAttribute("placeholder").split(" (")[0];
-                if (!customValue) {
-                    customValue = recommendedSize;
+                    selectedOptionsArray.push({ customName: optionType, customValue, addPrice: 0 });
+                });
+
+                // ดึงค่าจากปุ่มกด
+                for (let key in selectedOptions) {
+                    let optionData = JSON.parse(selectedOptions[key]);
+                    selectedOptionsArray.push(optionData);
                 }
-
-                selectedOptionsArray.push({ customName: optionType, customValue, addPrice: 0 });
-            });
-
-            // ดึงค่าจากปุ่มกด
-            for (let key in selectedOptions) {
-                let optionData = JSON.parse(selectedOptions[key]);
-                selectedOptionsArray.push(optionData);
+            } else {
+                selectedOptionsArray.push({ customName: "ไม่มีตัวเลือก", customValue: '', addPrice: 0 });
             }
-
             console.log(productID + " :", selectedOptionsArray);
 
             try {

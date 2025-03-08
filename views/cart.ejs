@@ -53,7 +53,13 @@
                 let totalPrice = (basePrice + addPrice) * Number(item.quantities);
             %>
                 <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md">
-                    <input type="checkbox" class="productCheckbox" data-price="<%= totalPrice %>">
+                    <input type="checkbox" class="productCheckbox" 
+                    data-price="<%= totalPrice %>" 
+                    data-productid="<%= item.productID %>" 
+                    data-customvalue='<%= customStr %>'
+                    data-productName="<%= item.productName %>"
+                    data-quantities="<%= item.quantities %>" 
+                    >
 
                     <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md">
                         <img 
@@ -106,7 +112,7 @@
             <button id="deleteAllBtn" class="px-4 py-2 border rounded-lg flex items-center bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn">
                 🗑 ลบทั้งหมด
             </button>
-            <a href="/checkout" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
+            <a href="/checkout" id="checkoutBtn" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
                 ดำเนินการสั่งซื้อ
             </a>
         </div>
@@ -140,6 +146,8 @@
             const sumPriceE = document.getElementById("total-price");
             const deleteButtons = document.querySelectorAll(".delete-btn");
             const deleteAllBtn = document.getElementById("deleteAllBtn");
+            const checkoutBtn = document.getElementById("checkoutBtn");
+
 
             function updateTotal() {
                 let total = 0;
@@ -228,7 +236,44 @@
                     });
                 });
             }
+
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener("click", function () {
+                    const selectedProducts = Array.from(checkboxes)
+                        .filter(checkbox => checkbox.checked)
+                        .map(checkbox => ({
+                            productID: checkbox.getAttribute("data-productid"),
+                            productName: checkbox.getAttribute("data-productName"),
+                            quantities: checkbox.getAttribute("data-quantities"),
+                            eachTotalPrice: checkbox.getAttribute("data-price"),
+                            customValue: checkbox.getAttribute("data-customvalue")
+                        }));
+                    if (selectedProducts.length === 0) {
+                        //alert("ไม่มีสินค้าที่ถูกเลือก");
+                        return;
+                    }
+
+                    fetch("/cart-checkout", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ products: selectedProducts })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert("สั่งซื้อสินค้าไม่สำเร็จ");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("เกิดข้อผิดพลาด");
+                    });
+                });
+            }
         });
+        
 
         const quantityButtons = document.querySelectorAll(".update-quantity");
         async function updateQuantity(productID, customValue, action) {

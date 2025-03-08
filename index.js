@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-const port = 3000;
+const port = 8000;
 
 // ตั้งค่า View Engine เป็น EJS
 app.set("view engine", "ejs");
@@ -33,11 +33,14 @@ const { name } = require("ejs");
 app.use(session({
     secret: "simplemakmak",
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { secure: false },
+    secure: false
 }));
 // ทำให้ email เป็น local ดึงข้อมูลไปใช้ได้ทุก .ejs
 app.use((req, res, next) => {
     res.locals.userEmail = req.session.userEmail || null;
+    res.locals.orderDetail = req.session.orderDetail || null;
     next();
 });
 // เสิร์ฟหน้า Login
@@ -149,7 +152,7 @@ app.get("/product/:id", (req, res) => {
         }
 
         const product = {
-            productID: rows[0].productID,
+            productID: productId,
             productName: rows[0].productName,
             brand: rows[0].brand,
             price: rows[0].price,
@@ -175,7 +178,7 @@ app.get("/product/:id", (req, res) => {
                 });
             }
         });
-
+        console.log(product);
         res.render("product-detail", { product });
     });
 });
@@ -355,8 +358,32 @@ app.get("/cart", (req, res) => {
 });
 // เสิร์ฟหน้าเช็คเอาท์
 app.get("/checkout", (req, res) => {
-    res.render("checkout");
+    console.log("/checkout session data: ", req.session);
+
+    const orderDetail = req.session.orderDetail;
+    const userEmail = req.session.userEmail;
+
+    if (!orderDetail) {
+        console.log("/checkout : ไม่พบข้อมูล orderDetail");
+    } else {
+        const totalPrice = orderDetail.reduce((sum, item) => {return sum + Number(item.eachTotalPrice);}, 0);
+        const query = `
+        SELECT * FROM userAddress
+        WHERE email = ?;
+    `;
+    db.all(query, [userEmail], (err, rows) => {
+        if (err) {
+            console.log("❗" + err.message);
+        }
+        console.log("/checkout : ", orderDetail);
+        res.render("checkout", { userData: rows, userEmail, orderDetail, totalPrice });
+    });
+    }
+    
+    //console.log("/checkout session: ", req.session);
+
 });
+
 
 // เสิร์ฟหน้าuser-profile
 app.get("/user-profile", (req, res) => {
@@ -1096,7 +1123,50 @@ app.post("/update-quantity", (req, res) => {
         }
     );
 });
+app.post("/cart-checkout", (req, res) => {
+    const { products } = req.body;
+    console.log("/cart-checkout : ",products)
+    //req.session.orderDetail = JSON.stringify(products);
+    req.session.orderDetail = products;
+    console.log("/cart-checkout session: ",req.session.orderDetail)
+    
+    const userEmail = res.locals.userEmail;
+    if (!userEmail) {
+        return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
+    }
+    res.redirect("/checkout");
+});
+app.post("/checkout-address", (req, res) => {
+    const { products } = req.body;
+    console.log("/checkout-address : ",products)
+    //req.session.orderDetail = JSON.stringify(products);
+    req.session.orderDetail = products;
+    console.log("/cart-checkout session: ",req.session.orderDetail)
+    
+    const userEmail = res.locals.userEmail;
+    if (!userEmail) {
+        return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
+    }
+    //ไปไหนต่อล่ะเนี่ย
+    //res.redirect("/checkout");
 
+    //ไว้ใช้ตรงหน้าจ่ายเงินเสร็จ
+    // if (products) {
+    //     //ลบหลายชิ้น
+    //     const deleteQ = "DELETE FROM CustomerCart WHERE email = ? AND productID = ? AND customValue = ?";
+
+    //     db.serialize(() => {
+    //         const qLoops = db.prepare(deleteQ);
+    //         products.forEach(product => {
+    //             qLoops.run(userEmail, product.productID, JSON.stringify(product.customValue));
+    //         });
+    //         qLoops.finalize();
+    //     });
+
+    //     return res.json({ success: true });
+    // }
+
+});
 
 // เริ่มเซิร์ฟเวอร์
 app.listen(port, () => {
