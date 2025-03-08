@@ -58,6 +58,7 @@ app.get("/login", (req, res) => {
 //         res.send("❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!");
 //     }
 // });
+
 app.post("/login", (req, res) => {
     const { "email-login": email, "password-login": pssword } = req.body;
 
@@ -80,9 +81,16 @@ app.post("/login", (req, res) => {
                     return res.redirect("/login");
                 }
 
+                // if (provider) {
+                //     return res.redirect("/provider-productList");
+                // } else {
+                //     return res.redirect("/");
+                // }
                 if (provider) {
+                    req.session.isProvider = true;
                     return res.redirect("/provider-productList");
                 } else {
+                    req.session.isProvider = false; // ถ้าไม่ใช่ provider
                     return res.redirect("/");
                 }
             });
@@ -93,9 +101,14 @@ app.post("/login", (req, res) => {
     });
 });
 
-// เสิร์ฟหน้า Sign-in(ลูกค้า)
-app.get("/signin-customer", (req, res) => {
-    res.render("signin-customer");
+// Middleware เช็คสถานะของผู้ใช้
+app.use((req, res, next) => {
+    if (req.session.isProvider) {
+        res.locals.isProvider = true; // เก็บสถานะใน locals
+    } else {
+        res.locals.isProvider = false;
+    }
+    next();
 });
 
 app.post("/signin-customer", (req, res) => {
