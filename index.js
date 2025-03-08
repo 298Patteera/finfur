@@ -100,7 +100,7 @@ app.post("/login", (req, res) => {
             });
         } else {
             console.log("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!");
-            res.send("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!")
+            res.send('<script>alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!"); window.location.href="/login";</script>');
         }
     });
 });
