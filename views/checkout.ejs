@@ -27,6 +27,7 @@
         <h1 class="text-2xl font-bold text-center my-4">ทำการสั่งซื้อ</h1>
 
         <!-- ตัวเลือกที่อยู่ -->
+        <h2 class="mt-2 text-blue-600 font-bold mb-2">ที่อยู่</h2>
         <div class="space-y-4">
             <% if (userEmail) { %>
                 <% userData.forEach(item => { %>
@@ -46,12 +47,47 @@
                 <% });}%>
         </div>
 
+        <h2 class="mt-2 text-blue-600 font-bold">ช่องทางการชำระเงิน</h2>
+
+        <!-- ตัวเลือกบัตรเครดิต -->
+        <div class="space-y-4">
+            <div>
+                <p class="mt-2 p-2 text-blue-600">ชำระด้วย บัตรเครดิต / บัตรเดบิต</p>
+                <% if (userEmail) { %>
+                    <% userData.forEach(item => { %>
+                        <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
+                            <input type="radio" name="pay" value="debit" class="mr-2"
+                                data-name="<%= item.name %>"
+                                data-phone="<%= item.phone %>"
+                                data-address="<%= item.address %>"
+                                data-totalPrice="<%= totalPrice %>">
+                            <div>
+                                <strong><%= item.name %></strong> | (+66) <%= (item.phone) %><br>
+                                <%= item.address %>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+        
+        <!-- ตัวเลือก QR Code (PromptPay) -->
+        <div class="mt-2 p-2 text-blue-600">
+            <p>ชำระเงินผ่าน PromptPay</p>
+            <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
+                <input type="radio" name="pay" value="prompay" class="mr-2">
+                <label for="qr-payment">
+                    <img src="/images/prompay.png" class="max-h-10">
+                </label>
+            </div>
+        </div>
+
         <!-- ปุ่มดำเนินการ -->
         <div class="flex justify-between mt-6">
             <a href="/cart" class="px-4 py-2 border rounded-lg flex items-center">
                 <span class="mr-2">⬅</span> เลือกซื้อสินค้าต่อ
             </a>
-            <button id="checkoutBtn" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
+            <button id="checkoutBtn" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg mt-4" onclick="checkPayment()">
                 ยืนยันคำสั่งซื้อ
             </button>
         </div>
@@ -61,6 +97,23 @@
         </div>
     </main>
     <script>
+        function checkPayment() {
+        // ค้นหาตัวเลือกที่ถูกเลือก
+        const selectedPayment = document.querySelector('input[name="pay"]:checked');
+
+        if (!selectedPayment) {
+            alert("กรุณาเลือกช่องทางการชำระเงิน");
+            return;
+        }
+
+        // นำผู้ใช้ไปยังหน้าที่เหมาะสม
+        if (selectedPayment.value === "debit") {
+            window.location.href = "/debit";
+        } else if (selectedPayment.value === "prompay") {
+            window.location.href = "/prompay";
+        }
+    }
+
         document.addEventListener("DOMContentLoaded", function () {
             const selectAllCheckbox = document.getElementById("selectAll");
             const checkboxes = document.querySelectorAll(".productCheckbox");
