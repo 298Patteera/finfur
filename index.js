@@ -110,7 +110,9 @@ app.use((req, res, next) => {
     }
     next();
 });
-
+app.get("/signin-customer", (req, res) => {
+    res.render("signin-customer");
+});
 app.post("/signin-customer", (req, res) => {
     let addInfo = {
         username: req.body.username,
