@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ชำระค่าสินค้า | FINFUR</title>
+    <link rel="icon" type="image/png" href="/images/logo_main.png">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
+    </script>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white">
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+
+    <main class="flex flex-col items-center justify-center min-h-screen">
+        <div class="max-w-lg w-full bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 class="text-xl font-semibold text-green-500">✅ การชำระเงินสำเร็จ!</h2>
+        </div>
+        
+        <div class="flex justify-center mt-6">
+            <a href="/cart" class="px-4 py-2 border rounded-lg flex items-center dark:text-white">
+                <span class="mr-2">⬅</span> เลือกซื้อสินค้าต่อ
+            </a>
+        </div>
+    </main>
+</body>
+    
+    
+
+</body>
+
+</html>

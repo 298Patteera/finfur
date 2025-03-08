@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ชำระค่าสินค้า | FINFUR</title>
+    <link rel="icon" type="image/png" href="/images/logo_main.png">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
+    </script>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body class="bg-white text-black dark:bg-gray-900">
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+
+<main class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold text-center my-4 dark:text-white">ชำระค่าสินค้า</h1>
+    <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-semibold text-center mb-4">ชำระเงินผ่าน PromptPay</h2>
+        <p class="text-center text-lg">รวมทั้งหมด: <strong><%= amount %> บาท</strong></p> <!-- ใช้ค่า amount ที่ส่งจากเซิร์ฟเวอร์ -->
+        <p class="text-center text-md mt-2 mb-4">สแกน QR Code ด้านล่างเพื่อชำระเงิน</p>
+        
+        <div id="qrCodeContainer" class="flex justify-center mb-4">กำลังโหลด QR Code...</div>
+        
+        <h3 class="text-lg font-medium text-center mt-4">อัปโหลดสลิปยืนยัน</h3>
+        <div class="flex justify-center mt-2 mb-4">
+            <!-- <input type="file" id="uploadSlip" accept="image/*" class="border p-2 rounded-md"> -->
+            <!-- <form>
+                <label class="block border p-2">
+                <span class="sr-only">Choose profile photo</span>
+                <input type="file" id="uploadSlip"
+                accept="image/*" onchange="previewImage(event)"
+                class="block w-full text-sm text-gray-500
+                    file:me-4 file:py-2 file:px-4
+                    file:rounded-lg file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-600 file:text-white
+                    hover:file:bg-blue-700
+                    file:disabled:opacity-50 file:disabled:pointer-events-none
+                ">
+                </label>
+            </form> -->
+
+            <form class="max-w-sm">
+                <label for="file-input" class="sr-only">อัปโหลดสลิปยืนยัน</label>
+                <input type="file" id="uploadSlip" accept="image/*"  name="file-input" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
+                  file:bg-gray-50 file:border-0
+                  file:me-4
+                  file:py-3 file:px-4
+                  dark:file:bg-neutral-700 dark:file:text-neutral-400">
+              </form>
+        </div>
+
+
+
+
+
+
+
+
+        <div class="flex justify-center">
+            <button onclick="uploadSlip()" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">อัปโหลดสลิป</button>
+        </div>
+        
+        <p id="successMessage" class="hidden text-center text-green-500 mt-4">✅ การชำระเงินสำเร็จ!</p>
+    </div>
+</main>
+<div class="flex justify-between mt-6">
+    <a href="/cart" class="px-4 py-2 border rounded-lg flex items-center dark:text-white">
+        <span class="mr-2">⬅</span> เลือกซื้อสินค้าต่อ
+    </a>
+</div>
+
+    
+
+    <script>
+        // ดึง QR Code จากเซิร์ฟเวอร์และส่งค่าจำนวนเงินไปด้วย
+        fetch(`/qr?amount=<%= amount %>`)  // ส่งค่า amount ไปยัง API
+            .then(response => response.text())
+            .then(data => document.getElementById("qrCodeContainer").innerHTML = data)
+            .catch(error => console.error('❌ โหลด QR Code ไม่ได้:', error));
+
+        function uploadSlip() {
+            const file = document.getElementById("uploadSlip").files[0];
+            if (!file) {
+                alert("กรุณาเลือกไฟล์สลิป");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("slip", file);
+
+            fetch('/upload', {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("successMessage").classList.remove("hidden");
+                alert(data);
+            })
+            .catch(error => alert("❌ อัปโหลดสลิปไม่สำเร็จ"));
+        }
+    </script>
+</body>
+
+</html>
