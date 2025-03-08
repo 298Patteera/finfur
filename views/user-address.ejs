@@ -1,6 +1,7 @@
 <!-- userAddress.ejs -->
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+<<<<<<< Updated upstream
         tailwind.config = { darkMode: 'class' }; // ใช้ dark mode ผ่าน class
     </script>
     <script>
@@ -44,38 +46,144 @@
             let newAddress = prompt('แก้ไขที่อยู่:', addressText.innerText);
             if (newAddress) {
                 addressText.innerText = newAddress;
+=======
+        function addNewAddress() {
+            let name = document.getElementById('newName').value;
+            let phone = document.getElementById('newPhone').value;
+            let address = document.getElementById('newAddress').value;
+
+            let existingAddresses = document.querySelectorAll('.address-text');
+            for (let block of existingAddresses) {
+                let existingPhone = block.previousElementSibling.querySelector('.font-semibold').textContent;
+                if (existingPhone.includes(phone)) {
+                    alert("เบอร์โทรนี้ถูกใช้แล้ว กรุณาใช้เบอร์โทรอื่น");
+                    return;
+                }
+            }
+
+            if (name && phone && address) {
+                let newId = 'address' + Math.floor(Math.random() * 10000);
+                let newBlock = document.createElement('div');
+                newBlock.id = newId;
+                newBlock.className = 'mb-4 p-4 border border-gray-300 rounded';
+                newBlock.innerHTML = `
+                    <p class="font-semibold">${name} (${phone}) <span id="${newId}_default" class="text-blue-500 default-text"></span></p>
+                    <p class="text-gray-600 address-text">${address}</p>
+                    <button class="text-blue-500" onclick="editAddress('${newId}')">แก้ไข</button>
+                    <button class="text-blue-500 ml-2" onclick="deleteAddress('${newId}')">ลบ</button>
+                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('${newId}_default')">ตั้งเป็นค่าเริ่มต้น</button>
+                `;
+                document.getElementById('addressesContainer').appendChild(newBlock);
+                document.getElementById('addAddressForm').classList.add('hidden');
+>>>>>>> Stashed changes
             }
         }
-        
-        function deleteAddress(addressId) {
-            document.getElementById(addressId).remove();
-        }
-        
+
         function setDefaultAddress(addressId) {
             document.querySelectorAll('.default-text').forEach(el => el.innerText = '');
             document.getElementById(addressId).innerText = 'ค่าเริ่มต้น';
+            localStorage.setItem("defaultAddress", addressId);
         }
 
-        // 2
-  function toggleSearch(event) {
-    event.preventDefault();
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    sessionStorage.setItem("searchMode", !searchMode);
 
-    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
-  }
+       // ตรวจสอบเมื่อโหลดหน้า
+        document.addEventListener("DOMContentLoaded", function () {
+            const defaultAddress = localStorage.getItem("defaultAddress");
+            if (defaultAddress) {
+                const defaultElement = document.getElementById(defaultAddress);
+                if (defaultElement) {
+                    defaultElement.innerText = 'ค่าเริ่มต้น';
+                }
+            }
+        });
 
-  function updateNavbar() {
-    let searchMode = sessionStorage.getItem("searchMode") === "true";
-    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
-    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
-  }
 
-  // ตรวจสอบเมื่อโหลดหน้า
-  document.addEventListener("DOMContentLoaded", updateNavbar);
-//2
+        document.getElementById("editAddressForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const phone = document.getElementById("editModePhone").value;
+            const name = document.getElementById("editName").value.trim();
+            const address = document.getElementById("editAddress").value.trim();
+
+            if (!name || !address) {
+                alert("กรุณากรอกข้อมูลให้ครบทุกช่อง");
+                return;
+            }
+
+            fetch("/edit-user-address", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone, name, address })
+            })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert("เกิดข้อผิดพลาดในการแก้ไขที่อยู่");
+                    }
+
+                })
+
+                .catch(error => console.error("Error:", error));
+        });
+
+
+        function showAddAddressForm() {
+            document.getElementById('addAddressForm').classList.toggle('hidden');
+        }
+
+        function editAddress(phone, name, address) {
+            document.getElementById("editAddressForm").classList.remove("hidden");
+            document.getElementById("editModePhone").value = phone;
+            document.getElementById("editName").value = name;
+            document.getElementById("editAddress").value = address;
+        }
+
+        function deleteAddress(phone) {
+
+            fetch("/delete-user-address", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ phone: phone })
+            })
+
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`address-${phone}`).remove();
+                        alert("ลบที่อยู่เรียบร้อย");
+                    } else {
+                        alert("เกิดข้อผิดพลาด: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        function toggleSearch(event) {
+            event.preventDefault();
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            sessionStorage.setItem("searchMode", !searchMode);
+            updateNavbar();
+        }
+
+        function updateNavbar() {
+            let searchMode = sessionStorage.getItem("searchMode") === "true";
+            document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+            document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+        }
+
     </script>
 </head>
+<<<<<<< Updated upstream
 <body class="bg-gray-100 dark:bg-gray-900">
         <div id="navbarContainer">
             <div id="defaultNavbar">
@@ -84,53 +192,73 @@
             <div id="searchNavbar" style="display: none;">
                 <%- include('partials/narbar_search') %>
             </div>
+=======
+
+<body class="bg-gray-100">
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+>>>>>>> Stashed changes
         </div>
-    
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+
     <div class="flex max-w-5xl mx-auto mt-10 bg-white shadow-lg rounded-lg">
         <%- include('partials/aside_for_user') %>
-        <div class="flex w-full mx-auto mt-10 bg-white shadow-lg rounded-lg">
-        
-        <section class="w-3/4 p-5">
-            <h2 class="text-xl font-bold mb-4">ที่อยู่ของฉัน</h2>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded" onclick="showAddAddressForm()">เพิ่มที่อยู่</button>
-            
-            
-                <% if (data && data.length > 0) { %>
-                    <div id="addressesContainer" class="mt-4">
-                        <% data.forEach((address, index) => { %>
-                            <div id="address<%= index + 1 %>" class="mb-4 p-4 border border-gray-300 rounded">
-                                <p class="font-semibold">
-                                    <%= address.name %> <%= address.phone %>
-                                    <% if (address.isDefault) { %>
-                                        <span class="text-blue-500">ค่าเริ่มต้น</span>
-                                    <% } %>
-                                </p>
-                                <p class="text-gray-600"><%= address.address %></p>
-                                <button class="text-blue-500" onclick="editAddress('address<%= index + 1 %>')">แก้ไข</button>
-                                <button class="text-blue-500 ml-2" onclick="deleteAddress('address<%= index + 1 %>')">ลบ</button>
-                                <% if (!address.isDefault) { %>
-                                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded" onclick="setDefaultAddress('default<%= index + 1 %>')">ตั้งเป็นค่าเริ่มต้น</button>
-                                <% } %>
-                            </div>
-                    <% }) %>
-                </div>
-            <% } %>
-            
-            
+            <div class="flex w-full mx-auto mt-10 bg-white shadow-lg rounded-lg">
 
-            <form action="/add-user-address" method="post">
-                <div id="addAddressForm" class="hidden mt-4 p-4 bg-gray-200 rounded">
-                    <h3 class="text-lg font-bold mb-2">เพิ่มที่อยู่ใหม่</h3>
-                    <input type="text" id="newName" name="name" placeholder="ชื่อ" class="w-full p-2 border border-gray-300 rounded mb-2">
-                    <input type="text" id="newPhone" name="phone" placeholder="เบอร์โทรศัพท์" class="w-full p-2 border border-gray-300 rounded mb-2">
-                    <textarea id="newAddress" name="address" placeholder="ที่อยู่" class="w-full p-2 border border-gray-300 rounded mb-2"></textarea>
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
-                </div>
-            </form>
-            
-            
-        </section>
-    </div>
+                <section class="w-3/4 p-5">
+                    <h2 class="text-xl font-bold mb-4">ที่อยู่ของฉัน</h2>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded"
+                        onclick="showAddAddressForm()">เพิ่มที่อยู่</button>
+
+                    <% if (data && data.length> 0) { %>
+                        <div id="addressesContainer" class="mt-4">
+                            <% data.forEach((address, index)=> { %>
+                                <div id="address-<%= address.phone %>" class="mb-4 p-4 border border-gray-300 rounded">
+                                    <p class="font-semibold">
+                                        <%= address.name %> (<%= address.phone %>)
+                                                <span id="address<%= address.phone %>_default"
+                                                    class="text-blue-500 default-text"></span>
+                                    </p>
+                                    <p class="text-gray-600">
+                                        <%= address.address %>
+                                    </p>
+                                    <button class="text-blue-500"
+                                        onclick="editAddress('<%= address.phone %>', '<%= address.name %>', '<%= address.address %>')">แก้ไข</button>
+                                    <button class="text-blue-500 ml-2"
+                                        onclick="deleteAddress('<%= address.phone %>')">ลบ</button>
+                                    <button class="ml-2 px-3 py-1 bg-gray-300 rounded"
+                                        onclick="setDefaultAddress('address<%= address.phone %>_default')">ตั้งเป็นค่าเริ่มต้น</button>
+                                </div>
+                                <% }) %>
+                        </div>
+                        <% } %>
+
+                            <form action="/add-user-address" method="post" id="addAddressForm"
+                                class="hidden mt-4 p-4 bg-gray-200 rounded">
+                                <h3 class="text-lg font-bold mb-2">เพิ่มที่อยู่ใหม่</h3>
+                                <input type="text" name="name" placeholder="ชื่อ-นามสกุล"
+                                    class="w-full p-2 border rounded mb-2">
+                                <input type="text" name="phone" maxlength="10" placeholder="เบอร์โทรศัพท์"
+                                    class="w-full p-2 border rounded mb-2">
+                                <textarea name="address" placeholder="ที่อยู่"
+                                    class="w-full p-2 border rounded mb-2"></textarea>
+                                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
+                            </form>
+
+                            <form id="editAddressForm" action="/edit-user-address" method="post"
+                                class="hidden mt-4 p-4 bg-gray-200 rounded">
+                                <h3 class="text-lg font-bold mb-2">แก้ไขที่อยู่</h3>
+                                <input type="text" id="editName" name="name" placeholder="ชื่อ-นามสกุล"
+                                    class="w-full p-2 border rounded mb-2">
+                                <textarea id="editAddress" name="address" placeholder="ที่อยู่"
+                                    class="w-full p-2 border rounded mb-2"></textarea>
+                                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">บันทึก</button>
+                            </form>
+            </div>
 </body>
-</html>
 
+</html>

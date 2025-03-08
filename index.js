@@ -30,6 +30,7 @@ let db = new sqlite3.Database('finfurdB.db', (err) => {
 // ทำ session
 const session = require("express-session");
 const { name } = require("ejs");
+const { redirect } = require("next/dist/server/api-utils");
 app.use(session({
     secret: "simplemakmak",
     resave: false,
@@ -96,7 +97,7 @@ app.post("/login", (req, res) => {
             });
         } else {
             console.log("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!");
-            return res.redirect("/login");
+            res.send("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!")
         }
     });
 });
@@ -414,6 +415,30 @@ app.get("/user-profile", (req, res) => {
         res.render('user-profile', { data: row });
     });
 });
+<<<<<<< Updated upstream
+=======
+
+// เสิร์ฟหน้าuser-editprofile
+ app.post('/update-profile', (req, res) => {
+    const email = req.session.userEmail;
+
+    const { username, name, phone, gender, dob } = req.body;
+
+    const sql = `UPDATE userInfo SET username = ?, name = ?, phone = ?, gender = ?, dob = ? WHERE email = ?`;
+
+    db.run(sql, [username, name, phone, gender, dob, email], function (err) {
+        if (err) {
+            return res.json({ success: false, message: err.message });
+        }
+        console.log('Data updated successfully');
+        res.redirect('/user-profile');
+    });
+    
+});
+
+
+
+>>>>>>> Stashed changes
 // เสิร์ฟหน้าuser-payment
 app.get("/user-payment", (req, res) => {
     const email = req.session.userEmail;
@@ -437,7 +462,8 @@ app.get("/user-payment", (req, res) => {
         }
         const cards = rows.map(row => ({
             name: row.cardname,
-            last4: row.cardnum.slice(-4)
+            last4: row.cardnum.slice(-4),
+            cardnum: row.cardnum
         }));
 
         console.log('Cards:', cards);
@@ -466,6 +492,36 @@ app.post("/add-user-payment", (req, res) => {
     });
 });
 
+<<<<<<< Updated upstream
+=======
+//ลบ user-payment-card
+app.post('/delete-card', (req, res) => {
+    console.log("Received request body:", req.body);
+
+    const cardnum = req.body.cardnum;
+    const email = req.session.userEmail;
+
+    console.log('Deleting card:', cardnum, 'for email:', email);
+
+    const sql = `DELETE FROM userPayment WHERE cardnum = ? AND email = ?`;
+
+    db.run(sql, [cardnum, email], function (err) {
+        if (err) {
+            console.error( err.message);
+            return res.status(500).json({ success: false, message: "Database Error: " + err.message });
+        }
+
+
+        console.log(`ลบบัตร ${cardnum} สำเร็จ`);
+        return res.json({ success: true, message: "ลบบัตรสำเร็จ" });
+    });
+});
+
+
+
+
+
+>>>>>>> Stashed changes
 // เสิร์ฟหน้าuser-address
 app.get("/user-address", (req, res) => {
     const email = req.session.userEmail;
@@ -488,6 +544,10 @@ app.get("/user-address", (req, res) => {
             return res.status(500).send("Database Error");
         }
 
+        if (!rows || rows.length === 0 || rows.every(row => !row.name && !row.phone && !row.address)) {
+            rows = [];  // เปลี่ยนเป็น [] ถ้าไม่มีข้อมูล
+        }
+
         console.log('Rows:', rows);
         res.render('user-address', { data: rows });
     });
@@ -504,16 +564,65 @@ app.post("/add-user-address", (req, res) => {
 
     const email = req.session.userEmail;
 
-    let sql = `INSERT INTO userAddress (name, phone, address, email) VALUES ('${addInfo.name}', '${addInfo.phone}', '${addInfo.address}', '${email}')`;
-    console.log(sql);
-    db.run(sql, (err) => {
+    const checkPhoneSql = `SELECT * FROM userAddress WHERE phone = ?`;
+
+    db.get(checkPhoneSql, [addInfo.phone], (err, row) => {
         if (err) {
-            return console.error('Error inserting data:', err.message);
+            console.error("Error checking phone:", err.message);
+            return res.status(500).json({ success: false, message: "Error checking phone" });
         }
-        console.log('Data inserted successful');
+
+        if (row) {
+            return res.status(400).send("เบอร์โทรซ้ำ กรุณาใช้เบอร์โทรอื่น");
+        }
+        
+        let sql = `INSERT INTO userAddress (name, phone, address, email) VALUES (?, ?, ?, ?)`;
+        db.run(sql, [addInfo.name, addInfo.phone, addInfo.address, email], (err) => {
+            if (err) {
+                console.error('Error inserting data:', err.message);
+                return res.status(500).send("Error inserting data" );
+            }
+            console.log('Data inserted successfully');
+            res.redirect("/user-address");
+        });
+    });
+});
+
+
+//ลบที่อยู่
+app.delete("/delete-user-address", (req, res) => {
+    const phone = req.body.phone;
+
+    const sql = `DELETE FROM userAddress WHERE phone = ?`;
+
+    db.run(sql, [phone], (err) => {
+        if (err) {
+            console.error("Error deleting address:", err.message);
+            return res.status(500).json({ success: false, message: "Error deleting" });
+        }
+        console.log("Address deleted successfully");
+        res.json({ success: true });
+    });
+});
+
+
+//แก้ไขที่อยู่
+app.post("/edit-user-address", (req, res) => {
+    const { name, phone, address } = req.body;
+    
+    const sql = `UPDATE userAddress SET name = ?, address = ? WHERE phone = ?`;
+
+    db.run(sql, [name, address, phone], (err) => {
+        if (err) {
+            console.error("Error updating address:", err.message);
+            return res.status(500).json({ success: false, message: "error editing" });
+        }
+        console.log("Address updated successfully");
         res.redirect("/user-address");
     });
 });
+
+
 
 // เสิร์ฟหน้าuser-changepass
 app.get("/user-changepass", (req, res) => {
@@ -552,7 +661,7 @@ app.post("/user-changepass", (req, res) => {
                 return res.status(500).send("update database error");
             }
             console.log('Data updated successfully');
-            res.redirect("/user-changepass");
+            return res.status(500).send('Password updated successfully ');
         });
     });
 });

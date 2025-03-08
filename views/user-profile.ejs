@@ -20,9 +20,47 @@
         }
         
         function saveData() {
+<<<<<<< Updated upstream
             document.querySelectorAll('.editable').forEach(el => el.setAttribute('disabled', true));
             document.getElementById('saveBtn').classList.add('hidden');
             document.getElementById('editBtn').classList.remove('hidden');
+=======
+            const formData = new FormData();
+
+            document.querySelectorAll(".editable").forEach(el => {
+                if (el.type === "radio") {
+                    if (el.checked) {
+                        formData.append(el.name, el.value);
+                    }
+                } else {
+                    formData.append(el.name, el.value);
+                }
+            });
+
+            fetch("/update-profile", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(Object.fromEntries(formData)) // แปลง FormData เป็น JSON
+            })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url; 
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data.success) {
+                        alert("บันทึกข้อมูลเรียบร้อย");
+                        document.querySelectorAll(".editable").forEach(el => el.setAttribute("disabled", true));
+                        document.getElementById("saveBtn").classList.add("hidden");
+                        document.getElementById("editBtn").classList.remove("hidden");
+                    } else {
+                        alert("เกิดข้อผิดพลาด: " + data.message);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+>>>>>>> Stashed changes
         }
 
         // 2
