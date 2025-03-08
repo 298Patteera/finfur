@@ -33,7 +33,7 @@
 
     <!-- Table Header -->
     <div class="bg-blue-100 p-2 rounded-lg flex items-center dark:bg-gray-700">
-        <input type="checkbox" id='selectAll' class="mr-2">
+        <input type="checkbox" id='selectAll' class="mr-2  w-6 h-6 rounded">
         <span class="w-1/2">สินค้า</span>
         <span class="w-1/4 text-center">ราคา/หน่วย</span>
         <span class="w-1/6 text-center">จำนวน</span>
@@ -52,8 +52,8 @@
                 let addPrice = customObj.reduce((sum, option) => sum + (Number(option.addPrice) || 0), 0);
                 let totalPrice = (basePrice + addPrice) * Number(item.quantities);
             %>
-                <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md">
-                    <input type="checkbox" class="productCheckbox" 
+                <div class="flex items-center gap-4 p-4 border rounded-lg shadow-md  bg-white dark:text-black">
+                    <input type="checkbox" class="productCheckbox w-7 h-7 rounded" 
                     data-price="<%= totalPrice %>" 
                     data-productid="<%= item.productID %>" 
                     data-customvalue='<%= customStr %>'
@@ -109,7 +109,7 @@
         </a>
 
         <div class="flex space-x-4">
-            <button id="deleteAllBtn" class="px-4 py-2 border rounded-lg flex items-center bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn">
+            <button id="deleteAllBtn" class="px-4 py-2 rounded-lg flex items-center bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn">
                 🗑 ลบทั้งหมด
             </button>
             <a href="/checkout" id="checkoutBtn" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
