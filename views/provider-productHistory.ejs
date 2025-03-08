@@ -24,8 +24,8 @@
         <%- include('partials/categoryDropdown_for_provider') %>
         <script>
             //searchbar
-            function searchProducts() {
-                const searchInput = document.getElementById('searchInput').value.trim();
+            function searchProductsPvd() {
+                const searchInputPvd = document.getElementById('searchInputPvd').value.trim();
                 const productCards = document.querySelectorAll('.flex.justify-between.items-center.bg-gray-200.p-4.rounded.mb-4');
 
                 productCards.forEach(card => {
@@ -33,7 +33,7 @@
                     
                     if (productText) {
                         const productInfo = productText.innerText.trim();
-                        if (searchInput === "" || productInfo.includes(searchInput)) {
+                        if (searchInputPvd === "" || productInfo.includes(searchInputPvd)) {
                             card.style.display = '';
                         } else {
                             card.style.display = 'none';

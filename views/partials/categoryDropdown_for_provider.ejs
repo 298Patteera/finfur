@@ -1,8 +1,8 @@
 <div class="mt-4 flex items-center space-x-4">
-    <input type="text" id="searchInput" placeholder="กรอกรหัสสินค้า หรือ ชื่อสินค้า" 
-    class="w-full p-2 border border-gray-300 rounded" onkeyup="searchProducts()">
+    <input type="text" id="searchInputPvd" placeholder="กรอกรหัสสินค้า หรือ ชื่อสินค้า" 
+    class="w-full p-2 border border-gray-300 rounded" onkeyup="searchProductsPvd()">
 
-    <select id="categoryDropdown" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="searchProducts()">
+    <select id="categoryDropdown" class="bg-blue-600 text-white px-4 py-2 rounded" onclick="searchProductsPvd()">
         <option value="" selected disabled>หมวดหมู่</option>
         <% Object.entries(categories).forEach(([categoryID, category]) => { %>
             <optgroup label="<%= category.categoryName %>">
@@ -13,7 +13,7 @@
         <% }); %>
     </select>
 </div>
-<div id="searchResults" class="mt-2 border border-gray-300 bg-white w-full max-w-lg absolute z-10 hidden">
+<div id="searchResultsPvd" class="mt-2 border border-gray-300 bg-white w-full max-w-lg absolute z-10 hidden">
     <ul class="max-h-60 overflow-y-auto">
         <% product.forEach(function(item) { %>
             <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
@@ -30,11 +30,11 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         let categoryDropdown = document.getElementById('categoryDropdown');
-        let searchInput = document.getElementById('searchInput');
+        let searchInputPvd = document.getElementById('searchInputPvd');
         
         categoryDropdown.addEventListener('change', function() {
             let selectedValue = this.value;
-            searchInput.value = selectedValue;
+            searchInputPvd.value = selectedValue;
         });
     });
 </script>

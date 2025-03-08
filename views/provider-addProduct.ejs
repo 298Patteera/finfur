@@ -22,20 +22,20 @@
         <%- include('partials/menu_for_provider') %>
         <%- include('partials/categoryDropdown_for_provider') %>
         <script>
-            function searchProducts() {
-                const searchInput = document.getElementById('searchInput').value.toLowerCase();
-                const searchResults = document.getElementById('searchResults');
-                const resultItems = searchResults.querySelectorAll('li');
+            function searchProductsPvd() {
+                const searchInputPvd = document.getElementById('searchInputPvd').value.toLowerCase();
+                const searchResultsPvd = document.getElementById('searchResultsPvd');
+                const resultItems = searchResultsPvd.querySelectorAll('li');
                 
-                if (searchInput === "") {
-                    searchResults.style.display = "none";
+                if (searchInputPvd === "") {
+                    searchResultsPvd.style.display = "none";
                 } else {
-                    searchResults.style.display = "block";
+                    searchResultsPvd.style.display = "block";
                     resultItems.forEach(item => {
                         const productID = item.getAttribute('data-id').toLowerCase();
                         const productName = item.getAttribute('data-name').toLowerCase();
                         
-                        if (productID.includes(searchInput) || productName.includes(searchInput)) {
+                        if (productID.includes(searchInputPvd) || productName.includes(searchInputPvd)) {
                             item.style.display = '';
                         } else {
                             item.style.display = 'none';
@@ -44,7 +44,7 @@
                 }
             }
         
-            document.getElementById('searchResults').addEventListener('click', function(e) {
+            document.getElementById('searchResultsPvd').addEventListener('click', function(e) {
                 if (e.target && e.target.tagName === 'LI') {
                     const productID = e.target.getAttribute('data-id');
                     const productName = e.target.getAttribute('data-name');
@@ -52,7 +52,7 @@
                     const productBrand = e.target.getAttribute('data-brand');
                     const productDescription = e.target.getAttribute('data-description');
         
-                    document.getElementById('searchInput').value = productID + ' : ' + productName;
+                    document.getElementById('searchInputPvd').value = productID + ' : ' + productName;
                     document.getElementById('categorySelect').value = productID.substring(0, 2);
                     document.getElementById('productID').value = productID;
                     document.getElementById('productName').value = productName;
@@ -60,7 +60,7 @@
                     document.getElementById('productBrand').value = productBrand;
                     document.getElementById('productDescription').value = productDescription;
         
-                    document.getElementById('searchResults').style.display = 'none'; 
+                    document.getElementById('searchResultsPvd').style.display = 'none'; 
                 }
             });
         </script>

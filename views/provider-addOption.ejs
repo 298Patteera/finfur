@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มตัวเลือก | FINFUR</title>
+    <link rel="icon" type="image/png" href="/images/logo_main.png">
+    <link rel="stylesheet" href="/public/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div id="navbarContainer">
+        <div id="defaultNavbar">
+            <%- include('partials/narbar') %>
+        </div>
+        <div id="searchNavbar" style="display: none;">
+            <%- include('partials/narbar_search') %>
+        </div>
+    </div>
+    
+    <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
+        <%- include('partials/menu_for_provider') %>
+        <script>
+            function searchProducts() {
+                const searchInput = document.getElementById('searchInput').value.toLowerCase();
+                const searchResults = document.getElementById('searchResults');
+                const resultItems = searchResults.querySelectorAll('li');
+                
+                if (searchInput === "") {
+                    searchResults.style.display = "none";
+                } else {
+                    searchResults.style.display = "block";
+                    resultItems.forEach(item => {
+                        const productID = item.getAttribute('data-id').toLowerCase();
+                        
+                        if (productID.includes(searchInput)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+            }
+        </script>
+        
+        <div class="flex items-start space-x-4">
+            <div>
+                <label for="productID" class="block text-gray-700">กรอกรหัสสินค้าที่ต้องการเพิ่มตัวเลือก</label>
+                <input type="text" id="searchInput" placeholder="รหัสสินค้า 5 หลัก" 
+                    class="block w-full px-4 py-2 mt-2 bg-gray-200 rounded-md focus:ring focus:ring-indigo-300"
+                    onkeyup="searchProducts()">
+                    <div id="searchResults" class="mt-1 border border-gray-300 bg-white w-full max-w-full absolute z-10 hidden">
+                        <ul class="max-h-60 overflow-y-auto">
+                            <% product.forEach(function(item) { %>
+                                <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
+                                    data-id="<%= item.productID %>" 
+                                    data-name="<%= item.productName %>">
+                                    <%= item.productID %> <%= item.productName %>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                <input type="text" id="productName" placeholder="ชื่อสินค้า" 
+                    class="block w-full px-4 py-2 mt-2 bg-gray-200 rounded-md focus:ring focus:ring-indigo-300"
+                    readonly>
+            </div>
+        </div>
+        
+        <div class="flex mt-4 space-x-4">
+            <button class="bg-red-600 text-white px-4 py-2 rounded" onclick="delProduct()">ลบสินค้า</button>
+            <button class="bg-green-600 text-white px-4 py-2 rounded" onclick="addProduct()">เพิ่มสินค้า</button>
+        </div>
+    </div>
+
+    <script>
+        async function addProduct() {
+            let productData = getData();
+            if (!productData) return;
+
+            try {
+                let response = await fetch('/add-to-productlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData)
+                });
+
+                let result = await response.json();
+                if (result.success) {
+                    alert(result.message);
+                    location.reload();
+                } else {
+                    alert('❗' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถเพิ่มสินค้าได้');
+            }
+        }
+    </script>
+</body>
+</html>

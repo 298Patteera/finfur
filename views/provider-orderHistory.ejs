@@ -4,40 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เพิ่ม/ลบสินค้า</title>
+    <title>ประวัติการแก้ไขสินค้า | FINFUR</title>
     <link rel="stylesheet" href="/public/style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        function toggleCategoryDropdown() {
-            document.getElementById('categoryDropdown').classList.toggle('hidden');
-        }
-        
-        function addProduct() {
-            let name = document.getElementById('productName').value;
-            let category = document.getElementById('categorySelect').value;
-            let quantity = document.getElementById('productQuantity').value;
-            let unit = document.getElementById('productUnit').value;
-            let price = document.getElementById('productPrice').value;
-            
-            if (!name || !category || !quantity || !unit || !price) {
-                alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
-                return;
-            }
-            
-            let productRow = `<tr>
-                <td class='border p-2'>${name}</td>
-                <td class='border p-2'>${category}</td>
-                <td class='border p-2'>${quantity}</td>
-                <td class='border p-2'>${unit}</td>
-                <td class='border p-2'>${price}</td>
-            </tr>`;
-            
-            document.getElementById('productTable').innerHTML += productRow;
-        }
-
-        function toggleCategoryDropdown() {
-            document.getElementById('categoryDropdown').classList.toggle('hidden');
-        }
 
         function toggleSearch(event) {
             event.preventDefault();
@@ -78,7 +48,7 @@
             <tbody id="productTable">
                 <tr>
                     <td class="border p-2">
-                        <select id="categorySelect" class="w-full border" onclick="searchProducts()">
+                        <select id="categorySelect" class="w-full border" onclick="searchIdProduct()">
                             <option value="" selected disabled>หมวดหมู่</option>
                             <% Object.entries(categories).forEach(([categoryID, category]) => { %>
                                 <optgroup label="<%= category.categoryName %>">
@@ -90,8 +60,8 @@
                         </select>
                     </td>
                     <td class="border p-2 relative">
-                        <input type="text" id="productID" class="w-full border" onkeyup="searchProducts()">
-                        <div id="searchResults" class="mt-1 border border-gray-300 bg-white w-full max-w-full absolute z-10 hidden">
+                        <input type="text" id="productID" class="w-full border" onkeyup="searchIdProduct()">
+                        <div id="searchResultsIdName" class="mt-1 border border-gray-300 bg-white w-full max-w-full absolute z-10 hidden">
                             <ul class="max-h-60 overflow-y-auto">
                                 <% product.forEach(function(item) { %>
                                     <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
@@ -122,7 +92,7 @@
                 </tr>
             </tbody>
         </table>
-        <!-- <div id="searchResults" class="mt-2 border border-gray-300 bg-white w-full max-w-lg absolute z-10 hidden">
+        <!-- <div id="searchResultsIdName" class="mt-2 border border-gray-300 bg-white w-full max-w-lg absolute z-10 hidden">
             <ul class="max-h-60 overflow-y-auto">
                 <% product.forEach(function(item) { %>
                     <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
@@ -201,15 +171,15 @@
                 productIDInput.value = selectedValue;
             });
         });
-        function searchProducts() {
+        function searchIdProduct() {
             const searchInput = document.getElementById('productID').value;
-            const searchResults = document.getElementById('searchResults');
-            const resultItems = searchResults.querySelectorAll('li');
+            const searchResultsIdName = document.getElementById('searchResultsIdName');
+            const resultItems = searchResultsIdName.querySelectorAll('li');
             
             if (searchInput === "") {
-                searchResults.style.display = "none";
+                searchResultsIdName.style.display = "none";
             } else {
-                searchResults.style.display = "block";
+                searchResultsIdName.style.display = "block";
                 resultItems.forEach(item => {
                     const productID = item.getAttribute('data-id').toLowerCase();
                     const productName = item.getAttribute('data-name').toLowerCase();
@@ -223,7 +193,7 @@
             }
         }
         
-        document.getElementById('searchResults').addEventListener('click', function(e) {
+        document.getElementById('searchResultsIdName').addEventListener('click', function(e) {
             if (e.target && e.target.tagName === 'LI') {
                 const productID = e.target.getAttribute('data-id');
                 const productName = e.target.getAttribute('data-name');
@@ -232,18 +202,18 @@
                 document.getElementById('productID').value = productID;
                 document.getElementById('productName').value = productName;
     
-                document.getElementById('searchResults').style.display = 'none'; 
+                document.getElementById('searchResultsIdName').style.display = 'none'; 
             }
             });
         function searchUsers() {
             const searchInput = document.getElementById('custUsername').value.toLowerCase();
-            const searchResults = document.getElementById('searchUser');
-            const resultItems = searchResults.querySelectorAll('li');
+            const searchResultsIdName = document.getElementById('searchUser');
+            const resultItems = searchResultsIdName.querySelectorAll('li');
             
             if (searchInput === "") {
-                searchResults.style.display = "none";
+                searchResultsIdName.style.display = "none";
             } else {
-                searchResults.style.display = "block";
+                searchResultsIdName.style.display = "block";
                 resultItems.forEach(item => {
                     const username = item.getAttribute('data-username').toLowerCase();
                     const email = item.getAttribute('data-email').toLowerCase();
