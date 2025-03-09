@@ -666,44 +666,29 @@ app.post("/user-changepass", (req, res) => {
 
 //เสิร์ฟหน้าcompare
 app.get("/compare", (req, res) => {
-    let email = req.session.userEmail;
-
-    if (!email) {
-        return res.status(400).send("No user email found.");
-    }
-
-    console.log(email);
-
-    let com = `SELECT 
-            pc.categoryName, 
-            pc.categoryID, 
-            fv.email, 
-            fv.productID,
-            pl.productName, 
-            pl.description,
-            pl.productID, 
-            pl.price,
-            pii.imgURL
-        FROM 
-            FavoriteList fv
-        JOIN 
-            ProductList pl ON fv.productID = pl.productID
-        LEFT JOIN 
-            productImage pii ON pl.productID = pii.productID
-        LEFT JOIN 
-            productCategory pc ON pl.categoryID = pc.categoryID
-        WHERE 
-            fv.email  = ?`;
-
-    db.all(com, [email], (err, rows) => {
+    const query = `
+        SELECT 
+            p.*, 
+            sc.subID,
+            sc.subName, 
+            pc.categoryID,
+            pc.categoryName,
+            CASE 
+                WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
+            END AS isFavorited
+        FROM ProductList p
+        JOIN FavoriteList f ON p.productID = f.productID
+        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
+        JOIN productCategory pc ON sc.categoryID = pc.categoryID
+        WHERE f.email = ?;
+    `;
+    const userEmail = res.locals.userEmail || null;
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
-            console.error("Database Error:", err.message);
-            return res.status(500).send("Internal Server Error");
+            console.log("❗" + err.message);
         }
-        console.log(rows);
-        res.render("compare", { product: rows });
+        res.render("compare", { product: rows, userEmail });
     });
-
 });
 
 
