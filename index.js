@@ -169,7 +169,24 @@ app.get("/product/:id", (req, res) => {
         LEFT JOIN productOption po ON p.productID = po.productID
         WHERE p.productID = ?;
     `;
-
+    const rcm4randomQ = `
+        SELECT 
+            p.*, 
+            sc.subID,
+            sc.subName, 
+            pc.categoryID,
+            pc.categoryName,
+            CASE 
+                WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
+            END AS isFavorited
+        FROM ProductList p
+        JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
+        JOIN productCategory pc ON sc.categoryID = pc.categoryID
+        LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?
+        ORDER BY RANDOM()
+        LIMIT 5;
+    `;
+    const userEmail = res.locals.userEmail || null;
     db.all(query, [productId], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
@@ -206,8 +223,12 @@ app.get("/product/:id", (req, res) => {
                 });
             }
         });
-        console.log(product);
-        res.render("product-detail", { product });
+        db.all(rcm4randomQ,[userEmail], (err, rows) => {
+            if (err) {
+                console.log("❗" + err.message);
+            }
+            res.render("product-detail", { product, productRcm: rows, userEmail });
+        });
     });
 });
 
@@ -1095,6 +1116,86 @@ app.post("/update-to-productlist", (req, res) => {
 });
 
 app.post("/del-to-productlist", (req, res) => {
+    const { productID, productName, categoryID, subID, price, stockNum, modifiedTimestamp } = req.body;
+    const userEmail = res.locals.userEmail;
+
+    const checkProductQ = `SELECT * FROM ProductList WHERE productID = ?;`;
+
+    db.get(checkProductQ, [productID], (err, row) => {
+        if (err) {
+            console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
+            return res.status(500).json({ success: false, message: "❗เช็คไม่สำเร็จ Error: " + err.message });
+        }
+        if (!row) {
+            console.log("ไม่พบข้อมูลสินค้า");
+            return res.status(500).json({ success: false, message: "❌ไม่พบข้อมูลสินค้า" });
+        }
+        db.serialize(() => {
+            db.run(`DELETE FROM "productOption" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "orderDetails" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "productImage" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "FavoriteList" WHERE "productID" = ?;`, [productID]);
+            db.run(`DELETE FROM "ProductList" WHERE "productID" = ?;`, [productID], function (err) {
+                if (err) {
+                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
+                    return res.status(500).json({ success: false, message: "❗อัปเดตไม่สำเร็จ " + err.message });
+                }
+
+                insertEditHistory(productID, modifiedTimestamp, userEmail, `ลบสินค้า`);
+                return res.json({ success: true, message: "✅ ลบข้อมูลสินค้าสำเร็จ" });
+            });
+        });
+    });
+});
+//productOption
+app.post("/add-to-productOption", (req, res) => {
+    const { productID, productName, categoryID, subID, price, brand, description, modifiedTimestamp } = req.body;
+    const userEmail = res.locals.userEmail;
+
+    const checkProductQ = `
+        SELECT * FROM ProductList WHERE productID = ?;
+    `;
+
+    db.get(checkProductQ, [productID], (err, row) => {
+        if (err) {
+            console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
+        }
+        //if ถ้ามีจะเพิ่มจำนวน else ถ้าไม่มีจะ insert
+        if (row) {
+            const updateQ = `
+                UPDATE ProductList
+                SET productName = ?, categoryID = ?, price = ?, subID = ?, brand = ?, description = ?
+                WHERE productID = ?;
+            `;
+
+            db.run(updateQ, [productName, categoryID, price, subID, brand, description, productID], function (err) {
+                if (err) {
+                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
+                }
+
+                console.log(updateQ);
+                insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
+                return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
+            });
+        } else {
+            const addedDate = new Date().toISOString();
+
+            const insertQ = `
+                INSERT INTO ProductList (productID, productName, categoryID, price, brand, description, subID, addedDate)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            `;
+
+            db.run(insertQ, [productID, productName, categoryID, price, brand, description, subID, addedDate], function (err) {
+                if (err) {
+                    console.log("❗เพิ่มข้อมูลไม่สำเร็จ Error: " + err.message);
+                }
+                insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
+                return res.json({ success: true, message: "✅เพิ่มสินค้าใหม่สำเร็จ" });
+            });
+        }
+    });
+});
+app.post("/del-to-productOption", (req, res) => {
     const { productID, productName, categoryID, subID, price, stockNum, modifiedTimestamp } = req.body;
     const userEmail = res.locals.userEmail;
 

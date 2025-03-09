@@ -128,15 +128,9 @@
     </div>
 
     <!-- 🔻 สินค้าแนะนำ -->
-    <div class="container mx-auto p-6 bg-white shadow-lg mt-6 rounded-lg border dark:bg-gray-700">
-        <h2 class="text-xl font-bold">สินค้าแนะนำ</h2>
-        <div class="grid grid-cols-4 gap-4 mt-4">
-            <div class="bg-gray-200 w-full h-40"></div>
-            <div class="bg-gray-200 w-full h-40"></div>
-            <div class="bg-gray-200 w-full h-40"></div>
-            <div class="bg-gray-200 w-full h-40"></div>
-        </div>
-    </div>
+    <% if (productRcm.length > 0) { %>
+        <%- include('partials/db_displayProductBox_recommends') %>
+    <% } %>
 
     <!-- 🆙 ปุ่มกลับไปด้านบน -->
     <%- include('partials/scrollTop') %>
