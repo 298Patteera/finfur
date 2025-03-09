@@ -29,22 +29,26 @@
         <!-- ตัวเลือกที่อยู่ -->
         <h2 class="mt-2 text-blue-600 font-bold mb-2">ที่อยู่</h2>
         <div class="space-y-4">
-            <% if (userEmail && address.length > 0) { %>
+           <% if (userEmail && address.length > 0) { %>
                 <% address.forEach(item => { %>
                     <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
                         <input type="radio" name="address" class="mr-2" 
-                        data-name="<%= item.name %>"
-                        data-phone="<%= item.phone %>"
-                        data-address="<%= item.address %>"
-                        data-totalPrice="<%= totalPrice %>"
+                            data-name="<%= item.name %>"
+                            data-phone="<%= item.phone %>"
+                            data-address="<%= item.address %>"
+                            data-totalPrice="<%= totalPrice %>"
                         >
-                        <!-- ตรงนี้เอา database address มาใส่ -->
                         <div>
                             <strong><%= item.name %></strong> | (+66) <%= (item.phone) %><br>
                             <%= item.address %>
                         </div>
                     </div>
-                <% });}%>
+                <% }); %>
+            <% } else { %>
+                <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex text-center text-gray-600">
+                    ไม่มีข้อมูลที่อยู่ที่ถูกบันทึกไว้ กรุณาเพิ่มข้อมูลในหน้าบัญชีก่อนทำการสั่งซื้อ
+                </div>
+            <% } %>
         </div>
 
         <h2 class="mt-2 text-blue-600 font-bold">ช่องทางการชำระเงิน</h2>
@@ -63,6 +67,10 @@
                             </div>
                         </div>
                     <% }); %>
+                <% } else { %>
+                    <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex text-center text-gray-600">
+                        ไม่มีข้อมูลบัตรเครดิต/เดบิตที่ถูกบันทึกไว้ กรุณาเพิ่มข้อมูลในหน้าบัญชีก่อนทำการสั่งซื้อ
+                    </div>
                 <% } %>
             </div>
         </div>
