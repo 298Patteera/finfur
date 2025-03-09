@@ -1115,7 +1115,7 @@ app.post("/add-to-productlist", (req, res) => {
                 if (err) {
                     console.log("❗เพิ่มข้อมูลไม่สำเร็จ Error: " + err.message);
                 }
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
+                insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
                 return res.json({ success: true, message: "✅เพิ่มสินค้าใหม่สำเร็จ" });
             });
         }
@@ -1137,7 +1137,7 @@ app.post("/update-to-productlist", (req, res) => {
             return res.status(500).json({ success: false, message: "❌เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า" });
         }
 
-        insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
+        insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
         return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
     });
 });
@@ -1168,7 +1168,7 @@ app.post("/del-to-productlist", (req, res) => {
                     return res.status(500).json({ success: false, message: "❗อัปเดตไม่สำเร็จ " + err.message });
                 }
 
-                insertEditHistory(productID, modifiedTimestamp, userEmail, `ลบสินค้า`);
+                insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, `ลบสินค้า`);
                 return res.json({ success: true, message: "✅ ลบข้อมูลสินค้าสำเร็จ" });
             });
         });
@@ -1304,6 +1304,20 @@ function insertEditHistory(productID, modifiedTimestamp, userEmail, modifiedType
     `;
 
     db.run(historyQ, [productID, modifiedTimestamp, userEmail, modifiedType], function (err) {
+        if (err) {
+            console.log("❗ Error: " + err.message);
+        } else {
+            console.log("✅อัปเดตสินค้าและบันทึกประวัติสำเร็จ");
+        }
+    });
+}
+function insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, modifiedType) {
+    const historyQ = `
+        INSERT INTO providerEditHistory (productID, modifiedTimestamp, email, modifiedType, productDelName)
+        VALUES (?, ?, ?, ?, ?);
+    `;
+
+    db.run(historyQ, [productID, modifiedTimestamp, userEmail, modifiedType, productName], function (err) {
         if (err) {
             console.log("❗ Error: " + err.message);
         } else {
