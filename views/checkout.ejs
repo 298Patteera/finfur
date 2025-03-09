@@ -29,8 +29,8 @@
         <!-- ตัวเลือกที่อยู่ -->
         <h2 class="mt-2 text-blue-600 font-bold mb-2">ที่อยู่</h2>
         <div class="space-y-4">
-            <% if (userEmail) { %>
-                <% userData.forEach(item => { %>
+            <% if (userEmail && address.length > 0) { %>
+                <% address.forEach(item => { %>
                     <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
                         <input type="radio" name="address" class="mr-2" 
                         data-name="<%= item.name %>"
@@ -53,17 +53,13 @@
         <div class="space-y-4">
             <div>
                 <p class="mt-2 p-2 text-blue-600">ชำระด้วย บัตรเครดิต / บัตรเดบิต</p>
-                <% if (userEmail) { %>
-                    <% userData.forEach(item => { %>
+                <% if (userEmail && payment.length > 0) { %>
+                    <% payment.forEach(item => { %>
                         <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
                             <input type="radio" name="pay" value="debit" class="mr-2"
-                                data-name="<%= item.name %>"
-                                data-phone="<%= item.phone %>"
-                                data-address="<%= item.address %>"
-                                data-totalPrice="<%= totalPrice %>">
+                                data-paymentMethod="ชำระเงินผ่าน <%= (item.cardname ? (item.cardname + ' : *' + (item.cardnum).slice(-4)) : 'ไม่พบข้อมูลบัตรเดบิต/เครดิต') %>">
                             <div>
-                                <strong><%= item.name %></strong> | (+66) <%= (item.phone) %><br>
-                                <%= item.address %>
+                                <strong><%= item.cardname %></strong> | *<%= (item.cardnum).slice(-4) %><br>
                             </div>
                         </div>
                     <% }); %>
@@ -71,11 +67,13 @@
             </div>
         </div>
         
+        
         <!-- ตัวเลือก QR Code (PromptPay) -->
         <div class="mt-2 p-2 text-blue-600">
             <p>ชำระเงินผ่าน PromptPay</p>
             <div class="border dark:bg-white dark:text-black rounded-lg p-4 flex items-center">
-                <input type="radio" name="pay" value="prompay" class="mr-2">
+                <input type="radio" name="pay" value="prompay" class="mr-2"
+                data-paymentMethod="ชำระเงินผ่าน promptpay">
                 <label for="qr-payment">
                     <img src="/images/prompay.png" class="max-h-10">
                 </label>
@@ -98,65 +96,50 @@
     </main>
     <script>
         function checkPayment() {
-        // ค้นหาตัวเลือกที่ถูกเลือก
-        const selectedPayment = document.querySelector('input[name="pay"]:checked');
-
-        if (!selectedPayment) {
-            alert("กรุณาเลือกช่องทางการชำระเงิน");
-            return;
-        }
-
-        // นำผู้ใช้ไปยังหน้าที่เหมาะสม
-        if (selectedPayment.value === "debit") {
-            window.location.href = "/debit";
-        } else if (selectedPayment.value === "prompay") {
-            window.location.href = "/prompay";
-        }
-    }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const selectAllCheckbox = document.getElementById("selectAll");
-            const checkboxes = document.querySelectorAll(".productCheckbox");
-            const sumPriceE = document.getElementById("total-price");
-            const deleteButtons = document.querySelectorAll(".delete-btn");
-            const deleteAllBtn = document.getElementById("deleteAllBtn");
-            const checkoutBtn = document.getElementById("checkoutBtn");
-
-            if (checkoutBtn) {
-                checkoutBtn.addEventListener("click", function () {
-                    const selectedAddress = Array.from(checkboxes)
-                        .filter(checkbox => checkbox.checked)
-                        .map(checkbox => ({
-                            name: checkbox.getAttribute("data-name"),
-                            phone: checkbox.getAttribute("data-phone"),
-                            address: checkbox.getAttribute("data-address"),
-                            totalPrice: checkbox.getAttribute("data-totalPrice")
-                        }));
-                    if (selectedAddress.length === 0) {
-                        //alert("ไม่มีสินค้าที่ถูกเลือก");
-                        return;
-                    }
-
-                    fetch("/checkout-address", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ userAddress: selectedAddress })
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            location.reload();
-                        } else {
-                            alert("สั่งซื้อสินค้าไม่สำเร็จ");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        alert("เกิดข้อผิดพลาด");
-                    });
-                });
+            const selectedPayment = document.querySelector('input[name="pay"]:checked');
+            if (!selectedPayment) {
+                alert("กรุณาเลือกช่องทางการชำระเงิน");
+                return;
             }
-        });
+
+            const paymentMethod = selectedPayment.getAttribute('data-paymentMethod');
+            const selectedAddress = document.querySelector('input[name="address"]:checked');
+            if (!selectedAddress) {
+                alert("กรุณาเลือกที่อยู่");
+                return;
+            }
+
+            let orderedTimestamp = new Date().toISOString();
+
+            const orderList = {
+                name: selectedAddress.getAttribute('data-name'),
+                phone: selectedAddress.getAttribute('data-phone'),
+                address: selectedAddress.getAttribute('data-address'),
+                totalPrice: selectedAddress.getAttribute('data-totalPrice'),
+                paymentMethod: selectedPayment.getAttribute('data-paymentMethod'),
+                orderStatus: "ที่ต้องจัดส่ง",
+                orderDate: orderedTimestamp
+            };
+            console.log(orderList);
+
+            fetch("/checkout-create-orderList", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderList)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    window.location.href = result.redirectTo;
+                } else {
+                    alert("สั่งซื้อสินค้าไม่สำเร็จ");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("เกิดข้อผิดพลาด");
+            });
+        }
     </script>
 </body>
 </html>
