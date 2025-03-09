@@ -748,7 +748,7 @@ app.get("/provider-addOption", (req, res) => {
             subCategory sc ON pc.categoryID = sc.categoryID;
     `;
     const optionQ = `
-        SELECT *
+        SELECT DISTINCT optionType
         FROM productOption;
     `;
     const prodIdNameQ = `
@@ -808,7 +808,7 @@ app.get("/provider-productHistory", (req, res) => {
             p.productName
         FROM providerEditHistory h
         INNER JOIN ProductList p ON h.productID = p.productID
-        ORDER BY modifiedTimestamp ASC;
+        ORDER BY modifiedTimestamp DESC;
     `;
     const categoryQuery = `
         SELECT 
@@ -1109,7 +1109,6 @@ app.post("/update-to-productlist", (req, res) => {
             return res.status(500).json({ success: false, message: "❌เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า" });
         }
 
-        console.log(updateQ);
         insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
         return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
     });
@@ -1148,84 +1147,127 @@ app.post("/del-to-productlist", (req, res) => {
     });
 });
 //productOption
-app.post("/add-to-productOption", (req, res) => {
-    const { productID, productName, categoryID, subID, price, brand, description, modifiedTimestamp } = req.body;
+app.post("/provider-update-custom", async (req, res) => {
+    const { modifiedTimestamp, optionData } = req.body;
     const userEmail = res.locals.userEmail;
 
-    const checkProductQ = `
-        SELECT * FROM ProductList WHERE productID = ?;
-    `;
+    if (!optionData || optionData.length === 0) {
+        return res.status(400).json({ success: false, message: "❗ ไม่พบข้อมูล" });
+    }
 
-    db.get(checkProductQ, [productID], (err, row) => {
-        if (err) {
-            console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
-        }
-        //if ถ้ามีจะเพิ่มจำนวน else ถ้าไม่มีจะ insert
-        if (row) {
-            const updateQ = `
-                UPDATE ProductList
-                SET productName = ?, categoryID = ?, price = ?, subID = ?, brand = ?, description = ?
-                WHERE productID = ?;
-            `;
-
-            db.run(updateQ, [productName, categoryID, price, subID, brand, description, productID], function (err) {
-                if (err) {
-                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
-                }
-
-                console.log(updateQ);
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
-                return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
+    try {
+        await Promise.all(optionData.map(async ({ productID, optionName, recommendedSize, optionType }) => {
+            const checkOptionQ = `SELECT * FROM productOption WHERE productID = ? AND optionName = ?;`;
+            
+            const row = await new Promise((resolve, reject) => {
+                db.get(checkOptionQ, [productID, optionName], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
             });
-        } else {
-            const addedDate = new Date().toISOString();
 
-            const insertQ = `
-                INSERT INTO ProductList (productID, productName, categoryID, price, brand, description, subID, addedDate)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-            `;
+            if (row) {
+                const updateQ = `UPDATE productOption SET recommendedSize = ? WHERE productID = ? AND optionName = ?;`;
+                
+                await new Promise((resolve, reject) => {
+                    db.run(updateQ, [recommendedSize, productID, optionName], function (err) {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
 
-            db.run(insertQ, [productID, productName, categoryID, price, brand, description, subID, addedDate], function (err) {
-                if (err) {
-                    console.log("❗เพิ่มข้อมูลไม่สำเร็จ Error: " + err.message);
-                }
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
-                return res.json({ success: true, message: "✅เพิ่มสินค้าใหม่สำเร็จ" });
-            });
-        }
-    });
+                await insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขการกำหนดขนาดสินค้า");
+            } else {
+                const insertQ = `
+                    INSERT INTO productOption (optionType, optionName, recommendedSize, productID, addPrice)
+                    VALUES (?, ?, ?, ?, 0);
+                `;
+
+                await new Promise((resolve, reject) => {
+                    db.run(insertQ, [optionType, optionName, recommendedSize, productID], function (err) {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
+
+                await insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มการกำหนดขนาดสินค้า");
+            }
+        }));
+
+        res.json({ success: true, message: "✅ อัปเดตข้อมูลสำเร็จ" });
+
+    } catch (error) {
+        console.error("❗ Error:", error);
+        res.status(500).json({ success: false, message: "❗ เกิดข้อผิดพลาดในการบันทึกข้อมูล" });
+    }
 });
-app.post("/del-to-productOption", (req, res) => {
-    const { productID, productName, categoryID, subID, price, stockNum, modifiedTimestamp } = req.body;
+
+
+app.post("/add-to-productOption", (req, res) => {
+    const { modifiedTimestamp, optionData } = req.body;
     const userEmail = res.locals.userEmail;
 
-    const checkProductQ = `SELECT * FROM ProductList WHERE productID = ?;`;
+    if (!optionData || optionData.length === 0) {
+        return res.status(400).json({ success: false, message: "❗ ไม่พบข้อมูล" });
+    }
 
-    db.get(checkProductQ, [productID], (err, row) => {
-        if (err) {
-            console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
-            return res.status(500).json({ success: false, message: "❗เช็คไม่สำเร็จ Error: " + err.message });
-        }
-        if (!row) {
-            console.log("ไม่พบข้อมูลสินค้า");
-            return res.status(500).json({ success: false, message: "❌ไม่พบข้อมูลสินค้า" });
-        }
-        db.serialize(() => {
-            db.run(`DELETE FROM "productOption" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "orderDetails" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "productImage" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "FavoriteList" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "ProductList" WHERE "productID" = ?;`, [productID], function (err) {
+    const insertQ = `INSERT INTO productOption (optionType, optionName, productID, addPrice) VALUES (?, ?, ?, ?);`;
+
+    const insertPromises = optionData.map((option) => {
+        return new Promise((resolve, reject) => {
+            db.run(insertQ, [option.optionType, option.optionName, option.productID, option.addPrice], function (err) {
                 if (err) {
-                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
-                    return res.status(500).json({ success: false, message: "❗อัปเดตไม่สำเร็จ " + err.message });
+                    console.log("❗ Error : " + err.message);
+                    reject(err);
+                } else {
+                    resolve();
                 }
-
-                insertEditHistory(productID, modifiedTimestamp, userEmail, `ลบสินค้า`);
-                return res.json({ success: true, message: "✅ ลบข้อมูลสินค้าสำเร็จ" });
             });
         });
     });
+
+    Promise.all(insertPromises)
+        .then(() => {
+            insertEditHistory(optionData[0].productID, modifiedTimestamp, userEmail, "เพิ่มตัวเลือกสินค้า");
+            res.json({ success: true, message: "✅ เพิ่มตัวเลือกสินค้าสำเร็จ" });
+        })
+        .catch((err) => {
+            res.status(500).json({ success: false, message: "❗ ไม่สามารถเพิ่มตัวเลือกสินค้าได้" });
+        });
+});
+
+
+app.post("/del-to-productOption", (req, res) => {
+    const { modifiedTimestamp, optionData } = req.body;
+    const userEmail = res.locals.userEmail;
+
+    if (!optionData || optionData.length === 0) {
+        return res.status(400).json({ success: false, message: "❗ ไม่พบข้อมูล" });
+    }
+
+    const delQ = `DELETE FROM productOption WHERE productID = ? AND optionType= ? AND optionName= ? ;`;
+
+    const deletePromises = optionData.map((option) => {
+        return new Promise((resolve, reject) => {
+            db.run(delQ, [option.productID, option.optionType, option.optionName], function (err) {
+                if (err) {
+                    console.log("❗ Error : " + err.message);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    });
+
+    Promise.all(deletePromises)
+        .then(() => {
+            insertEditHistory(optionData[0].productID, modifiedTimestamp, userEmail, "ลบตัวเลือกสินค้า");
+            res.json({ success: true, message: "✅ ลบตัวเลือกสินค้าสำเร็จ" });
+        })
+        .catch((err) => {
+            res.status(500).json({ success: false, message: "❗ ไม่สามารถลบตัวเลือกสินค้าได้" });
+        });
 });
 function insertEditHistory(productID, modifiedTimestamp, userEmail, modifiedType) {
     const historyQ = `

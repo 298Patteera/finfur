@@ -49,11 +49,6 @@
                     data-productBrand="<%= item.brand %>" 
                     >
                     
-                    <a href="/product/<%= item.productID %>">
-                        <img class="rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 
-                            src="/images/allProduct/<%= item.productID %>.png" alt="<%= item.productID %>Image">
-                    </a>
-    
                     <div class="mt-3">
                         <span class="bg-blue-700 text-white text-sm px-3 py-1 rounded-lg">
                             <%= item.subName %>
@@ -65,7 +60,7 @@
                         <p class="text-gray-500 text-sm">
                             <%= item.description && item.description.length > 20 ? item.description.substring(0, 20) + "..." : item.description || '' %>
                         </p>
-                        <h2 class="text-xl font-semibold text-red-500 mt-2"><%= item.price %> ฿</h2>
+                        <h2 class="text-xl font-semibold text-red-500 mt-2"><%= parseFloat(item.price).toLocaleString() %> ฿</h2>
                     </div> 
     
                     <div class="flex gap-3 items-center mt-3">
@@ -93,6 +88,12 @@
                         </button>
                         </a>
                     </div>
+
+                    <a href="/product/<%= item.productID %>">
+                        <img class="rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 
+                            src="/images/allProduct/<%= item.productID %>.png" alt="<%= item.productID %>Image">
+                    </a>
+    
                 </div>
             <% }); %>
         </div>
