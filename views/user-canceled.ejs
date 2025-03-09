@@ -32,26 +32,7 @@
             <h2 class="text-xl font-bold mb-4">รายการที่ถูกยกเลิก</h2>
             <%- include('partials/menu_for_user_history') %>
 
-            
-            <div class="mt-4">
-                 canceledOrders.forEach(order => { %>
-                    <div class="flex justify-between items-center bg-gray-100 p-4 rounded mb-4">
-                        <div class="flex items-center space-x-4">
-                            <img src="= order.image %>" alt="Product Image" class="w-20 h-20 object-cover rounded">
-                            <div>
-                                <p class="text-gray-700 font-semibold">order.productName %></p>
-                                <p class="text-gray-600">ตัวเลือกสินค้า:  order.details %></p>
-                                <p class="text-gray-600">จำนวน: x order.quantity %></p>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="text-red-600">ยกเลิกแล้ว</p>
-                            <p class="text-gray-600">ราคา:  order.price %> บาท</p>
-                            <button class="bg-blue-600 text-white px-4 py-2 rounded mt-2">สั่งซื้อใหม่</button>
-                        </div>
-                    </div>
-                % }) %>
-            </div>
+            <%- include('partials/db_userOrderHistory') %>
         </div>
     </div>
 </body>
