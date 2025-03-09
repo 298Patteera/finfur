@@ -5,6 +5,7 @@ const port = 3000;
 const promptpay = require('promptpay-qr');
 const QRCode = require('qrcode');
 const multer = require('multer');
+const bcrypt = require('bcrypt'); 
 
 // ตั้งค่า View Engine เป็น EJS
 app.set("view engine", "ejs");
@@ -83,39 +84,48 @@ app.get("/logout", (req, res) => {
 //     }
 // });
 
-app.post("/login", (req, res) => {
-    const { "email-login": email, "password-login": pssword } = req.body;
 
-    const query = `SELECT email, pssword FROM userInfo WHERE email = ? AND pssword = ?`;
+app.post("/login", (req, res) => {
+    const { "email-login": email, "password-login": password } = req.body;
+
+    const query = `SELECT email, pssword FROM userInfo WHERE email = ?`;
     const queryProvider = `SELECT email FROM providerList WHERE email = ?`;
 
-    db.get(query, [email, pssword], (err, user) => {
+    db.get(query, [email], (err, user) => {
         if (err) {
             console.log(err.message);
             return res.redirect("/login");
         }
 
         if (user) {
-            req.session.userEmail = email;
-            console.log("เข้าสู่ระบบสำเร็จ!");
-            //เช็คว่าเป็น customer or provider
-            db.get(queryProvider, [email], (err, provider) => {
+            bcrypt.compare(password, user.pssword, (err, isMatch) => {
                 if (err) {
                     console.log(err.message);
                     return res.redirect("/login");
                 }
 
-                // if (provider) {
-                //     return res.redirect("/provider-productList");
-                // } else {
-                //     return res.redirect("/");
-                // }
-                if (provider) {
-                    req.session.isProvider = true;
-                    return res.redirect("/provider-productList");
+                if (isMatch) {
+                    req.session.userEmail = email;
+                    console.log("เข้าสู่ระบบสำเร็จ!");
+
+                   //เช็คว่าเป็น customer or provider
+                    db.get(queryProvider, [email], (err, provider) => {
+                        if (err) {
+                            console.log(err.message);
+                            return res.redirect("/login");
+                        }
+
+                        if (provider) {
+                            req.session.isProvider = true;
+                            return res.redirect("/provider-productList");
+                        } else {
+                            req.session.isProvider = false; // If not a provider
+                            return res.redirect("/");
+                        }
+                    });
                 } else {
-                    req.session.isProvider = false; // ถ้าไม่ใช่ provider
-                    return res.redirect("/");
+                    console.log("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!");
+                    res.send('<script>alert("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!"); window.location.href="/login";</script>');
                 }
             });
         } else {
@@ -137,6 +147,7 @@ app.use((req, res, next) => {
 app.get("/signin-customer", (req, res) => {
     res.render("signin-customer");
 });
+
 app.post("/signin-customer", (req, res) => {
     let addInfo = {
         username: req.body.username,
@@ -145,17 +156,25 @@ app.post("/signin-customer", (req, res) => {
         phone: req.body.phone,
         gender: req.body.gender,
         dob: req.body.dob,
-        pssword: req.body.pssword
+        pssword: req.body.pssword 
     };
 
-    let sql = `INSERT INTO userInfo (username, name, email, phone, gender, dob, pssword) VALUES ('${addInfo.username}', '${addInfo.name}', '${addInfo.email}', '${addInfo.phone}', '${addInfo.gender}', '${addInfo.dob}', '${addInfo.pssword}')`;
-    console.log(sql);
-    db.run(sql, (err) => {
+    bcrypt.hash(addInfo.pssword, 10, (err, hashedPassword) => {
         if (err) {
-            return console.error('Error inserting data:', err.message);
+            return console.error('Error hashing password:', err.message);
         }
-        console.log('Data inserted successful');
-        res.redirect("/");
+
+        let sql = `INSERT INTO userInfo (username, name, email, phone, gender, dob, pssword) 
+                    VALUES ('${addInfo.username}', '${addInfo.name}', '${addInfo.email}', '${addInfo.phone}', '${addInfo.gender}', '${addInfo.dob}', '${hashedPassword}')`;
+
+        console.log(sql);
+        db.run(sql, (err) => {
+            if (err) {
+                return console.error('Error inserting data:', err.message);
+            }
+            console.log('Data inserted successfully');
+            res.redirect("/");
+        });
     });
 });
 
@@ -581,6 +600,7 @@ app.get("/user-changepass", (req, res) => {
 
 app.post("/user-changepass", (req, res) => {
     console.log(req.body);
+    
     let change = {
         oldpass: req.body.oldpass,
         newpass: req.body.newpass,
@@ -589,7 +609,16 @@ app.post("/user-changepass", (req, res) => {
 
     const email = req.session.userEmail;
 
+    if (!change.oldpass || !change.newpass || !change.confirmnewpass) {
+        return res.status(400).send('<script>alert("Please fill all fields!"); window.location.href="/change-password";</script>');
+    }
+
+    if (change.newpass !== change.confirmnewpass) {
+        return res.status(400).send('<script>alert("New passwords do not match!"); window.location.href="/change-password";</script>');
+    }
+
     let sql = `SELECT pssword FROM userInfo WHERE email = ?`;
+    
     db.get(sql, [email], (err, row) => {
         if (err) {
             console.log(err.message);
@@ -597,21 +626,38 @@ app.post("/user-changepass", (req, res) => {
         }
 
         if (!row) {
-            return res.status(404).send("user not found");
+            return res.status(404).send('<script>alert("User not found!"); window.location.href="/change-password";</script>');
         }
 
-        if (row.pssword !== change.oldpass) {
-            return res.status(400).send("invalid password");
-        }
-
-        let updateSql = `UPDATE userInfo SET pssword = ? WHERE email = ?`;
-        db.run(updateSql, [change.newpass, email], (err) => {
+        // เปรียบเทียบรหัสผ่านเก่ากับที่เก็บในฐานข้อมูล
+        bcrypt.compare(change.oldpass, row.pssword, (err, isMatch) => {
             if (err) {
                 console.log(err.message);
-                return res.status(500).send("update database error");
+                return res.status(500).send("Error comparing passwords");
             }
-            console.log('Data updated successfully');
-            return res.status(500).send('Password updated successfully ');
+
+            if (!isMatch) {
+                return res.status(400).send('<script>alert("Invalid old password!"); window.location.href="/change-password";</script>');
+            }
+
+            // Hash รหัสผ่านใหม่
+            bcrypt.hash(change.newpass, 10, (err, hashedPassword) => {
+                if (err) {
+                    console.log(err.message);
+                    return res.status(500).send("Error hashing password");
+                }
+
+                let updateSql = `UPDATE userInfo SET pssword = ? WHERE email = ?`;
+                db.run(updateSql, [hashedPassword, email], (err) => {
+                    if (err) {
+                        console.log(err.message);
+                        return res.status(500).send("Update database error");
+                    }
+
+                    console.log("Password updated successfully");
+                    return res.send('<script>alert("Password updated successfully!"); window.location.href="/";</script>');
+                });
+            });
         });
     });
 });
@@ -660,40 +706,6 @@ app.get("/compare", (req, res) => {
 
 });
 
-// app.get("/compare", (req, res) => {
-//     let email = req.session.userEmail;
-
-//     if (!email) {
-//         return res.status(400).send("Invalid request: No user email found.");
-//     }
-
-//     let com = `SELECT fv.productID, pl.productName, pl.price, pl.description, pi.imgURL, fv.email, pc.categoryName
-//                FROM FavoriteList fv
-//                JOIN ProductList pl ON fv.productID = pl.productID
-//                JOIN productImage pi ON fv.productID = pi.productID
-//                JOIN productCategory pc ON pl.categoryID = pc.categoryID
-//                WHERE fv.email = ?`;
-
-//     db.all(com, [email], (err, rows) => { 
-//         if (err) {
-//             console.error("Database Error:", err.message);
-//             return res.status(500).send("Internal Server Error");
-//         }
-
-//         // จัดกลุ่มข้อมูลตาม categoryName
-//         let categorizedProducts = {};
-//         rows.forEach(item => {
-//             if (!categorizedProducts[item.categoryName]) {
-//                 categorizedProducts[item.categoryName] = [];
-//             }
-//             categorizedProducts[item.categoryName].push(item);
-//         });
-
-//         console.log(categorizedProducts);
-//         res.render("compare", { categorizedProducts });
-//     });
-
-// });
 
 
 
