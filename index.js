@@ -957,6 +957,9 @@ app.get("/provider-productHistory", (req, res) => {
 
 // เสิร์ฟหน้า ของ orderHistory
 app.get("/provider-orderHistory", (req, res) => {
+    const userEmail = req.session.userEmail;
+
+    //ไว้เสิช
     const query = `
         SELECT 
             p.*, 
@@ -968,6 +971,7 @@ app.get("/provider-orderHistory", (req, res) => {
         JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
         JOIN productCategory pc ON sc.categoryID = pc.categoryID;
     `;
+
     const categoryQuery = `
         SELECT 
             pc.categoryID, 
@@ -979,20 +983,35 @@ app.get("/provider-orderHistory", (req, res) => {
         JOIN 
             subCategory sc ON pc.categoryID = sc.categoryID;
     `;
-    ;
 
     const userQ = 'SELECT * FROM userInfo';
 
-    db.all(query, (err, rows) => {
+    //orderList OrderDetails
+    const orderQuery = `
+        SELECT o.orderId, o.email, o.orderDate, o.orderStatus, 
+               o.totalPrice, o.name, o.phone, o.address, o.paymentMethod, 
+               u.username 
+        FROM orderList o
+        JOIN userInfo u ON o.email = u.email
+    `;
+
+    const detailQuery = `
+        SELECT d.orderID, d.detailID, d.productID, d.productName, 
+               d.customValue, d.quantities, d.eachTotalPrice
+        FROM OrderDetails d
+        JOIN orderList o ON d.orderID = o.orderId
+    `;
+
+    db.all(query, (err, productRows) => {
         if (err) {
-            console.log("❗" + err.message);
-            return;
+            console.error("❗ Error fetching products:", err.message);
+            return res.status(500).send("Database error.");
         }
 
         db.all(categoryQuery, (err, categoryRows) => {
             if (err) {
-                console.log("❗" + err.message);
-                return;
+                console.error("❗ Error fetching categories:", err.message);
+                return res.status(500).send("Database error.");
             }
 
             const categories = {};
@@ -1005,17 +1024,55 @@ app.get("/provider-orderHistory", (req, res) => {
                 }
                 categories[row.categoryID].subCategories[row.subID] = row.subName;
             });
+
             db.all(userQ, (err, userRows) => {
                 if (err) {
-                    console.log("❗" + err.message);
-                    return;
+                    console.error("❗ Error fetching users:", err.message);
+                    return res.status(500).send("Database error.");
                 }
 
-                res.render("provider-orderHistory", { product: rows, categories: categories, user: userRows });
+                db.all(orderQuery, (err, orders) => {
+                    if (err) {
+                        console.error("❗ Error fetching orders:", err.message);
+                        return res.status(500).send("Database error.");
+                    }
+
+                    db.all(detailQuery, (err, details) => {
+                        if (err) {
+                            console.error("❗ Error fetching order details:", err.message);
+                            return res.status(500).send("Database error.");
+                        }
+
+                        // orderID + details
+                        const orderData = orders.map(order => ({
+                            ...order,
+                            details: details.filter(d => d.orderID === order.orderId)
+                        }));
+
+                        res.render("provider-orderHistory", { 
+                            product: productRows, 
+                            categories: categories, 
+                            user: userRows,
+                            orders: orderData 
+                        });
+                    });
+                });
             });
         });
     });
 });
+app.post("/change-orderStatus", (req, res) => {
+    const { orderId, orderStatus } = req.body;
+    const updateQuery = `UPDATE orderList SET orderStatus = ? WHERE orderId = ?`;
+    db.run(updateQuery, [orderStatus, orderId], function (err) {
+        if (err) {
+            console.log("❗ Error updating order status:", err.message);
+            return res.json({ success: false });
+        }
+        res.json({ success: true });
+    });
+});
+
 
 // เสิร์ฟหน้า ของ orderlist
 app.get("/user-orderlist", (req, res) => {
@@ -1588,14 +1645,15 @@ app.post('/upload', upload.single('slip'), (req, res) => {
         console.log("ID ล่าสุดของ orderList:", orderID);
 
         const insertOrderDetailQ = `
-            INSERT INTO OrderDetails (orderID, productID, customValue, quantities, eachTotalPrice)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO OrderDetails (orderID, productID, productName, customValue, quantities, eachTotalPrice)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
         const stmt = db.prepare(insertOrderDetailQ);
         orderDetail.forEach(item => {
             stmt.run([
                 orderID,
                 item.productID,
+                item.productName,
                 item.customValue,
                 item.quantities,
                 item.eachTotalPrice
@@ -1668,14 +1726,15 @@ app.get('/debit', (req, res) => {
         console.log("ID ล่าสุดของ orderList:", orderID);
 
         const insertOrderDetailQ = `
-            INSERT INTO OrderDetails (orderID, productID, customValue, quantities, eachTotalPrice)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO OrderDetails (orderID, productID, productName, customValue, quantities, eachTotalPrice)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
         const stmt = db.prepare(insertOrderDetailQ);
         orderDetail.forEach(item => {
             stmt.run([
                 orderID,
                 item.productID,
+                item.productName,
                 item.customValue,
                 item.quantities,
                 item.eachTotalPrice

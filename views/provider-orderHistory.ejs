@@ -33,123 +33,65 @@
     <div class="max-w-6xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-5">
         <%- include('partials/menu_for_provider') %>
         
-        <table class="mt-6 w-full border">
-            <thead>
-                <tr class="bg-blue-100">
-                    <th class="border p-2">หมวดหมู่</th>
-                    <th class="border p-2">รหัสสินค้า</th>
-                    <th class="border p-2">ชื่อสินค้า</th>
-                    <th class="border p-2">username ของลูกค้า</th>
-                    <th class="border p-2">วันที่/เวลาที่ลูกค้าทำการสั่งซื้อ</th>
-                            <!-- ประวัติการสั่งซื้อฝั่งผู้ขาย
-            timestamp(เวลาที่ลูกค้าทำการสั่งซื้อ),usernameผู้ซื้อ, id, name, quantitiesจำนวน, สถานะการสั่งซื้อ(แก้ไข) -->
-                </tr>
-            </thead>
-            <tbody id="productTable">
-                <tr>
-                    <td class="border p-2">
-                        <select id="categorySelect" class="w-full border" onclick="searchIdProduct()">
-                            <option value="" selected disabled>หมวดหมู่</option>
-                            <% Object.entries(categories).forEach(([categoryID, category]) => { %>
-                                <optgroup label="<%= category.categoryName %>">
-                                    <% Object.entries(category.subCategories).forEach(([subID, subName]) => { %>
-                                        <option value="<%= categoryID %><%= subID %>"><%= subName %></option>
-                                    <% }); %>
-                                </optgroup>
-                            <% }); %>
-                        </select>
-                    </td>
-                    <td class="border p-2 relative">
-                        <input type="text" id="productID" class="w-full border" onkeyup="searchIdProduct()">
-                        <div id="searchResultsIdName" class="mt-1 border border-gray-300 bg-white w-full max-w-full absolute z-10 hidden">
-                            <ul class="max-h-60 overflow-y-auto">
-                                <% product.forEach(function(item) { %>
-                                    <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
-                                        data-id="<%= item.productID %>" 
-                                        data-name="<%= item.productName %>">
-                                        <%= item.productID %> <%= item.productName %>
-                                    </li>
-                                <% }); %>
-                            </ul>
-                        </div>
-                    </td>
-                    <td class="border p-2"><input type="text" id="productName" class="w-full border"></td>
-                    <td class="border p-2 relative">
-                        <input type="text" id="custUsername" class="w-full border" onkeyup="searchUsers()">
-                        <div id="searchUser" class="mt-1 border border-gray-300 bg-white w-full max-w-full absolute z-10 hidden">
-                            <ul class="max-h-60 overflow-y-auto">
-                                <% user.forEach(function(item) { %>
-                                    <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
-                                        data-username="<%= item.username %>" 
-                                        data-email="<%= item.email %>">
-                                        <%= item.username %>
-                                    </li>
-                                <% }); %>
-                            </ul>
-                        </div>
-                    </td>
-                    <td class="border p-2"><input type="datetime-local" id="orderDatetime" class="w-full border"></td> <!-- ใส่ช่องสำหรับวันที่/เวลา -->
-                </tr>
-            </tbody>
-        </table>
-        <!-- <div id="searchResultsIdName" class="mt-2 border border-gray-300 bg-white w-full max-w-lg absolute z-10 hidden">
-            <ul class="max-h-60 overflow-y-auto">
-                <% product.forEach(function(item) { %>
-                    <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
-                        data-id="<%= item.productID %>" 
-                        data-name="<%= item.productName %>">
-                        <%= item.productID %> <%= item.productName %>
-                    </li>
-                <% }); %>
-            </ul>
-        </div> -->
-        <!-- <div class="mt-6">
-            <div class="flex justify-between items-center bg-blue-100 p-4 rounded mb-4">
-                <div class="flex items-center space-x-4">
-                    <img src="item.image" alt="Product Image" class="w-20 h-20 object-cover rounded">
+        <div class="p-4">
+            <% orders.forEach(order => { 
+                const date = new Date(order.orderDate); 
+                const time = date.toLocaleString("th-TH", { timeZone: "Asia/Bangkok" }); 
+            %>
+              <div class="border border-gray-300 p-4 rounded-md mb-6">
+                <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-gray-700 font-semibold">item.productName </p>
+                      <span class="text-lg font-semibold"><%= order.username %></span> 
+                      <span class="text-sm text-gray-500"> | <%= order.email %></span>
                     </div>
+                    <span class="font-bold">วัน-เวลาที่ทำการสั่งซื้อ : <%= time %></span>
+                    <select name="orderStatus" 
+                        data-orderid="<%= order.orderId %>" 
+                        class="px-4 py-2 rounded transition-colors duration-300 
+                            <%= order.orderStatus === 'ที่ต้องจัดส่ง' ? 'bg-gray-400 text-white' : '' %>
+                            <%= order.orderStatus === 'ที่ต้องได้รับ' ? 'bg-yellow-400 text-black' : '' %>
+                            <%= order.orderStatus === 'สำเร็จ' ? 'bg-green-500 text-white' : '' %>
+                            <%= order.orderStatus === 'ยกเลิกแล้ว' ? 'bg-red-400 text-white' : '' %>"
+                        onchange="changeOrderStatus(this)">
+                    <option value="ที่ต้องจัดส่ง" <%= order.orderStatus === "ที่ต้องจัดส่ง" ? "selected" : "" %>>ที่ต้องจัดส่ง</option>
+                    <option value="ที่ต้องได้รับ" <%= order.orderStatus === "ที่ต้องได้รับ" ? "selected" : "" %>>ที่ต้องได้รับ</option>
+                    <option value="สำเร็จ" <%= order.orderStatus === "สำเร็จ" ? "selected" : "" %>>จัดส่งสำเร็จ</option>
+                    <option value="ยกเลิกแล้ว" <%= order.orderStatus === "ยกเลิกแล้ว" ? "selected" : "" %>>ยกเลิก</option>
+                    </select>
                 </div>
-                <div>
-                    <p class="%= item.status === 'added' ? 'text-green-600' : 'text-red-600' %">
-                        = item.status === 'added' ? 'เพิ่มสินค้าสำเร็จ' : 'ลบสินค้าสำเร็จ' %
-                    </p>
-                    <p class="text-gray-600"> item.date </p>
-                    <p class="text-gray-600"> item.time </p>
+          
+                <% order.details.forEach(detail => { 
+                    let customStr = detail.customValue;
+                    let customObj = JSON.parse(customStr);
+                    let customText = customObj.map(option => `${option.customName}: ${option.customValue}`).join(", ");
+                %>
+                  <div class="mt-4 p-2">
+                    <div class="bg-white shadow-md p-2 rounded">
+                      <p class="font-bold"><%= detail.productID %> : <%= detail.productName %></p>
+                      <p class="text-sm text-gray-500">ตัวเลือกของสินค้า</p>
+                      <input type="text" value="<%= customText %>" readonly class="p-2 bg-gray-100 rounded-md flex-1 w-full">
+                      <div class="flex justify-between items-center mt-2">
+                        <span>จำนวน : <%= detail.quantities %></span>
+                        <span><%= detail.eachTotalPrice.toLocaleString() %> ฿</span>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+          
+                <div class="mt-4">
+                  <h3 class="text-lg font-semibold">ข้อมูลที่อยู่ของลูกค้า</h3>
+                  <strong><%= order.name %></strong> | <%= order.phone %><br>
+                  <p>ที่อยู่ :</p>
+                  <p><%= order.address %></p>
                 </div>
-            </div>
-    </div> -->
-
-    <!-- ตารางแสดงรายการประวัติการสั่งซื้อ -->
-    <table class="mt-6 w-full border">
-        <thead>
-            <tr class="bg-blue-100">
-                <th class="border p-2">ชื่อสินค้า</th>
-                <th class="border p-2">หมวดหมู่</th>
-                <th class="border p-2">รหัสสินค้า</th>
-                <th class="border p-2">username ของลูกค้า</th>
-                <th class="border p-2">วันที่/เวลาที่ลูกค้าทำการสั่งซื้อ</th>
-                <th class="border p-2">แก้ไขสถานะ</th> <!-- เพิ่มคอลัมน์สำหรับปุ่ม -->
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="border p-2">item.productName %></td>
-                <td class="border p-2">item.category %></td>
-                <td class="border p-2">item.productCode %></td>
-                <td class="border p-2">item.customerUsername %></td>
-                <td class="border p-2">item.date  / = item.time %></td>
-                <td class="border p-2">
-                    <button onclick="changeStatus('<  %  = item.id %  >')" class="bg-[#FFEF00] text-black px-4 py-2 rounded-md hover:bg-yellow-600">
-                        แก้ไขสถานะ
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-    </div>
+          
+                <div class="mt-2 text-right font-bold">
+                  ราคาสุทธิ: <%= order.totalPrice.toLocaleString() %> ฿
+                </div>
+              </div> 
+            <% }); %>
+          </div>
+          
 
     <script>
     //     function changeStatus(itemId) {
@@ -171,71 +113,45 @@
                 productIDInput.value = selectedValue;
             });
         });
-        function searchIdProduct() {
-            const searchInput = document.getElementById('productID').value;
-            const searchResultsIdName = document.getElementById('searchResultsIdName');
-            const resultItems = searchResultsIdName.querySelectorAll('li');
-            
-            if (searchInput === "") {
-                searchResultsIdName.style.display = "none";
-            } else {
-                searchResultsIdName.style.display = "block";
-                resultItems.forEach(item => {
-                    const productID = item.getAttribute('data-id').toLowerCase();
-                    const productName = item.getAttribute('data-name').toLowerCase();
-                    
-                    if (productID.includes(searchInput)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+        function changeOrderStatus(selected) {
+            const orderId = selected.getAttribute("data-orderid");
+            const newStatus = selected.value;
+            updateSelectColor(selected);
+            fetch("/change-orderStatus", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ orderId, orderStatus: newStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    //alert("เปลี่ยนสถานะสำเร็จ");
+                } else {
+                    alert("เปลี่ยนสถานะไม่สำเร็จ");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+        function updateSelectColor(selectElement) {
+            selectElement.classList.remove("bg-gray-400", "bg-yellow-400", "bg-green-500", "bg-red-400");
+
+            switch (selectElement.value) {
+                case "ที่ต้องจัดส่ง":
+                    selectElement.classList.add("bg-gray-400", "text-white");
+                    break;
+                case "ที่ต้องได้รับ":
+                    selectElement.classList.add("bg-yellow-400", "text-black");
+                    break;
+                case "สำเร็จ":
+                    selectElement.classList.add("bg-green-500", "text-white");
+                    break;
+                case "ยกเลิกแล้ว":
+                    selectElement.classList.add("bg-red-400", "text-white");
+                    break;
             }
         }
-        
-        document.getElementById('searchResultsIdName').addEventListener('click', function(e) {
-            if (e.target && e.target.tagName === 'LI') {
-                const productID = e.target.getAttribute('data-id');
-                const productName = e.target.getAttribute('data-name');
-    
-                document.getElementById('categorySelect').value = productID.substring(0, 2);
-                document.getElementById('productID').value = productID;
-                document.getElementById('productName').value = productName;
-    
-                document.getElementById('searchResultsIdName').style.display = 'none'; 
-            }
-            });
-        function searchUsers() {
-            const searchInput = document.getElementById('custUsername').value.toLowerCase();
-            const searchResultsIdName = document.getElementById('searchUser');
-            const resultItems = searchResultsIdName.querySelectorAll('li');
-            
-            if (searchInput === "") {
-                searchResultsIdName.style.display = "none";
-            } else {
-                searchResultsIdName.style.display = "block";
-                resultItems.forEach(item => {
-                    const username = item.getAttribute('data-username').toLowerCase();
-                    const email = item.getAttribute('data-email').toLowerCase();
-                    if (username.includes(searchInput) || email.includes(searchInput)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            }
-        }
-    
-        document.getElementById('searchUser').addEventListener('click', function(e) {
-            if (e.target && e.target.tagName === 'LI') {
-                const username = e.target.getAttribute('data-username');
-                const email = e.target.getAttribute('data-email');
-    
-                document.getElementById('custUsername').value = username;
-    
-                document.getElementById('searchUser').style.display = 'none'; 
-            }
-        });
     </script>
 </body>
 </html>
