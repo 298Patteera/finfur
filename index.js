@@ -831,11 +831,12 @@ app.get("/provider-addOption", (req, res) => {
 app.get("/provider-productHistory", (req, res) => {
     const query = `
         SELECT 
-            h.*,
+            h.*, 
             p.productName
         FROM providerEditHistory h
-        INNER JOIN ProductList p ON h.productID = p.productID
-        ORDER BY modifiedTimestamp DESC;
+        LEFT JOIN ProductList p ON h.productID = p.productID
+        ORDER BY h.modifiedTimestamp DESC;
+
     `;
     const categoryQuery = `
         SELECT 
