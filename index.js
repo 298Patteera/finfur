@@ -708,6 +708,75 @@ app.get("/provider-addProduct", (req, res) => {
         });
     });
 });
+// เสิร์ฟหน้า ของ addOption
+app.get("/provider-addOption", (req, res) => {
+    const query = `
+            SELECT p.productName, o.* FROM ProductList p
+            JOIN productOption o WHERE  o.productID = p.productID
+            ORDER BY productID ASC, optionType ASC;
+    `;
+    const categoryQ = `
+        SELECT 
+            pc.categoryID, 
+            pc.categoryName, 
+            sc.subID, 
+            sc.subName
+        FROM 
+            productCategory pc
+        JOIN 
+            subCategory sc ON pc.categoryID = sc.categoryID;
+    `;
+    const optionQ = `
+        SELECT *
+        FROM productOption;
+    `;
+    const prodIdNameQ = `
+        SELECT DISTINCT productName, productID, brand
+        FROM ProductList
+        ORDER BY productID ASC;
+
+    `;
+
+    db.all(query, (err, rows) => {
+        if (err) {
+            console.log("❗" + err.message);
+            return;
+        }
+
+        db.all(categoryQ, (err, categoryRows) => {
+            if (err) {
+                console.log("❗" + err.message);
+                return;
+            }
+
+            const categories = {};
+            categoryRows.forEach((row) => {
+                if (!categories[row.categoryID]) {
+                    categories[row.categoryID] = {
+                        categoryName: row.categoryName,
+                        subCategories: {}
+                    };
+                }
+                categories[row.categoryID].subCategories[row.subID] = row.subName;
+            });
+
+            db.all(optionQ, (err, oRows) => {
+                if (err) {
+                    console.log("❗" + err.message);
+                    return;
+                }
+    
+                db.all(prodIdNameQ, (err, iRows) => {
+                    if (err) {
+                        console.log("❗" + err.message);
+                        return;
+                    }
+                    res.render("provider-addOption", { product: rows, categories: categories, options: oRows, idName : iRows});
+                });
+            });
+        });
+    });
+});
 
 
 // เสิร์ฟหน้า ของ productHistory
@@ -717,7 +786,8 @@ app.get("/provider-productHistory", (req, res) => {
             h.*,
             p.productName
         FROM providerEditHistory h
-        INNER JOIN ProductList p ON h.productID = p.productID;
+        INNER JOIN ProductList p ON h.productID = p.productID
+        ORDER BY modifiedTimestamp ASC;
     `;
     const categoryQuery = `
         SELECT 
