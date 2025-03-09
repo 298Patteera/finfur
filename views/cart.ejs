@@ -112,9 +112,9 @@
             <button id="deleteAllBtn" class="px-4 py-2 rounded-lg flex items-center bg-red-500 text-white rounded-md hover:bg-red-600 delete-btn">
                 🗑 ลบทั้งหมด
             </button>
-            <a href="/checkout" id="checkoutBtn" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
+            <button id="checkoutBtn" class="px-6 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">
                 ดำเนินการสั่งซื้อ
-            </a>
+            </button>
         </div>
     </div>
 
@@ -261,7 +261,7 @@
                     .then(response => response.json())
                     .then(result => {
                         if (result.success) {
-                            location.reload();
+                            window.location.href = result.redirectTo;
                         } else {
                             alert("สั่งซื้อสินค้าไม่สำเร็จ");
                         }

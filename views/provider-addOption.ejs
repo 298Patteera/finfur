@@ -50,9 +50,9 @@
             <div class="flex items-start space-x-6">
                 <div class="w-full relative">
                     <br>
-                    <label for="productID" class="block text-gray-700 font-semibold mb-2">กรอกรหัสสินค้าที่ต้องการเพิ่มตัวเลือก</label>
+                    <label for="productID" class="block text-gray-700 font-semibold mb-2 ">กรอกรหัสสินค้าที่ต้องการเพิ่มตัวเลือก</label>
                     <input type="text" id="productID" placeholder="รหัสสินค้า 5 หลัก" 
-                        class="block w-full px-4 py-2 mt-2 bg-gray-100 rounded-md focus:ring focus:ring-indigo-300"
+                        class="block w-full px-4 py-2 mt-2 bg-white rounded-md focus:ring focus:ring-indigo-300 shadow-md"
                         onkeyup="searchProductsPvd()">
                     <div id="searchResultsPvd" class="mt-1 border border-gray-300 bg-white w-full max-w-sm absolute z-10 hidden">
                         <ul class="max-h-60 overflow-y-auto">
@@ -78,11 +78,30 @@
                         onerror="this.style.display='none'" class="object-cover w-full h-full">
                 </div>
             </div>
-        
+            <!-- ช่องคัสต้อม -->
+            <div id="customDiv" class="p-4 bg-gray-100 rounded-lg" style="display: none;">
+                <p class="text-gray-700 font-semibold mb-2">เพิ่ม/แก้ไขการกำหนดขนาดสินค้า</p>
+                <div class="grid grid-cols-[3fr_1fr_1fr_1fr_min-content] gap-3 items-center bg-white p-4 rounded-lg shadow-md">
+
+                    <span class="text-gray-800 font-medium ">กรอกขนาดแนะนำของสินค้า</span>
+
+                    <div class="flex space-x-4">
+                        <input type="number" id="wInput" value="" placeholder="กว้าง (ซม.)" class="border rounded-md px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-400">
+                        <input type="number" id="dInput" value="" placeholder="ยาว (ซม.)" class="border rounded-md px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-400">
+                        <input type="number" id="hInput" value="" placeholder="สูง (ซม.)" class="border rounded-md px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-400">
+                    </div>
+
+                    <button id="confirmCustomRcm" class="bg-green-500 hover:bg-green-600 text-white font-medium px-4 py-2 rounded-md">
+                        ยืนยัน
+                    </button>
+
+                </div>
+            </div>
+            
             <!-- รายการตัวเลือก -->
-            <div>
+            <div id="optionList" style="display: none;">
                 <p class="text-gray-700 font-semibold mb-2">รายการตัวเลือกของสินค้า</p>
-                <div class="bg-blue-100 p-4 rounded-md">
+                <div class="bg-gray-100 p-4 rounded-md ">
                     <div class="grid grid-cols-[2fr_2fr_2fr_auto] gap-4 font-semibold text-gray-700 px-4 py-2">
                         <span>ประเภทของตัวเลือกสินค้า</span>
                         <span>ตัวเลือกสินค้า</span>
@@ -92,58 +111,100 @@
             
                     <div id="optionsContainer">
                         <% product.forEach(item => { %>
-                            <div class="grid grid-cols-[2fr_2fr_2fr_min-content] gap-3 p-1 rounded-md product-option"
-                                data-product-id="<%= item.productID %>" style="display: none;">
-                                <input value="<%= item.optionType %>" type="text" placeholder="ประเภทตัวเลือก" class="bg-blue-100 px-2 py-1 border rounded-md w-full" readonly>
-                                <input value="<%= item.optionName %>" type="text" placeholder="ตัวเลือกสินค้า" class="bg-blue-100 px-2 py-1 border rounded-md w-full" readonly>
-                                <input value="<%= item.addPrice %>" type="text" placeholder="ราคาบวกเพิ่ม" class="bg-blue-100 px-2 py-1 border rounded-md w-full" readonly>
-                                <button 
-                                    data-productID="<%= item.productID %>" 
-                                    data-optionType="<%= item.optionType %>" 
-                                    data-optionName="<%= item.optionName %>"
-                                    data-addPrice="<%= item.addPrice %>"
-                                    class="action-btn bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded-md">
-                                    ลบ
-                                </button>
-                            </div>
+                            <% if (item.optionType !== "กำหนดขนาด") { %>
+                                <div class="grid grid-cols-[2fr_2fr_2fr_min-content] gap-3 p-1 rounded-md product-option bg-blue-100 p-4 rounded-lg shadow-md"
+                                    data-product-id="<%= item.productID %>" style="display: none;">
+                                    <input value="<%= item.optionType %>" type="text" placeholder="ประเภทตัวเลือก" class="text-blue-700 bg-blue-100 px-2 py-1 border rounded-md w-full" readonly>
+                                    <input value="<%= item.optionName %>" type="text" placeholder="ตัวเลือกสินค้า" class="text-blue-700 bg-blue-100 px-2 py-1 border rounded-md w-full" readonly>
+                                    <input value="<%= item.addPrice %>" type="text" placeholder="ราคาบวกเพิ่ม" class="text-blue-700 bg-blue-100 px-2 py-1 border rounded-md w-full" readonly>
+                                    <button 
+                                        data-productID="<%= item.productID %>" 
+                                        data-optionType="<%= item.optionType %>" 
+                                        data-optionName="<%= item.optionName %>"
+                                        data-addPrice="<%= item.addPrice %>"
+                                        class="action-btn bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded-md"
+                                        onclick="delOldOption(this);">
+                                        ลบ
+                                    </button>
+                                </div>
+                            <% } %>
                         <% }) %>
+                        
+                        <div id="searchOptionType" class="mt-10 border border-gray-300 bg-white w-full max-w-sm absolute z-10 hidden">
+                            <ul class="searchOptionType max-h-60 overflow-y-auto">
+                                <% options.forEach(function(item) { %>
+                                    <% if (item.optionType !== "กำหนดขนาด") { %>
+                                        <li class="border-b p-2 hover:bg-gray-100 cursor-pointer" 
+                                            data-type="<%= item.optionType %>">
+                                            <%= item.optionType %>
+                                        </li>
+                                    <% } %>
+                                <% }); %>
+                            </ul>
+                        </div>
                     </div>
                     
             
-                    <button id="addOptionBtn" class="mt-4 bg-green-600 text-white px-4 py-2 rounded-md w-full">
+                    <button id="addOptionBtn" class="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md w-full">
                         เพิ่มตัวเลือก
                     </button>
                 </div>
             </div>
 
-
     <script>
 
         document.getElementById('addOptionBtn').addEventListener('click', function() {
+                let productID = document.getElementById('productID').value;
                 let container = document.getElementById('optionsContainer');
 
                 let row = document.createElement('div');
-                row.className = "grid grid-cols-[2fr_2fr_2fr_min-content] gap-3 p-1 rounded-md product-option";
+                row.className = "grid grid-cols-[2fr_2fr_2fr_min-content] gap-3 p-1 rounded-lg shadow-md product-option";
 
                 let typeInput = document.createElement('input');
                 typeInput.type = "text";
                 typeInput.placeholder = "ประเภทตัวเลือก";
-                typeInput.className = "px-2 py-1 border rounded-md w-full ";
+                typeInput.className = "typeInput text-blue-700 px-2 py-1 border rounded-md w-full ";
+                typeInput.addEventListener('keyup', function() {
+                    let searchTerm = optionInput.value.toLowerCase();
+                    let optionList = document.querySelector('#searchOptionType ul');
+                    let items = optionList.querySelectorAll('li');
+                    
+                    let show = false;
+                    items.forEach(function(item) {
+                        let itemText = item.innerText.toLowerCase();
+                        if (itemText.includes(searchTerm)) {
+                            item.style.display = '';
+                            show = true;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                    if (show && typeInput.value.trim() !== "") {
+                        document.getElementById('searchOptionType').classList.remove('hidden');
+                    } else {
+                        document.getElementById('searchOptionType').classList.add('hidden');
+                    }
+                });
+                document.querySelector('#searchOptionType ul').addEventListener('click', function(e) {
+                    if (e.target.tagName === 'LI') {
+                        typeInput.value = e.target.innerText.trim();
+                        document.getElementById('searchOptionType').classList.add('hidden');
+                    }
+                });
 
                 let optionInput = document.createElement('input');
                 optionInput.type = "text";
                 optionInput.placeholder = "ตัวเลือกสินค้า";
-                optionInput.className = "px-2 py-1 border rounded-md w-full";
+                optionInput.className = "text-blue-700 px-2 py-1 border rounded-md w-full";
 
-                let addPricenput = document.createElement('input');
-                addPricenput.type = "text";
-                addPricenput.placeholder = "ราคาบวกเพิ่ม";
-                addPricenput.className = "px-2 py-1 border rounded-md w-full";
+                let addPriceInput = document.createElement('input');
+                addPriceInput.type = "text";
+                addPriceInput.placeholder = "ราคาบวกเพิ่ม";
+                addPriceInput.className = "text-blue-700 px-2 py-1 border rounded-md w-full";
 
                 let actionBtn = document.createElement('button');
                 actionBtn.className = "action-btn bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-md";
                 actionBtn.innerText = "ยืนยัน";
-                let productID = document.getElementById('productID').value;
                 actionBtn.setAttribute('data-productID', productID);
 
 
@@ -151,74 +212,197 @@
                     if (actionBtn.innerText === "ยืนยัน") {
                         actionBtn.innerText = "ลบ";
                         actionBtn.className = "action-btn bg-red-500 text-white px-4 py-2 rounded-md";
+
+                        typeInput.value = typeInput.value.trim();
+                        optionInput.value = optionInput.value.trim();
+                        addPriceInput.value = addPriceInput.value.trim();
+                        if (addPriceInput.value === "") {
+                            addPriceInput.value = 0;
+                        }
+
+                        typeInput.className = "text-blue-700 bg-blue-100 px-2 py-1 border rounded-md w-full";
+                        optionInput.className = "text-blue-700 bg-blue-100 px-2 py-1 border rounded-md w-full";
+                        addPriceInput.className = "text-blue-700 bg-blue-100 px-2 py-1 border rounded-md w-full";
+                        row.className = "grid grid-cols-[2fr_2fr_2fr_min-content] gap-3 p-1 rounded-md product-option bg-blue-100 p-4 rounded-lg shadow-md";
+
+                        typeInput.readOnly = true;
+                        optionInput.readOnly = true;
+                        addPriceInput.readOnly = true;
+                        addProduct(row)
                     } else {
                         row.remove();
+                        delProduct(row);
                     }
                 });
+                
                 row.appendChild(typeInput);
                 row.appendChild(optionInput);
-                row.appendChild(addPricenput);
+                row.appendChild(addPriceInput);
                 row.appendChild(actionBtn);
                 container.appendChild(row);
             });
 
-            document.querySelectorAll('.action-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (btn.innerText === "ยืนยัน") {
-                        btn.innerText = "ลบ";
-                        btn.className = "action-btn bg-red-500 text-white px-4 py-2 rounded-md";
-                    } else {
-                        btn.parentElement.remove();
-                    }
-                });
-            });
+        async function addProduct(row, event) {
+            if (event) event.preventDefault();
+            let optionData = getData(row);
+            if (!optionData) return;
+            console.log(optionData);
 
-        async function addProduct() {
-            let productData = getData();
-            if (!productData) return;
+            let modifiedTimestamp = new Date().toISOString();
+            const requestData = {modifiedTimestamp, optionData: [optionData]};
 
             try {
-                let response = await fetch('/add-to-productlist', {
+                let response = await fetch('/add-to-productOption', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(productData)
+                    body: JSON.stringify(requestData)
                 });
 
                 let result = await response.json();
                 if (result.success) {
-                    alert(result.message);
-                    location.reload();
+                    //alert(result.message);
+                    //location.reload();
                 } else {
                     alert('❗' + result.message);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('ไม่สามารถเพิ่มสินค้าได้');
+                alert('ไม่สามารถเพิ่มตัวเลือกสินค้าได้');
+            }
+        }
+        async function delProduct(row, event) {
+            if (event) event.preventDefault();
+            let optionData = getData(row);
+            if (!optionData) return;
+            console.log(optionData);
+
+            let modifiedTimestamp = new Date().toISOString();
+            const requestData = {modifiedTimestamp, optionData: [optionData]};
+
+            try {
+                let response = await fetch('/del-to-productOption', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                let result = await response.json();
+                if (result.success) {
+                    //alert(result.message);
+                    //location.reload();
+                } else {
+                    alert('❗' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถลบตัวเลือกสินค้าได้');
+            }
+        }
+        function getData(row) {
+            let typeInput = row.querySelector('input[type="text"]:nth-child(1)');
+            let optionInput = row.querySelector('input[type="text"]:nth-child(2)');
+            let addPriceInput = row.querySelector('input[type="text"]:nth-child(3)');
+
+            let typeValue = typeInput.value.trim();
+            let optionValue = optionInput.value.trim();
+            let addPriceValue = addPriceInput.value.trim();
+            if (addPriceValue === "") {
+                addPriceValue = 0;
+            }
+            let productID = row.querySelector('.action-btn').getAttribute('data-productID');
+            return {
+                productID,
+                optionType: typeValue,
+                optionName: optionValue,
+                addPrice: addPriceValue
+            };
+        }
+        async function delOldOption(button) {
+            let productID = button.getAttribute("data-productID");
+            let optionType = button.getAttribute("data-optionType");
+            let optionName = button.getAttribute("data-optionName");
+            let addPrice = button.getAttribute("data-addPrice");
+
+            let modifiedTimestamp = new Date().toISOString();
+            const requestData = { modifiedTimestamp, optionData: [{ productID, optionType, optionName, addPrice }] };
+
+            try {
+                let response = await fetch('/del-to-productOption', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                let result = await response.json();
+                if (result.success) {
+                    //alert(result.message);
+                    let row = button.closest(".product-option");
+                    if (row) row.remove();
+
+                } else {
+                    alert('❗' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถลบตัวเลือกสินค้าได้');
             }
         }
 
+
+        const product = <%- JSON.stringify(product) %>;
+
         document.addEventListener('DOMContentLoaded', function() {
             const searchResultsPvd = document.getElementById('searchResultsPvd');
+            const optionAllCtn = document.getElementById('optionList');
+            const customDiv = document.getElementById('customDiv');
             const options = document.querySelectorAll('.product-option');
-                searchResultsPvd.addEventListener('click', function(e) {
-                    if (e.target && e.target.tagName === 'LI') {
-                        const productID = e.target.getAttribute('data-id');
-                        const productName = e.target.getAttribute('data-name');
-                        const productBrand = e.target.getAttribute('data-brand');
 
-                        console.log("clicked", productID)
+            const productIDInput = document.getElementById('productID');
+            const widthInput = document.getElementById('wInput');
+            const depthInput = document.getElementById('dInput');
+            const heightInput = document.getElementById('hInput');
+            function updateSizeInputs(productID) {
+                if (!productID) {
+                    widthInput.value = '';
+                    depthInput.value = '';
+                    heightInput.value = '';
+                    return;
+                }
+
+            const matchedProduct = product.find(item => item.productID === productID);
+
+            if (matchedProduct) {
+                widthInput.value = product.find(item => item.optionName === 'กว้าง (ซม.)' && item.productID === productID)?.recommendedSize || '';
+                depthInput.value = product.find(item => item.optionName === 'ยาว (ซม.)' && item.productID === productID)?.recommendedSize || '';
+                heightInput.value = product.find(item => item.optionName === 'สูง (ซม.)' && item.productID === productID)?.recommendedSize || '';
+            } else {
+                widthInput.value = '';
+                depthInput.value = '';
+                heightInput.value = '';
+            }
+        }
+
+            searchResultsPvd.addEventListener('click', function(e) {
+                if (e.target && e.target.tagName === 'LI') {
+                    const productID = e.target.getAttribute('data-id');
+                    const productName = e.target.getAttribute('data-name');
+                    const productBrand = e.target.getAttribute('data-brand');
+
+                    console.log("clicked", productID);
             
-                        document.getElementById('productID').value = productID;
-                        document.getElementById('productName').value = productName + " / " + productBrand;
-                        document.getElementById('productName').style.display = '';
+                    document.getElementById('productID').value = productID;
+                    document.getElementById('productName').value = productName + " / " + productBrand;
+                    document.getElementById('productName').style.display = '';
 
-                        const productImg = document.getElementById('searchedProduct')
-                        productImg.src = "/images/allProduct/"+productID+".png";
-                        productImg.style.display = '';
+                    const productImg = document.getElementById('searchedProduct');
+                    productImg.src = "/images/allProduct/" + productID + ".png";
+                    productImg.style.display = '';
+                    optionAllCtn.style.display = '';
+                    customDiv.style.display = '';
 
-                        searchResultsPvd.style.display = 'none'; 
+                    searchResultsPvd.style.display = 'none';
 
-                        options.forEach(option => {
+                    options.forEach(option => {
                         const optionProductID = option.getAttribute('data-product-id');
                         if (optionProductID === productID) {
                             option.style.display = "grid";
@@ -226,9 +410,50 @@
                             option.style.display = "none";
                         }
                     });
+                    updateSizeInputs(productID);
+                }
+            });
+            document.getElementById('confirmCustomRcm').addEventListener('click', function () {
+                const productID = document.getElementById('productID').value.trim();
+                const widthValue = document.getElementById('wInput').value.trim();
+                const depthValue = document.getElementById('dInput').value.trim();
+                const heightValue = document.getElementById('hInput').value.trim();
+
+                if (!productID) {
+                    alert("กรุณาเลือกสินค้า");
+                    return;
+                }
+
+                const optionData = [
+                    { optionType: "กำหนดขนาด", optionName: "กว้าง (ซม.)", recommendedSize: widthValue, productID },
+                    { optionType: "กำหนดขนาด", optionName: "ยาว (ซม.)", recommendedSize: depthValue, productID },
+                    { optionType: "กำหนดขนาด", optionName: "สูง (ซม.)", recommendedSize: heightValue, productID }
+                ];
+
+                let modifiedTimestamp = new Date().toISOString();
+
+                const requestData = {modifiedTimestamp, optionData};
+
+                fetch('/provider-update-custom', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("บันทึกข้อมูลสำเร็จ");
+                    } else {
+                        alert("เกิดข้อผิดพลาดในการบันทึก");
                     }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
                 });
+            });
         });
+
     </script>
 </body>
 </html>

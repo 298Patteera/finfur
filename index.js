@@ -41,14 +41,34 @@ app.use(session({
     cookie: { secure: false },
     secure: false
 }));
-// ทำให้ email เป็น local ดึงข้อมูลไปใช้ได้ทุก .ejs
+// ทำให้ข้อมูฅเป็น local ดึงข้อมูลไปใช้ได้ข้าม .ejs
 app.use((req, res, next) => {
     res.locals.userEmail = req.session.userEmail || null;
+
     res.locals.orderDetail = req.session.orderDetail || null;
+    res.locals.orderList = req.session.orderDetail || null;
+    res.locals.totalPrice = req.session.totalPrice || null;
+    const checkoutPages = ["/checkout", "/debit", "/prompay", "/qr", "/upload", "/checkout-create-orderList"];
+    if (req.session.orderDetail && !checkoutPages.includes(req.path)) {
+        console.log(`${req.path} ลบ session orderDetail`);
+        req.session.orderDetail = null;
+    }
+    if (req.session.orderList && !checkoutPages.includes(req.path)) {
+        console.log(`${req.path} ลบ session orderList`);
+        req.session.orderList = null;
+    }
+    if (req.session.totalPrice && !checkoutPages.includes(req.path)) {
+        console.log(`${req.path} ลบ session totalPrice`);
+        req.session.totalPrice = null;
+    }
     next();
 });
 // เสิร์ฟหน้า Login
 app.get("/login", (req, res) => {
+    res.render("login");
+});
+app.get("/logout", (req, res) => {
+    req.session.userEmail = null;
     res.render("login");
 });
 // ตรวจสอบการเข้าสู่ระบบ
@@ -322,7 +342,7 @@ app.get("/cart", (req, res) => {
 });
 // เสิร์ฟหน้าเช็คเอาท์
 app.get("/checkout", (req, res) => {
-    console.log("/checkout session data: ", req.session);
+    //console.log("/checkout session data: ", req.session);
 
     const orderDetail = req.session.orderDetail;
     const userEmail = req.session.userEmail;
@@ -330,21 +350,28 @@ app.get("/checkout", (req, res) => {
     if (!orderDetail) {
         console.log("/checkout : ไม่พบข้อมูล orderDetail");
     } else {
-        const totalPrice = orderDetail.reduce((sum, item) => { return sum + Number(item.eachTotalPrice); }, 0);
-        const query = `
-        SELECT * FROM userAddress
-        WHERE email = ?;
-    `;
-        db.all(query, [userEmail], (err, rows) => {
+        const totalPrice = orderDetail.reduce((sum, item) => {return sum + Number(item.eachTotalPrice);}, 0);
+        const addressQ = `
+                        SELECT * FROM userAddress
+                        WHERE email = ?;
+                    `;
+        const paymentQ = `
+                        SELECT * FROM userPayment
+                        WHERE email = ?;
+                    `;
+    db.all(addressQ, [userEmail], (err, aRows) => {
+        if (err) {
+            console.log("address error❗" + err.message);
+        }
+        db.all(paymentQ, [userEmail], (err, pRows) => {
             if (err) {
-                console.log("❗" + err.message);
+                console.log("payment error❗" + err.message);
             }
-            console.log("/checkout : ", orderDetail);
-            res.render("checkout", { userData: rows, userEmail, orderDetail, totalPrice });
+            console.log("/checkout received ss: ", orderDetail);
+            res.render("checkout", { address: aRows, payment: pRows, userEmail, orderDetail, totalPrice });
         });
+    });
     }
-
-    //console.log("/checkout session: ", req.session);
 
 });
 
@@ -825,7 +852,7 @@ app.get("/provider-addOption", (req, res) => {
             subCategory sc ON pc.categoryID = sc.categoryID;
     `;
     const optionQ = `
-        SELECT *
+        SELECT DISTINCT optionType
         FROM productOption;
     `;
     const prodIdNameQ = `
@@ -881,11 +908,12 @@ app.get("/provider-addOption", (req, res) => {
 app.get("/provider-productHistory", (req, res) => {
     const query = `
         SELECT 
-            h.*,
+            h.*, 
             p.productName
         FROM providerEditHistory h
-        INNER JOIN ProductList p ON h.productID = p.productID
-        ORDER BY modifiedTimestamp ASC;
+        LEFT JOIN ProductList p ON h.productID = p.productID
+        ORDER BY h.modifiedTimestamp DESC;
+
     `;
     const categoryQuery = `
         SELECT 
@@ -1164,7 +1192,7 @@ app.post("/add-to-productlist", (req, res) => {
                 if (err) {
                     console.log("❗เพิ่มข้อมูลไม่สำเร็จ Error: " + err.message);
                 }
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
+                insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
                 return res.json({ success: true, message: "✅เพิ่มสินค้าใหม่สำเร็จ" });
             });
         }
@@ -1186,8 +1214,7 @@ app.post("/update-to-productlist", (req, res) => {
             return res.status(500).json({ success: false, message: "❌เกิดข้อผิดพลาดในการอัปเดตข้อมูลสินค้า" });
         }
 
-        console.log(updateQ);
-        insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
+        insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
         return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
     });
 });
@@ -1218,91 +1245,134 @@ app.post("/del-to-productlist", (req, res) => {
                     return res.status(500).json({ success: false, message: "❗อัปเดตไม่สำเร็จ " + err.message });
                 }
 
-                insertEditHistory(productID, modifiedTimestamp, userEmail, `ลบสินค้า`);
+                insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, `ลบสินค้า`);
                 return res.json({ success: true, message: "✅ ลบข้อมูลสินค้าสำเร็จ" });
             });
         });
     });
 });
 //productOption
-app.post("/add-to-productOption", (req, res) => {
-    const { productID, productName, categoryID, subID, price, brand, description, modifiedTimestamp } = req.body;
+app.post("/provider-update-custom", async (req, res) => {
+    const { modifiedTimestamp, optionData } = req.body;
     const userEmail = res.locals.userEmail;
 
-    const checkProductQ = `
-        SELECT * FROM ProductList WHERE productID = ?;
-    `;
+    if (!optionData || optionData.length === 0) {
+        return res.status(400).json({ success: false, message: "❗ ไม่พบข้อมูล" });
+    }
 
-    db.get(checkProductQ, [productID], (err, row) => {
-        if (err) {
-            console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
-        }
-        //if ถ้ามีจะเพิ่มจำนวน else ถ้าไม่มีจะ insert
-        if (row) {
-            const updateQ = `
-                UPDATE ProductList
-                SET productName = ?, categoryID = ?, price = ?, subID = ?, brand = ?, description = ?
-                WHERE productID = ?;
-            `;
-
-            db.run(updateQ, [productName, categoryID, price, subID, brand, description, productID], function (err) {
-                if (err) {
-                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
-                }
-
-                console.log(updateQ);
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขข้อมูลสินค้า");
-                return res.json({ success: true, message: "✅แก้ไขข้อมูลสินค้าสำเร็จ" });
+    try {
+        await Promise.all(optionData.map(async ({ productID, optionName, recommendedSize, optionType }) => {
+            const checkOptionQ = `SELECT * FROM productOption WHERE productID = ? AND optionName = ?;`;
+            
+            const row = await new Promise((resolve, reject) => {
+                db.get(checkOptionQ, [productID, optionName], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
             });
-        } else {
-            const addedDate = new Date().toISOString();
 
-            const insertQ = `
-                INSERT INTO ProductList (productID, productName, categoryID, price, brand, description, subID, addedDate)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-            `;
+            if (row) {
+                const updateQ = `UPDATE productOption SET recommendedSize = ? WHERE productID = ? AND optionName = ?;`;
+                
+                await new Promise((resolve, reject) => {
+                    db.run(updateQ, [recommendedSize, productID, optionName], function (err) {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
 
-            db.run(insertQ, [productID, productName, categoryID, price, brand, description, subID, addedDate], function (err) {
-                if (err) {
-                    console.log("❗เพิ่มข้อมูลไม่สำเร็จ Error: " + err.message);
-                }
-                insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มสินค้าใหม่");
-                return res.json({ success: true, message: "✅เพิ่มสินค้าใหม่สำเร็จ" });
-            });
-        }
-    });
+                await insertEditHistory(productID, modifiedTimestamp, userEmail, "แก้ไขการกำหนดขนาดสินค้า");
+            } else {
+                const insertQ = `
+                    INSERT INTO productOption (optionType, optionName, recommendedSize, productID, addPrice)
+                    VALUES (?, ?, ?, ?, 0);
+                `;
+
+                await new Promise((resolve, reject) => {
+                    db.run(insertQ, [optionType, optionName, recommendedSize, productID], function (err) {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
+
+                await insertEditHistory(productID, modifiedTimestamp, userEmail, "เพิ่มการกำหนดขนาดสินค้า");
+            }
+        }));
+
+        res.json({ success: true, message: "✅ อัปเดตข้อมูลสำเร็จ" });
+
+    } catch (error) {
+        console.error("❗ Error:", error);
+        res.status(500).json({ success: false, message: "❗ เกิดข้อผิดพลาดในการบันทึกข้อมูล" });
+    }
 });
-app.post("/del-to-productOption", (req, res) => {
-    const { productID, productName, categoryID, subID, price, stockNum, modifiedTimestamp } = req.body;
+
+
+app.post("/add-to-productOption", (req, res) => {
+    const { modifiedTimestamp, optionData } = req.body;
     const userEmail = res.locals.userEmail;
 
-    const checkProductQ = `SELECT * FROM ProductList WHERE productID = ?;`;
+    if (!optionData || optionData.length === 0) {
+        return res.status(400).json({ success: false, message: "❗ ไม่พบข้อมูล" });
+    }
 
-    db.get(checkProductQ, [productID], (err, row) => {
-        if (err) {
-            console.log("❗เช็คไม่สำเร็จ Error: " + err.message);
-            return res.status(500).json({ success: false, message: "❗เช็คไม่สำเร็จ Error: " + err.message });
-        }
-        if (!row) {
-            console.log("ไม่พบข้อมูลสินค้า");
-            return res.status(500).json({ success: false, message: "❌ไม่พบข้อมูลสินค้า" });
-        }
-        db.serialize(() => {
-            db.run(`DELETE FROM "productOption" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "orderDetails" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "productImage" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "FavoriteList" WHERE "productID" = ?;`, [productID]);
-            db.run(`DELETE FROM "ProductList" WHERE "productID" = ?;`, [productID], function (err) {
+    const insertQ = `INSERT INTO productOption (optionType, optionName, productID, addPrice) VALUES (?, ?, ?, ?);`;
+
+    const insertPromises = optionData.map((option) => {
+        return new Promise((resolve, reject) => {
+            db.run(insertQ, [option.optionType, option.optionName, option.productID, option.addPrice], function (err) {
                 if (err) {
-                    console.log("❗อัปเดตไม่สำเร็จ Error: " + err.message);
-                    return res.status(500).json({ success: false, message: "❗อัปเดตไม่สำเร็จ " + err.message });
+                    console.log("❗ Error : " + err.message);
+                    reject(err);
+                } else {
+                    resolve();
                 }
-
-                insertEditHistory(productID, modifiedTimestamp, userEmail, `ลบสินค้า`);
-                return res.json({ success: true, message: "✅ ลบข้อมูลสินค้าสำเร็จ" });
             });
         });
     });
+
+    Promise.all(insertPromises)
+        .then(() => {
+            insertEditHistory(optionData[0].productID, modifiedTimestamp, userEmail, "เพิ่มตัวเลือกสินค้า");
+            res.json({ success: true, message: "✅ เพิ่มตัวเลือกสินค้าสำเร็จ" });
+        })
+        .catch((err) => {
+            res.status(500).json({ success: false, message: "❗ ไม่สามารถเพิ่มตัวเลือกสินค้าได้" });
+        });
+});
+
+
+app.post("/del-to-productOption", (req, res) => {
+    const { modifiedTimestamp, optionData } = req.body;
+    const userEmail = res.locals.userEmail;
+
+    if (!optionData || optionData.length === 0) {
+        return res.status(400).json({ success: false, message: "❗ ไม่พบข้อมูล" });
+    }
+
+    const delQ = `DELETE FROM productOption WHERE productID = ? AND optionType= ? AND optionName= ? ;`;
+
+    const deletePromises = optionData.map((option) => {
+        return new Promise((resolve, reject) => {
+            db.run(delQ, [option.productID, option.optionType, option.optionName], function (err) {
+                if (err) {
+                    console.log("❗ Error : " + err.message);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    });
+
+    Promise.all(deletePromises)
+        .then(() => {
+            insertEditHistory(optionData[0].productID, modifiedTimestamp, userEmail, "ลบตัวเลือกสินค้า");
+            res.json({ success: true, message: "✅ ลบตัวเลือกสินค้าสำเร็จ" });
+        })
+        .catch((err) => {
+            res.status(500).json({ success: false, message: "❗ ไม่สามารถลบตัวเลือกสินค้าได้" });
+        });
 });
 function insertEditHistory(productID, modifiedTimestamp, userEmail, modifiedType) {
     const historyQ = `
@@ -1311,6 +1381,20 @@ function insertEditHistory(productID, modifiedTimestamp, userEmail, modifiedType
     `;
 
     db.run(historyQ, [productID, modifiedTimestamp, userEmail, modifiedType], function (err) {
+        if (err) {
+            console.log("❗ Error: " + err.message);
+        } else {
+            console.log("✅อัปเดตสินค้าและบันทึกประวัติสำเร็จ");
+        }
+    });
+}
+function insertEditHistorySaveName(productID, productName, modifiedTimestamp, userEmail, modifiedType) {
+    const historyQ = `
+        INSERT INTO providerEditHistory (productID, modifiedTimestamp, email, modifiedType, productDelName)
+        VALUES (?, ?, ?, ?, ?);
+    `;
+
+    db.run(historyQ, [productID, modifiedTimestamp, userEmail, modifiedType, productName], function (err) {
         if (err) {
             console.log("❗ Error: " + err.message);
         } else {
@@ -1408,55 +1492,51 @@ app.post("/cart-checkout", (req, res) => {
     if (!userEmail) {
         return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
     }
-    res.redirect("/checkout");
+    res.json({ success: true, redirectTo: "/checkout" });
 });
-app.post("/checkout-address", (req, res) => {
-    const { products } = req.body;
-    console.log("/checkout-address : ", products)
-    //req.session.orderDetail = JSON.stringify(products);
-    req.session.orderDetail = products;
-    console.log("/cart-checkout session: ", req.session.orderDetail)
-
+app.post("/checkout-create-orderList", (req, res) => {
+    const orderDetail = res.locals.orderDetail;
     const userEmail = res.locals.userEmail;
+    const orderList = req.body;
+    console.log("orderList", orderList);
+    //req.session.orderDetail = JSON.stringify(products);
+    req.session.totalPrice = orderList.totalPrice;
+    req.session.orderList = orderList;
+    console.log("/checkout-create-orderList sessions: ", req.session.orderList, orderDetail);
     if (!userEmail) {
         return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
     }
-    //ไปไหนต่อล่ะเนี่ย
-    //res.redirect("/checkout");
-
-    //ไว้ใช้ตรงหน้าจ่ายเงินเสร็จ
-    // if (products) {
-    //     //ลบหลายชิ้น
-    //     const deleteQ = "DELETE FROM CustomerCart WHERE email = ? AND productID = ? AND customValue = ?";
-
-    //     db.serialize(() => {
-    //         const qLoops = db.prepare(deleteQ);
-    //         products.forEach(product => {
-    //             qLoops.run(userEmail, product.productID, JSON.stringify(product.customValue));
-    //         });
-    //         qLoops.finalize();
-    //     });
-
-    //     return res.json({ success: true });
-    // }
-
+    
+    //paymentMethod
+    if (orderList.paymentMethod === "ชำระเงินผ่าน promptpay"){
+        res.json({ success: true, redirectTo: "/prompay" });
+    } else {
+        res.json({ success: true, redirectTo: "/debit" });
+    }
 });
 
 //prompay
 // หมายเลขพร้อมเพย์และจำนวนเงิน
 const phoneNumber = "0655047562";
-const amount = 300.00; // จำนวนเงินที่ fix คงที่
+//const amount = 300.00; // จำนวนเงินที่ fix คงที่
 
 app.get('/qr', async (req, res) => {
+    const amount = parseFloat(res.locals.totalPrice);
     try {
-        const qrData = promptpay(phoneNumber, amount); // ส่งหมายเลขพร้อมเพย์และจำนวนเงินคงที่ไปยังฟังก์ชัน promptpay
-        const qrImage = await QRCode.toDataURL(qrData);
-        res.send(`<img src="${qrImage}" alt="PromptPay QR Code">`);
+        const qrData = promptpay(phoneNumber, amount); // สร้างข้อมูล PromptPay QR
+        QRCode.toDataURL(qrData, (error, qrImage) => {
+            if (error) {
+                console.error("Error:", error.message);
+                return res.status(500).send("❌ ไม่สามารถสร้าง QR Code ได้");
+            }
+            res.send(`<img src="${qrImage}" alt="PromptPay QR Code">`);
+        });
     } catch (error) {
         console.error("Error:", error.message);
-        res.status(500).send("❌ ไม่สามารถสร้าง QR Code ได้ ");
+        res.status(500).send("❌ ไม่สามารถสร้าง QR Code ได้");
     }
 });
+
 
 // กำหนดโฟลเดอร์เก็บไฟล์อัปโหลด
 const storage = multer.diskStorage({
@@ -1472,11 +1552,80 @@ app.post('/upload', upload.single('slip'), (req, res) => {
     if (!req.file) {
         return res.status(400).send('❌ กรุณาอัปโหลดไฟล์');
     }
-    res.send('✅ อัปโหลดสลิปสำเร็จ! ไฟล์: ' + req.file.filename);
+    //อัปลง db
+    const orderDetail = req.session.orderDetail;
+    const userEmail = res.locals.userEmail;
+    const orderList = req.session.orderList;
+    //เทสเทส
+    console.log("/debit orderList: ", orderList);
+    console.log("/debit orderDetail: ", orderDetail);
+    console.log("/debit userEmail: ", userEmail);
+
+    if (!userEmail) {
+        return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
+    }
+
+    const insertOrderListQ = `
+        INSERT INTO orderList (email, orderDate, orderStatus, totalPrice, name, phone, address, paymentMethod)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    db.run(insertOrderListQ, [
+        userEmail,
+        orderList.orderDate,
+        orderList.orderStatus,
+        orderList.totalPrice,
+        orderList.name,
+        orderList.phone,
+        orderList.address,
+        orderList.paymentMethod
+    ], function (err) {
+        if (err) {
+            console.error("Error inserting orderList:", err.message);
+            return res.status(500).json({ error: "เกิดข้อผิดพลาดในการบันทึก orderList" });
+        }
+
+        const orderID = this.lastID;
+        console.log("ID ล่าสุดของ orderList:", orderID);
+
+        const insertOrderDetailQ = `
+            INSERT INTO OrderDetails (orderID, productID, customValue, quantities, eachTotalPrice)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+        const stmt = db.prepare(insertOrderDetailQ);
+        orderDetail.forEach(item => {
+            stmt.run([
+                orderID,
+                item.productID,
+                item.customValue,
+                item.quantities,
+                item.eachTotalPrice
+            ], err => {
+                if (err) {
+                    console.error("Error inserting orderDetail:", err.message);
+                }
+            });
+
+            const deleteQuery = `
+                DELETE FROM CustomerCart 
+                WHERE email = ? AND productID = ? AND customValue = ?
+            `;
+
+            db.run(deleteQuery, [userEmail, item.productID, item.customValue], function(err) {
+                if (err) {
+                    console.error("Error deleting from CustomerCart:", err.message);
+                } else {
+                    console.log(`ลบ ${item.productID} จากตะกร้าของ ${userEmail}`);
+                }
+            });
+        });
+        stmt.finalize();
+        res.send('✅ อัปโหลดสลิปสำเร็จ! ไฟล์: ' + req.file.filename);
+    });
 });
 
 // เสิร์ฟหน้า ของ PromptPay
 app.get('/prompay', (req, res) => {
+    const amount = parseFloat(res.locals.totalPrice);
     // ส่งข้อมูล amount ไปยัง EJS
     res.render('prompay', { amount });
 });
@@ -1484,9 +1633,77 @@ app.get('/prompay', (req, res) => {
 
 // เสิร์ฟหน้า ของ PromptPay
 app.get('/debit', (req, res) => {
-    // ส่งข้อมูล amount ไปยัง EJS
-    res.render('debit');
+    const orderDetail = req.session.orderDetail;
+    const userEmail = res.locals.userEmail;
+    const orderList = req.session.orderList;
+    //เทสเทส
+    console.log("/debit orderList: ", orderList);
+    console.log("/debit orderDetail: ", orderDetail);
+    console.log("/debit userEmail: ", userEmail);
+
+    if (!userEmail) {
+        return res.status(401).json({ success: false, message: "กรุณาเข้าสู่ระบบ" });
+    }
+
+    const insertOrderListQ = `
+        INSERT INTO orderList (email, orderDate, orderStatus, totalPrice, name, phone, address, paymentMethod)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    db.run(insertOrderListQ, [
+        userEmail,
+        orderList.orderDate,
+        orderList.orderStatus,
+        orderList.totalPrice,
+        orderList.name,
+        orderList.phone,
+        orderList.address,
+        orderList.paymentMethod
+    ], function (err) {
+        if (err) {
+            console.error("Error inserting orderList:", err.message);
+            return res.status(500).json({ error: "เกิดข้อผิดพลาดในการบันทึก orderList" });
+        }
+
+        const orderID = this.lastID;
+        console.log("ID ล่าสุดของ orderList:", orderID);
+
+        const insertOrderDetailQ = `
+            INSERT INTO OrderDetails (orderID, productID, customValue, quantities, eachTotalPrice)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+        const stmt = db.prepare(insertOrderDetailQ);
+        orderDetail.forEach(item => {
+            stmt.run([
+                orderID,
+                item.productID,
+                item.customValue,
+                item.quantities,
+                item.eachTotalPrice
+            ], err => {
+                if (err) {
+                    console.error("Error inserting orderDetail:", err.message);
+                }
+            });
+
+            const deleteQuery = `
+                DELETE FROM CustomerCart 
+                WHERE email = ? AND productID = ? AND customValue = ?
+            `;
+
+            db.run(deleteQuery, [userEmail, item.productID, item.customValue], function(err) {
+                if (err) {
+                    console.error("Error deleting from CustomerCart:", err.message);
+                } else {
+                    console.log(`ลบ ${item.productID} จากตะกร้าของ ${userEmail}`);
+                }
+            });
+        });
+        stmt.finalize();
+        res.render('debit');
+    });
 });
+
+
 
 // เริ่มเซิร์ฟเวอร์
 app.listen(port, () => {
