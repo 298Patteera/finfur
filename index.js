@@ -174,7 +174,7 @@ app.get("/", (req, res) => {
         if (err) {
             console.log("❗" + err.message);
         }
-        
+
         res.render("home", { product: rows, userEmail, showSearchBar });
     });
 });
@@ -243,7 +243,7 @@ app.get("/product/:id", (req, res) => {
                 });
             }
         });
-        db.all(rcm4randomQ,[userEmail], (err, rows) => {
+        db.all(rcm4randomQ, [userEmail], (err, rows) => {
             if (err) {
                 console.log("❗" + err.message);
             }
@@ -270,7 +270,7 @@ app.get("/all-product", (req, res) => {
         LEFT JOIN FavoriteList f ON p.productID = f.productID AND f.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -333,7 +333,7 @@ app.get("/cart", (req, res) => {
             WHERE c.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
-    db.all(query,[userEmail], (err, rows) => {
+    db.all(query, [userEmail], (err, rows) => {
         if (err) {
             console.log("❗" + err.message);
         }
@@ -618,10 +618,87 @@ app.post("/user-changepass", (req, res) => {
 
 
 
-// เสิร์ฟหน้าcompare
+//เสิร์ฟหน้าcompare
 app.get("/compare", (req, res) => {
-    res.render("compare");
+    let email = req.session.userEmail;
+
+    if (!email) {
+        return res.status(400).send("No user email found.");
+    }
+
+    console.log(email);
+
+    let com = `SELECT 
+            pc.categoryName, 
+            pc.categoryID, 
+            fv.email, 
+            fv.productID,
+            pl.productName, 
+            pl.description,
+            pl.productID, 
+            pl.price,
+            pii.imgURL
+        FROM 
+            FavoriteList fv
+        JOIN 
+            ProductList pl ON fv.productID = pl.productID
+        LEFT JOIN 
+            productImage pii ON pl.productID = pii.productID
+        LEFT JOIN 
+            productCategory pc ON pl.categoryID = pc.categoryID
+        WHERE 
+            fv.email  = ?`;
+
+    db.all(com, [email], (err, rows) => {
+        if (err) {
+            console.error("Database Error:", err.message);
+            return res.status(500).send("Internal Server Error");
+        }
+        console.log(rows);
+        res.render("compare", { product: rows });
+    });
+
 });
+
+// app.get("/compare", (req, res) => {
+//     let email = req.session.userEmail;
+
+//     if (!email) {
+//         return res.status(400).send("Invalid request: No user email found.");
+//     }
+
+//     let com = `SELECT fv.productID, pl.productName, pl.price, pl.description, pi.imgURL, fv.email, pc.categoryName
+//                FROM FavoriteList fv
+//                JOIN ProductList pl ON fv.productID = pl.productID
+//                JOIN productImage pi ON fv.productID = pi.productID
+//                JOIN productCategory pc ON pl.categoryID = pc.categoryID
+//                WHERE fv.email = ?`;
+
+//     db.all(com, [email], (err, rows) => { 
+//         if (err) {
+//             console.error("Database Error:", err.message);
+//             return res.status(500).send("Internal Server Error");
+//         }
+
+//         // จัดกลุ่มข้อมูลตาม categoryName
+//         let categorizedProducts = {};
+//         rows.forEach(item => {
+//             if (!categorizedProducts[item.categoryName]) {
+//                 categorizedProducts[item.categoryName] = [];
+//             }
+//             categorizedProducts[item.categoryName].push(item);
+//         });
+
+//         console.log(categorizedProducts);
+//         res.render("compare", { categorizedProducts });
+//     });
+
+// });
+
+
+
+
+
 // เสิร์ฟหน้าfavorites
 app.get("/favorites", (req, res) => {
     const query = `
@@ -813,13 +890,13 @@ app.get("/provider-addOption", (req, res) => {
                     console.log("❗" + err.message);
                     return;
                 }
-    
+
                 db.all(prodIdNameQ, (err, iRows) => {
                     if (err) {
                         console.log("❗" + err.message);
                         return;
                     }
-                    res.render("provider-addOption", { product: rows, categories: categories, options: oRows, idName : iRows});
+                    res.render("provider-addOption", { product: rows, categories: categories, options: oRows, idName: iRows });
                 });
             });
         });
@@ -1783,7 +1860,7 @@ app.post('/upload', upload.single('slip'), (req, res) => {
 app.get('/prompay', (req, res) => {
     const amount = parseFloat(res.locals.totalPrice);
     // ส่งข้อมูล amount ไปยัง EJS
-    res.render('prompay', { amount }); 
+    res.render('prompay', { amount });
 });
 //prompay
 
