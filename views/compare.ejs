@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เปรียบเทียบสินค้า | FINFUR</title>
     <link rel="icon" type="image/png" href="/images/logo_main.png">
 </head>
-
-<body class="bg-white text-black dark:bg-gray-900">
+<body class="bg-white text-black dark:bg-gray-900"> 
     <!-- 1 -->
     <div id="navbarContainer">
         <div id="defaultNavbar">
@@ -20,263 +18,406 @@
     </div>
     <!-- 1 -->
     <div class="px-10 mt-10 dark:invert dark:brightness-75">
-        <h1 class="text-3xl font-bold text-gray-900 mb-6">เปรียบเทียบสินค้าใน รายการโปรดตามหมวดหมู่</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">เปรียบเทียบสินค้าใน รายการโปรด</h1>
         <ol class="list-decimal pl-6 space-y-2 text-gray-900">
             <li class="font-semibold">เลือกสินค้า</li>
             <ul class="list-disc pl-6 text-gray-700">
                 <li>เลือกสินค้า 2 รายการเพื่อทำการเปรียบเทียบ</li>
             </ul>
             <li class="font-semibold">ทำการเปรียบเทียบ</li>
-        </ol>
+        </ol>        
     </div>
 
-    <div class="mt-10 gap-10">
-        <div class="p-5">
-            <button
-                class="right-4 w-[200px] h-[50px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow dark:text-black"
-                onclick="toggleCompare()">
-                เปรียบเทียบสินค้าเลย!
-            </button>
-        </div>
+<div class="mt-10 gap-10">
+    <div class="p-5">
+        <button class="right-4 w-[200px] h-[50px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow dark:text-black" onclick="toggleCompare()">
+            เปรียบเทียบสินค้าเลย!
+        </button>        
+    </div>
 
-        <!-- <div class="relative flex items-center justify-center px-4 py-2 rounded-lg w-full gap-10">
+    <div class="relative flex items-center justify-center px-4 py-2 rounded-lg w-full gap-10">
         <div class="w-full h-[700px] max-w-[700px] min-w-[300px] bg-blue-600 rounded-lg p-4 shadow-lg shadow-[rgba(0,0,0,0.5)]">
-            <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
+            <!-- <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
                 <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 1
                     <input type="checkbox" class="w-5 h-5" id="checkbox1" disabled>
                 </h3>   
-            </div >
-            <div class=" rounded-lg overflow-auto p-4 h-[600px]">
-                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10 ">
-                    <div id="1-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+            </div > -->
+            <!-- <div class=" rounded-lg overflow-auto p-4 h-[600px]">
+                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10 "> -->
+                    <% if (product.length > 0) { %>
+                        <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
+                            <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 1
+                                <input type="checkbox" class="w-5 h-5" id="checkbox1" disabled>
+                            </h3> 
+                        </div>  
+                        <div class="rounded-lg overflow-auto p-4 h-[600px]">
+                            <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
+                                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
+                                    <% product.forEach(item => { %>
+                                        <div id="1-<%= item.productID %>" 
+                                            class="productbox p-5 bg-white dark:bg-gray-800 w-[220px] min-h-[340px] rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
+                                            data-productid="<%= item.productID %>"
+                                            data-productName="<%= item.productName %>"
+                                            data-productBrand="<%= item.brand %>" 
+                                            >
+                                            
+                                            
+                                                <img class="rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 
+                                                    src="/images/allProduct/<%= item.productID %>.png" 
+                                                    alt="<%= item.productID %>Image"
+                                                    onclick="selectProduct(<%= item.productID %>, 1)"> <!-- เพิ่ม onclick ที่นี่ -->
+                                            
+                            
+                                            <div class="mt-3">
+                                                <span class="bg-blue-700 text-white text-sm px-3 py-1 rounded-lg">
+                                                    <%= item.subName %>
+                                                </span>
+                                            </div>
+                            
+                                            <div class="mt-2">
+                                                <p class="font-bold text-lg"><%= item.productName %> / <%= item.brand %></p> 
+                                                <p class="text-gray-500 text-sm">
+                                                    <%= item.description && item.description.length > 20 ? item.description.substring(0, 20) + "..." : item.description || '' %>
+                                                </p>
+                                                <h2 class="text-xl font-semibold text-red-500 mt-2"><%= parseFloat(item.price).toLocaleString() %> ฿</h2>
+                                            </div> 
+                            
+                                            <div class="flex gap-3 items-center mt-3">
+                                                <!- ปุ่มรายการโปรด ->
+                                                <form action="/add-to-fav" method="POST" id="addToFav" style="display: inline;">
+                                                    <input type="hidden" name="productID" value="<%= item.productID %>">
+                                                    <input type="hidden" name="userEmail" value="<%= userEmail %>">
+                                                    <button type="submit" onclick="changeFavorites(this)" 
+                                                        class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                        <img class="w-6 h-6 <%= item.isFavorited ? '' : 'dark:invert dark:brightness-75' %>"
+                                                            src="<%= item.isFavorited ? '/images/favorite_variant2.png' : '/images/favorite_default.png' %>" 
+                                                            alt="เพิ่มในรายการโปรด">
+                                                    </button>
+                                                </form>
+                            
+                                                <!- ปุ่มตะกร้าสินค้า ->
+                                                <a href="/product/<%= item.productID %>">
+                                                <button onclick="changeShopping(this)" 
+                                                    class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                    <input type="hidden" name="productID" value="<%= item.productID %>">
+                                                    <input type="hidden" name="userEmail" value="<%= userEmail %>">
+                                                        <img class="w-7 h-7 dark:invert dark:brightness-75"
+                                                            src="/images/shopping_cart_default.png" 
+                                                            alt="ตะกร้าสินค้า">
+                                                </button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="px-10 mt-10" id="non_showFavorites">
+                            <h1 class="text-3xl font-bold text-gray-900 mb-6 dark:text-white">ดูเหมือนว่าคุณยังไม่มีสินค้าที่ถูกใจ</h1>
+                        </div>
+                    <% } %>
+                    <!-- <div id="1-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
                     <div id="1-box2" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
                     <div id="1-box3" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                    <div id="1-box4" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                </div>   
-            </div>
+                    <div id="1-box4" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div> -->
+                <!-- </div>   
+            </div> -->
         </div>
     
         <div class="w-full h-[700px] max-w-[700px] min-w-[300px] bg-blue-600 rounded-lg p-4 shadow-lg shadow-[rgba(0,0,0,0.5)]">
-            <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
+            <!-- <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
                  <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 2
                     <input type="checkbox" class="w-5 h-5" id="checkbox2" disabled>
                 </h3> 
-            </div>  
-            <div class=" rounded-lg overflow-auto p-4 h-[600px]">
-                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
-                    <div id="2-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                    <div id="2-box2" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                </div>
-            </div>    
-        </div>
-    </div> -->
-
-        <div class="relative flex flex-wrap items-start justify-start px-4 py-2 rounded-lg w-full gap-10">
-            <% if (product.length> 0) { %>
-                <% let currentCategory=null; %>
-                    <% let categoryCount=0; %>
-                        <% product.forEach(product=> { %>
-                            <% if (currentCategory !==product.categoryID) { %>
-                                <% if (currentCategory !==null) { %>
-        </div> <!-- ปิด div ของสินค้าในหมวดหมู่ก่อนหน้า -->
-    </div> <!-- ปิด div ของหมวดหมู่ก่อนหน้า -->
-    </div> <!-- ปิด div ของพื้นหลังสีน้ำเงิน -->
-    <% } %>
-        <% currentCategory=product.categoryID; %>
-            <% categoryCount++; %>
-                <% if (categoryCount % 2===1) { %>
-                    <div class="flex flex-wrap w-full gap-10"> <!-- เริ่มแถวใหม่ทุก 2 หมวดหมู่ -->
-                        <% } %>
-                            <div class="flex-1 bg-blue-600 rounded-lg p-4 shadow-lg shadow-[rgba(0,0,0,0.5)]">
-                                <div
-                                    class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
-                                    <h3 class="text-white text-2xl">หมวดหมู่: <%= product.categoryName %>
-                                    </h3>
-                                </div>
-                                <div class="rounded-lg overflow-auto p-4">
-                                    <div class="grid grid-cols-2 gap-6 mt-10"> <!-- แสดงสินค้า 2 ชิ้นต่อแถว -->
-                                        <% } %>
-                                            <div class="bg-white rounded-lg p-4 shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 ease-in-out"
-                                                onclick="selectProduct(this, '<%= product.productID %>')">
-                                                <a href="/product/<%= product.productID %>">
-                                                    <img class="rounded-lg w-full h-auto"
-                                                        src="/images/allProduct/<%= product.productID %>.png"
-                                                        alt="<%= product.productName %> Image">
-                                                </a>
-                                                <h3 class="font-semibold mt-2">
-                                                    <%= product.productName %>
-                                                </h3>
-                                                <p class="text-gray-700">
-                                                    <%= product.description %>
+            </div>   -->
+            <!-- <div class=" rounded-lg overflow-auto p-4 h-[600px]">
+                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10"> -->
+                    <% if (product.length > 0) { %>
+                        <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
+                            <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 2
+                                <input type="checkbox" class="w-5 h-5" id="checkbox2" disabled>
+                            </h3> 
+                        </div>  
+                        <div class="rounded-lg overflow-auto p-4 h-[600px]">
+                            <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
+                                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
+                                    <% product.forEach(item => { %>
+                                        <div id="2-<%= item.productID %>" 
+                                            class="productbox p-5 bg-white dark:bg-gray-800 w-[220px] min-h-[340px] rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
+                                            data-productid="<%= item.productID %>"
+                                            data-productName="<%= item.productName %>"
+                                            data-productBrand="<%= item.brand %>" 
+                                            >
+                                            
+                                                <img class="rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 
+                                                    src="/images/allProduct/<%= item.productID %>.png" 
+                                                    alt="<%= item.productID %>Image"
+                                                    onclick="selectProduct(<%= item.productID %>, 2)"> <!-- เพิ่ม onclick ที่นี่ -->
+                                            
+                            
+                                            <div class="mt-3">
+                                                <span class="bg-blue-700 text-white text-sm px-3 py-1 rounded-lg">
+                                                    <%= item.subName %>
+                                                </span>
+                                            </div>
+                            
+                                            <div class="mt-2">
+                                                <p class="font-bold text-lg"><%= item.productName %> / <%= item.brand %></p> 
+                                                <p class="text-gray-500 text-sm">
+                                                    <%= item.description && item.description.length > 20 ? item.description.substring(0, 20) + "..." : item.description || '' %>
                                                 </p>
-                                                <p class="text-gray-700">ราคา: <%= product.price %> บาท</p>
-                                            </div>
-
-                                            <% }); %>
-                                                <% } %>
-                                    </div>
-
-
-
-
-
-                                    <!-- Pop-up กล่องที่จะแสดงเมื่อคลิกปุ่ม -->
-                                    <!-- Pop-up ที่จะแสดงเมื่อคลิกปุ่ม "เปรียบเทียบสินค้า" -->
-                                    <div id="popup"
-                                        class="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-80 hidden grid justify-center items-center">
-                                        <h3 class="mt-10 text-white text-2xl font-bold">เปรียบเทียบสินค้าใน รายการโปรด
-                                        </h3>
-                                        <div class="p-6 rounded-lg flex gap-6 w-[80vw] h-[80vh] shadow-2xl">
-                                            <!-- กล่องที่ 1 (แสดงสินค้า 1 ที่เลือก) -->
-                                            <div
-                                                class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px]">
-                                                <h3>สินค้า 1</h3>
-                                                <p>แสดงรายละเอียดสินค้า 1 ที่เลือกที่นี่</p>
-                                            </div>
-                                            <!-- กล่องที่ 2 (แสดงสินค้า 2 ที่เลือก) -->
-                                            <div
-                                                class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px]">
-                                                <h3>สินค้า 2</h3>
-                                                <p>แสดงรายละเอียดสินค้า 2 ที่เลือกที่นี่</p>
+                                                <h2 class="text-xl font-semibold text-red-500 mt-2"><%= parseFloat(item.price).toLocaleString() %> ฿</h2>
+                                            </div> 
+                            
+                                            <div class="flex gap-3 items-center mt-3">
+                                                <!- ปุ่มรายการโปรด ->
+                                                <form action="/add-to-fav" method="POST" id="addToFav" style="display: inline;">
+                                                    <input type="hidden" name="productID" value="<%= item.productID %>">
+                                                    <input type="hidden" name="userEmail" value="<%= userEmail %>">
+                                                    <button type="submit" onclick="changeFavorites(this)" 
+                                                        class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                        <img class="w-6 h-6 <%= item.isFavorited ? '' : 'dark:invert dark:brightness-75' %>"
+                                                            src="<%= item.isFavorited ? '/images/favorite_variant2.png' : '/images/favorite_default.png' %>" 
+                                                            alt="เพิ่มในรายการโปรด">
+                                                    </button>
+                                                </form>
+                            
+                                                <!- ปุ่มตะกร้าสินค้า ->
+                                                <a href="/product/<%= item.productID %>">
+                                                <button onclick="changeShopping(this)" 
+                                                    class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                    <input type="hidden" name="productID" value="<%= item.productID %>">
+                                                    <input type="hidden" name="userEmail" value="<%= userEmail %>">
+                                                        <img class="w-7 h-7 dark:invert dark:brightness-75"
+                                                            src="/images/shopping_cart_default.png" 
+                                                            alt="ตะกร้าสินค้า">
+                                                </button>
+                                                </a>
                                             </div>
                                         </div>
-                                        <div class="h-full mt-[15%]">
-                                            <button
-                                                class="w-[220px] h-[70px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow"
-                                                onclick="closePopup()">เลือกสินค้าที่ต้องการจะเปรียบเทียบใหม่</button>
-                                        </div>
-                                        <!-- ปุ่มปิด Pop-up -->
-                                        <button id="popup-close" class="absolute top-4 right-4 text-white font-bold"
-                                            onclick="closePopup()">X</button>
-                                    </div>
-
+                                    <% }); %>
                                 </div>
-                                <script>
+                            
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="px-10 mt-10" id="non_showFavorites">
+                            <h1 class="text-3xl font-bold text-gray-900 mb-6 dark:text-white">ดูเหมือนว่าคุณยังไม่มีสินค้าที่ถูกใจ</h1>
+                        </div>
+                    <% } %>
+                    <!-- <div id="2-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
+                    <div id="2-box2" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div> -->
+                <!-- </div>
+            </div>     -->
+        </div>
+    </div>
+</div>
 
-                                    let selectedProducts = [];
+<!-- Pop-up กล่องที่จะแสดงเมื่อคลิกปุ่ม -->
 
-                                    function selectProduct(element, productID) {
-                                        if (selectedProducts.includes(productID)) {
-                                            selectedProducts = selectedProducts.filter(id => id !== productID);
-                                            element.classList.remove("selected");
-                                        } else {
-                                            if (selectedProducts.length < 2) {
-                                                selectedProducts.push(productID);
-                                                element.classList.add("selected");
-                                            } else {
-                                                alert("คุณสามารถเลือกได้เพียง 2 สินค้า");
-                                            }
-                                        }
-                                    }
+<!-- Pop-up กล่องที่จะแสดงเมื่อคลิกปุ่ม -->
+<div id="popup" class="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-80 hidden grid justify-center items-center">
+    <div>
+        <h3 class="mt-10 text-white text-2xl font-bold">เปรียบเทียบสินค้าใน รายการโปรด</h3>
+        <button  class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow text-[7px] sm:text-[8px] md:text-[15px] text-black font-bold" onclick="closePopup()">X</button>
+    </div>
 
-                                    function compareProducts() {
-                                        if (selectedProducts.length === 2) {
-                                            // ทำการเปรียบเทียบสินค้า
-                                            console.log("เปรียบเทียบสินค้า:", selectedProducts);
-                                            alert("กำลังเปรียบเทียบสินค้า: " + selectedProducts.join(", "));
-                                        } else {
-                                            alert("กรุณาเลือกสินค้า 2 รายการเพื่อทำการเปรียบเทียบ");
-                                        }
-                                    }
+    <div class="p-6 rounded-lg flex gap-6 w-[80vw] h-[80vh] shadow-2xl">
+        <!-- กล่องที่ 1 -->
+        <div id="compare-box1" class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px]">
+            
+            <!-- ข้อมูลสินค้า 1 จะแสดงที่นี่ -->
+        </div>
+        <!-- กล่องที่ 2 -->
+        <div id="compare-box2" class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px]">
+            <!-- ข้อมูลสินค้า 2 จะแสดงที่นี่ -->
+        </div>
+    </div>
+    <div class="h-full mt-[15%]">
+        <button class="w-[220px] h-[70px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow" onclick="toggleCompare()">
+            เปรียบเทียบสินค้า
+        </button>
+    </div>
+</div>
+        <script>
+            function changeFavorites(button) {
+            const icon = button.querySelector('img');
+            const isDefault = icon.src.includes("/images/favorite_default.png");
+            const currentSrc = icon.src;
+        
+            if (currentSrc.includes("favorite_variant2.png")) {
+                icon.src = "/images/favorite_default.png";
+            } else {
+                icon.src = "/images/favorite_variant2.png";
+            }
+        
+            if (isDefault) {
+                    icon.classList.remove("dark:invert", "dark:brightness-75"); // ปิด Dark Mode
+                } else {
+                    icon.classList.add("dark:invert", "dark:brightness-75"); // เปิด Dark Mode
+                }
+        }
+        
+        
+        
+            function changeShopping(button) {
+                const icon = button.querySelector('img');
+                const isDefault = icon.src.includes("shopping_cart_default.png");
+        
+                icon.src = (icon.src.includes("shopping_cart_variant2.png")) ? 
+                            "/images/shopping_cart_default.png" : 
+                            "/images/shopping_cart_variant2.png";
+        
+                
+                if (isDefault) {
+                    icon.classList.remove("dark:invert", "dark:brightness-75"); // ปิด Dark Mode
+                } else {
+                    icon.classList.add("dark:invert", "dark:brightness-75"); // เปิด Dark Mode
+                }
+            }
+        </script>
 
-                                    // Add event listeners to the boxes
-                                    document.getElementById("1-box1").addEventListener("click", function () {
-                                        handleClick("1-box1", "checkbox1");
-                                    });
+  <script>
 
-                                    document.getElementById("1-box2").addEventListener("click", function () {
-                                        handleClick("1-box2", "checkbox1");
-                                    });
+let lastSelectedCheckbox = null; 
 
-                                    document.getElementById("1-box3").addEventListener("click", function () {
-                                        handleClick("1-box3", "checkbox1");
-                                    });
-                                    document.getElementById("1-box4").addEventListener("click", function () {
-                                        handleClick("1-box4", "checkbox1");
-                                    });
+let selectedProducts = []; // ตัวแปรเก็บสินค้าที่เลือก
 
-                                    // Add event listeners to the boxes
-                                    document.getElementById("2-box1").addEventListener("click", function () {
-                                        handleClick("2-box1", "checkbox2");
-                                    });
+// ฟังก์ชันสำหรับเลือกสินค้า
+function selectProduct(productID, boxNumber) {
+    const checkbox = document.getElementById(`checkbox${boxNumber}`);
+    const box = document.getElementById(`${boxNumber}-${productID}`);
 
-                                    document.getElementById("2-box2").addEventListener("click", function () {
-                                        handleClick("2-box2", "checkbox2");
-                                    });
+    if (checkbox.checked && (box != null)) {
+        // ลบคลาส scale-110 จาก box ทั้งหมดก่อน
+        box.classList.remove("scale-110");
+    }
 
-                                    function handleClick(boxId, checkboxId) {
-                                        const box = document.getElementById(boxId);
-                                        const checkbox = document.getElementById(checkboxId);
+        // เช็คว่า checkbox ถ้าไม่ได้ถูกติ๊ก จะลบคลาส scale-110 จากกล่องที่ไม่ได้เลือก
+    if (boxNumber === 1) {
+        // ถ้า checkbox1 ถูกติ๊กไว้แล้ว และเป็นการเลือกกล่องใหม่ที่กล่องแรก
+        if (checkbox.checked && selectedProducts.length === 1) {
+            // ลบคลาส scale-110 จากกล่องที่สอง
+            const secondBox = document.getElementById(`2-${selectedProducts[0].productID}`);
+            secondBox.classList.remove("scale-110");
+        }
+    } else if (boxNumber === 2) {
+        // ถ้า checkbox2 ถูกติ๊กไว้แล้ว และเป็นการเลือกกล่องใหม่ที่กล่องสอง
+        if (checkbox.checked && selectedProducts.length === 1) {
+            // ลบคลาส scale-110 จากกล่องที่หนึ่ง
+            const firstBox = document.getElementById(`1-${selectedProducts[0].productID}`);
+            firstBox.classList.remove("scale-110");
+        }
+    }
 
-                                        // Toggle checkbox value
-                                        checkbox.checked = !checkbox.checked;
+    // สลับสถานะการเลือก checkbox
+    checkbox.checked = !checkbox.checked;
 
-                                        // Toggle shadow based on checkbox status
-                                        if (checkbox.checked) {
-                                            box.classList.add("shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)]");
-                                        } else {
-                                            box.classList.remove("shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)]");
-                                        }
-                                    }
+    // ถ้า checkbox ถูกติ๊ก
+    if (checkbox.checked) {
+        // เพิ่มคลาสให้กับ box
+        box.classList.add("scale-110");
+        // เก็บข้อมูลสินค้าใน selectedProducts
+        selectedProducts.push({
+            productID: productID,
+            productName: box.dataset.productname,
+            productBrand: box.dataset.productbrand
+        });
+    } else {
+        // ถ้า checkbox ถูกยกเลิกการติ๊ก
+        box.classList.remove("scale-110");
+        // ลบข้อมูลสินค้าจาก selectedProducts
+        selectedProducts = selectedProducts.filter(product => product.productID !== productID);
+    }
+}
 
-                                    function closePopup() {
-                                        const popup = document.getElementById("popup");
-                                        popup.classList.add('hidden'); // ซ่อน Pop-up
-                                        selectedProducts = []; // รีเซ็ตการเลือกสินค้า
-                                        document.querySelectorAll('.selected').forEach(element => element.classList.remove("selected")); // ลบคลาส selected
-                                    }
+// ฟังก์ชันสำหรับเปิดหรือปิด popup และแสดงข้อมูลสินค้า
 
-                                    function checkCheckboxes() {
-                                        // ตรวจสอบสถานะของ checkbox1 และ checkbox2
-                                        let isCheckbox1Checked = document.getElementById("checkbox1").checked;
-                                        let isCheckbox2Checked = document.getElementById("checkbox2").checked;
+function closePopup() {
+    document.getElementById("checkbox1").checked = false;
+    document.getElementById("checkbox2").checked = false;
 
-                                        // ถ้าทั้ง checkbox1 และ checkbox2 ถูกเลือก
-                                        if (isCheckbox1Checked && isCheckbox2Checked) {
-                                            console.log("ทั้ง checkbox1 และ checkbox2 ถูกเลือก!");
-                                            // ทำการอัปเดต navbar หรือการแสดงผลต่าง ๆ ที่ต้องการที่นี่
-                                            sessionStorage.setItem("searchMode", "true");
-                                        } else {
-                                            console.log("ไม่ครบทั้งสอง checkbox หรือยังไม่ได้เลือก");
-                                            // อัปเดตค่า sessionStorage เพื่อปิดการแสดงผลบางอย่าง
-                                            sessionStorage.setItem("searchMode", "false");
-                                        }
-                                    }
-                                    // ฟังก์ชันในการแสดงหรือซ่อน popup
-                                    function toggleCompare() {
-                                        if (selectedProducts.length === 2) {
-                                            // ถ้าเลือกสินค้าครบ 2 ชิ้นแล้ว
-                                            const popup = document.getElementById("popup");
+        // ลบคลาส scale-110 จาก box ทั้งสองตัว
+    const compareBoxes = document.querySelectorAll('.productbox');
+    compareBoxes.forEach(box => box.classList.remove('scale-110'));
 
-                                            // แสดงหรือซ่อน Pop-up
-                                            if (popup.classList.contains('hidden')) {
-                                                popup.classList.remove('hidden');
-                                            } else {
-                                                popup.classList.add('hidden');
-                                            }
-                                        } else {
-                                            alert("กรุณาเลือกสินค้าสองชิ้นเพื่อเปรียบเทียบ");
-                                        }
-                                    }
+    selectedProducts
 
-                                    function toggleSearch(event) {
-                                        event.preventDefault();
-                                        let searchMode = sessionStorage.getItem("searchMode") === "true";
-                                        sessionStorage.setItem("searchMode", !searchMode);
+    const popup = document.getElementById('popup');
+    popup.classList.add('hidden');
+    selectedProducts = []; // รีเซ็ตสินค้าที่เลือก
+    document.getElementById('compare-box1').innerHTML = '';
+    document.getElementById('compare-box2').innerHTML = '';
+}
 
-                                        updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
-                                    }
 
-                                    function updateNavbar() {
-                                        let searchMode = sessionStorage.getItem("searchMode") === "true";
-                                        document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
-                                        document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
-                                    }
 
-                                    // ตรวจสอบเมื่อโหลดหน้า
-                                    document.addEventListener("DOMContentLoaded", updateNavbar);
-                                </script>
-                                <!-- 2 -->
+// ฟังก์ชันสำหรับตรวจสอบการเลือก checkbox
+function checkCheckboxes() {
+    // ตรวจสอบสถานะของ checkbox1 และ checkbox2
+    let isCheckbox1Checked = document.getElementById("checkbox1").checked;
+    let isCheckbox2Checked = document.getElementById("checkbox2").checked;
+
+    // ถ้าทั้ง checkbox1 และ checkbox2 ถูกเลือก
+    if (isCheckbox1Checked && isCheckbox2Checked) {
+        console.log("ทั้ง checkbox1 และ checkbox2 ถูกเลือก!");
+        // ทำการอัปเดต navbar หรือการแสดงผลต่าง ๆ ที่ต้องการที่นี่
+        sessionStorage.setItem("searchMode", "true");
+    } else {
+        console.log("ไม่ครบทั้งสอง checkbox หรือยังไม่ได้เลือก");
+        // อัปเดตค่า sessionStorage เพื่อปิดการแสดงผลบางอย่าง
+        sessionStorage.setItem("searchMode", "false");
+    }
+}
+
+function toggleCompare() {
+    const popup = document.getElementById('popup');
+
+    // ถ้ามีสินค้าเลือก 2 ตัว ให้แสดงใน popup
+    if (selectedProducts.length === 2) {
+        // แสดง popup
+        popup.classList.remove('hidden');
+        
+        // ดึงข้อมูลสินค้าและแสดงในกล่องเปรียบเทียบ
+        document.getElementById('compare-box1').innerHTML = `
+            <h4>${selectedProducts[0].productName}</h4>
+            <p>แบรนด์: ${selectedProducts[0].productBrand}</p>
+            <img src="/images/allProduct/${selectedProducts[0].productID}.png" alt="${selectedProducts[0].productName}">
+        `;
+        
+        document.getElementById('compare-box2').innerHTML = `
+            <h4>${selectedProducts[1].productName}</h4>
+            <p>แบรนด์: ${selectedProducts[1].productBrand}</p>
+            <img src="/images/allProduct/${selectedProducts[1].productID}.png" alt="${selectedProducts[1].productName}">
+        `;
+    } else {
+        // ถ้ายังเลือกไม่ครบ 2 ตัว
+        alert('กรุณาเลือกสินค้า 2 ตัวเพื่อเปรียบเทียบ');
+    }
+}
+
+// ฟังก์ชันสำหรับปิด popup
+
+
+  function toggleSearch(event) {
+    event.preventDefault();
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    sessionStorage.setItem("searchMode", !searchMode);
+
+    updateNavbar(); // เรียกฟังก์ชันเปลี่ยน navbar
+  }
+
+  function updateNavbar() {
+    let searchMode = sessionStorage.getItem("searchMode") === "true";
+    document.getElementById("defaultNavbar").style.display = searchMode ? "none" : "block";
+    document.getElementById("searchNavbar").style.display = searchMode ? "block" : "none";
+  }
+
+  // ตรวจสอบเมื่อโหลดหน้า
+  document.addEventListener("DOMContentLoaded", updateNavbar);
+</script>
+    <!-- 2 -->
 </body>
-
 </html>
