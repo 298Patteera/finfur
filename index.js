@@ -956,13 +956,13 @@ app.get("/provider-orderHistory", (req, res) => {
 
                 db.all(orderQuery, (err, orders) => {
                     if (err) {
-                        console.error("❗ Error fetching orders:", err.message);
+                        console.error("❗ Error orders:", err.message);
                         return res.status(500).send("Database error.");
                     }
 
                     db.all(detailQuery, (err, details) => {
                         if (err) {
-                            console.error("❗ Error fetching order details:", err.message);
+                            console.error("❗ Error  orderDetails:", err.message);
                             return res.status(500).send("Database error.");
                         }
 
@@ -999,27 +999,217 @@ app.post("/change-orderStatus", (req, res) => {
 
 // เสิร์ฟหน้า ของ orderlist
 app.get("/user-orderlist", (req, res) => {
-    res.render("user-orderlist");
+    const userEmail = req.session.userEmail;
+
+    const orderQ = `
+        SELECT o.orderId, o.email, o.orderDate, o.orderStatus, 
+               o.totalPrice, o.name, o.phone, o.address, o.paymentMethod, 
+               u.username 
+        FROM orderList o
+        JOIN userInfo u ON o.email = u.email
+        WHERE o.email = ?;
+    `;
+
+    const detailQ = `
+        SELECT d.orderID, d.detailID, d.productID, d.productName, 
+               d.customValue, d.quantities, d.eachTotalPrice
+        FROM OrderDetails d
+        JOIN orderList o ON d.orderID = o.orderId
+        WHERE o.email = ?;
+    `;
+
+    db.all(orderQ, [userEmail], (err, orders) => {
+        if (err) {
+            console.error("❗Error ordersQ :", err.message);
+            return res.status(500).send("Database error.");
+        }
+
+        db.all(detailQ, [userEmail], (err, details) => {
+            if (err) {
+                console.error("❗Error detailQ :", err.message);
+                return res.status(500).send("Database error.");
+            }
+
+            const orderData = orders.map(order => ({
+                ...order,
+                details: details.filter(d => d.orderID === order.orderId)
+            }));
+
+            res.render("user-orderlist", { orders: orderData });
+        });
+    });
 });
 
 // เสิร์ฟหน้า ของ user-pending
 app.get("/user-pending", (req, res) => {
-    res.render("user-pending");
+    const userEmail = req.session.userEmail;
+
+    const orderQ = `
+        SELECT o.orderId, o.email, o.orderDate, o.orderStatus, 
+               o.totalPrice, o.name, o.phone, o.address, o.paymentMethod, 
+               u.username 
+        FROM orderList o
+        JOIN userInfo u ON o.email = u.email
+        WHERE o.email = ? AND o.orderStatus = "ที่ต้องจัดส่ง";
+    `;
+
+    const detailQ = `
+        SELECT d.orderID, d.detailID, d.productID, d.productName, 
+               d.customValue, d.quantities, d.eachTotalPrice
+        FROM OrderDetails d
+        JOIN orderList o ON d.orderID = o.orderId
+        WHERE o.email = ?;
+    `;
+
+    db.all(orderQ, [userEmail], (err, orders) => {
+        if (err) {
+            console.error("❗Error ordersQ :", err.message);
+            return res.status(500).send("Database error.");
+        }
+
+        db.all(detailQ, [userEmail], (err, details) => {
+            if (err) {
+                console.error("❗Error detailQ :", err.message);
+                return res.status(500).send("Database error.");
+            }
+
+            const orderData = orders.map(order => ({
+                ...order,
+                details: details.filter(d => d.orderID === order.orderId)
+            }));
+
+            res.render("user-pending", { orders: orderData });
+        });
+    });
 });
 
 // เสิร์ฟหน้า ของ user-shipping
 app.get("/user-shipping", (req, res) => {
-    res.render("user-shipping");
+    const userEmail = req.session.userEmail;
+
+    const orderQ = `
+        SELECT o.orderId, o.email, o.orderDate, o.orderStatus, 
+               o.totalPrice, o.name, o.phone, o.address, o.paymentMethod, 
+               u.username 
+        FROM orderList o
+        JOIN userInfo u ON o.email = u.email
+        WHERE o.email = ? AND o.orderStatus = "ที่ต้องได้รับ";
+    `;
+
+    const detailQ = `
+        SELECT d.orderID, d.detailID, d.productID, d.productName, 
+               d.customValue, d.quantities, d.eachTotalPrice
+        FROM OrderDetails d
+        JOIN orderList o ON d.orderID = o.orderId
+        WHERE o.email = ?;
+    `;
+
+    db.all(orderQ, [userEmail], (err, orders) => {
+        if (err) {
+            console.error("❗Error ordersQ :", err.message);
+            return res.status(500).send("Database error.");
+        }
+
+        db.all(detailQ, [userEmail], (err, details) => {
+            if (err) {
+                console.error("❗Error detailQ :", err.message);
+                return res.status(500).send("Database error.");
+            }
+
+            const orderData = orders.map(order => ({
+                ...order,
+                details: details.filter(d => d.orderID === order.orderId)
+            }));
+
+            res.render("user-shipping", { orders: orderData });
+        });
+    });
 });
 
 // เสิร์ฟหน้า ของ user-completed
 app.get("/user-completed", (req, res) => {
-    res.render("user-completed");
+    const userEmail = req.session.userEmail;
+
+    const orderQ = `
+        SELECT o.orderId, o.email, o.orderDate, o.orderStatus, 
+               o.totalPrice, o.name, o.phone, o.address, o.paymentMethod, 
+               u.username 
+        FROM orderList o
+        JOIN userInfo u ON o.email = u.email
+        WHERE o.email = ? AND o.orderStatus = "สำเร็จ";
+    `;
+
+    const detailQ = `
+        SELECT d.orderID, d.detailID, d.productID, d.productName, 
+               d.customValue, d.quantities, d.eachTotalPrice
+        FROM OrderDetails d
+        JOIN orderList o ON d.orderID = o.orderId
+        WHERE o.email = ?;
+    `;
+
+    db.all(orderQ, [userEmail], (err, orders) => {
+        if (err) {
+            console.error("❗Error ordersQ :", err.message);
+            return res.status(500).send("Database error.");
+        }
+
+        db.all(detailQ, [userEmail], (err, details) => {
+            if (err) {
+                console.error("❗Error detailQ :", err.message);
+                return res.status(500).send("Database error.");
+            }
+
+            const orderData = orders.map(order => ({
+                ...order,
+                details: details.filter(d => d.orderID === order.orderId)
+            }));
+
+            res.render("user-completed", { orders: orderData });
+        });
+    });
 });
 
 // เสิร์ฟหน้า ของ user-canceled
 app.get("/user-canceled", (req, res) => {
-    res.render("user-canceled");
+    const userEmail = req.session.userEmail;
+
+    const orderQ = `
+        SELECT o.orderId, o.email, o.orderDate, o.orderStatus, 
+               o.totalPrice, o.name, o.phone, o.address, o.paymentMethod, 
+               u.username 
+        FROM orderList o
+        JOIN userInfo u ON o.email = u.email
+        WHERE o.email = ? AND o.orderStatus = "ยกเลิกแล้ว";
+    `;
+
+    const detailQ = `
+        SELECT d.orderID, d.detailID, d.productID, d.productName, 
+               d.customValue, d.quantities, d.eachTotalPrice
+        FROM OrderDetails d
+        JOIN orderList o ON d.orderID = o.orderId
+        WHERE o.email = ?;
+    `;
+
+    db.all(orderQ, [userEmail], (err, orders) => {
+        if (err) {
+            console.error("❗Error ordersQ :", err.message);
+            return res.status(500).send("Database error.");
+        }
+
+        db.all(detailQ, [userEmail], (err, details) => {
+            if (err) {
+                console.error("❗Error detailQ :", err.message);
+                return res.status(500).send("Database error.");
+            }
+
+            const orderData = orders.map(order => ({
+                ...order,
+                details: details.filter(d => d.orderID === order.orderId)
+            }));
+
+            res.render("user-canceled", { orders: orderData });
+        });
+    });
 });
 
 app.post("/add-to-cart", (req, res) => {
@@ -1054,23 +1244,8 @@ app.post("/add-to-cart", (req, res) => {
     for (let key in selectedOptionsArray) {
         let { customName, customValue, addPrice } = selectedOptionsArray[key];
         totalPrice += addPrice;
-        // for (let key in selectedOptions) {
-        //     let { optionName, customValue, addPrice } = selectedOptions[key];
-        //     totalPrice += addPrice;
-            
-        //     //แปลงปุ่มกด จาก optionType, optionName -> customName, customValue
-        //     let selectedOptionName = customValue ? optionName : optionName;
-        //     let selectedCustomValue = customValue || optionName;
-        
-        //     values.push(`('${userEmail}', '${productID}', '${selectedOptionName}', '${selectedCustomValue}', ${addPrice})`);
     }
     console.log(optionsString);
-    // const query = `
-    //             INSERT INTO CustomerCart (email, productID, customName, customValue, addPrice, quantities)
-    //             VALUES ${values.map(v => v.replace(/\)$/, ", 1)")).join(", ")}
-    //             ON CONFLICT(email, productID, customName, customValue)
-    //             DO UPDATE SET quantities = quantities + 1;
-    //             `;
     const query = `
                     INSERT INTO CustomerCart (email, productID, customValue, quantities)
                     VALUES ( ? ,  ? ,  ? , 1)

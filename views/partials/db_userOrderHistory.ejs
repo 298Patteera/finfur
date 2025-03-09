@@ -1,0 +1,50 @@
+<div class="p-4 w-full">
+    <% orders.forEach(order => { 
+        const date = new Date(order.orderDate); 
+        const time = date.toLocaleString("th-TH", { timeZone: "Asia/Bangkok" }); 
+    %>
+        <div class="border border-gray-300 p-4 rounded-md mb-6 w-full">
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-500">วัน-เวลาที่ทำการสั่งซื้อ : <%= time %></span>
+                <span name="orderStatus" 
+                    data-orderid="<%= order.orderId %>" 
+                    class="text-lg font-semibold
+                        <%= order.orderStatus === 'ที่ต้องจัดส่ง' ? 'text-gray-400' : '' %>
+                        <%= order.orderStatus === 'ที่ต้องได้รับ' ? 'text-yellow-400' : '' %>
+                        <%= order.orderStatus === 'สำเร็จ' ? 'text-green-500' : '' %>
+                        <%= order.orderStatus === 'ยกเลิกแล้ว' ? 'text-red-400' : '' %>">
+                    <%= order.orderStatus %>
+                </span>
+            </div>
+      
+            <% order.details.forEach(detail => { 
+                let customText = "";
+                try {
+                    let customObj = JSON.parse(detail.customValue);
+                    customText = Array.isArray(customObj) 
+                        ? customObj.map(option => `${option.customName}: ${option.customValue}`).join(", ") 
+                        : detail.customValue;
+                } catch (e) {
+                    customText = detail.customValue; 
+                }
+            %>
+                <div class="mt-4 p-2">
+                    <div class="bg-white shadow-md p-2 rounded flex items-center space-x-4">
+                        <img class="w-16 h-16 rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500"  
+                            src="/images/allProduct/<%= detail.productID %>.png" alt="<%= detail.productName %> Image">
+                        
+                        <div class="flex-1">
+                            <p class="font-bold"><%= detail.productID %> : <%= detail.productName %></p>
+                            <p class="text-sm text-gray-500">ตัวเลือกของสินค้า</p>
+                            <input type="text" value="<%= customText %>" readonly class="p-2 bg-gray-100 rounded-md w-full">
+                            <div class="flex justify-between items-center mt-2">
+                                <span>จำนวน : <%= detail.quantities %></span>
+                                <span><%= detail.eachTotalPrice.toLocaleString() %> ฿</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div> 
+    <% }); %>
+</div>
