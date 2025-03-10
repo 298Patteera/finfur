@@ -29,11 +29,6 @@
     </div>
 
 <div class="mt-10 gap-10">
-    <div class="p-5">
-        <button class="right-4 w-[200px] h-[50px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow dark:text-black" onclick="toggleCompare()">
-            เปรียบเทียบสินค้าเลย!
-        </button>        
-    </div>
 
     <div class="relative flex items-center justify-center px-4 py-2 rounded-lg w-full gap-10">
         <div class="w-full h-[700px] max-w-[700px] min-w-[300px] bg-blue-600 rounded-lg p-4 shadow-lg shadow-[rgba(0,0,0,0.5)]">
@@ -46,7 +41,7 @@
                 <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10 "> -->
                     <% if (product.length > 0) { %>
                         <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
-                            <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 1
+                            <h3 class="text-white text-2xl">เลือกสินค้า 2 ชิ้น
                                 <input type="checkbox" class="w-5 h-5" id="checkbox1" disabled>
                             </h3> 
                         </div>  
@@ -119,99 +114,6 @@
                             <h1 class="text-3xl font-bold text-gray-900 mb-6 dark:text-white">ดูเหมือนว่าคุณยังไม่มีสินค้าที่ถูกใจ</h1>
                         </div>
                     <% } %>
-                    <!-- <div id="1-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                    <div id="1-box2" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                    <div id="1-box3" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                    <div id="1-box4" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div> -->
-                <!-- </div>   
-            </div> -->
-        </div>
-    
-        <div class="w-full h-[700px] max-w-[700px] min-w-[300px] bg-blue-600 rounded-lg p-4 shadow-lg shadow-[rgba(0,0,0,0.5)]">
-            <!-- <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
-                 <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 2
-                    <input type="checkbox" class="w-5 h-5" id="checkbox2" disabled>
-                </h3> 
-            </div>   -->
-            <!-- <div class=" rounded-lg overflow-auto p-4 h-[600px]">
-                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10"> -->
-                    <% if (product.length > 0) { %>
-                        <div class="flex items-center justify-center w-full gap-2 bg-blue-600 font-bold mt-[20px]">
-                            <h3 class="text-white text-2xl">เลือกสินค้าชิ้นที่ 2
-                                <input type="checkbox" class="w-5 h-5" id="checkbox2" disabled>
-                            </h3> 
-                        </div>  
-                        <div class="rounded-lg overflow-auto p-4 h-[600px]">
-                            <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
-                                <div class="relative flex flex-wrap items-center justify-center gap-10 mt-10">
-                                    <% product.forEach(item => { %>
-                                        <div id="2-<%= item.productID %>" 
-                                            class="productbox p-5 bg-white dark:bg-gray-800 w-[220px] min-h-[340px] rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
-                                            data-productid="<%= item.productID %>"
-                                            data-productName="<%= item.productName %>"
-                                            data-productBrand="<%= item.brand %>" 
-                                            >
-                                            
-                                                <img class="rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 
-                                                    src="/images/allProduct/<%= item.productID %>.png" 
-                                                    alt="<%= item.productID %>Image"
-                                                    onclick="selectProduct(<%= item.productID %>, 2)"> <!-- เพิ่ม onclick ที่นี่ -->
-                                            
-                            
-                                            <div class="mt-3">
-                                                <span class="bg-blue-700 text-white text-sm px-3 py-1 rounded-lg">
-                                                    <%= item.subName %>
-                                                </span>
-                                            </div>
-                            
-                                            <div class="mt-2">
-                                                <p class="font-bold text-lg"><%= item.productName %> / <%= item.brand %></p> 
-                                                <p class="text-gray-500 text-sm">
-                                                    <%= item.description && item.description.length > 20 ? item.description.substring(0, 20) + "..." : item.description || '' %>
-                                                </p>
-                                                <h2 class="text-xl font-semibold text-red-500 mt-2"><%= parseFloat(item.price).toLocaleString() %> ฿</h2>
-                                            </div> 
-                            
-                                            <div class="flex gap-3 items-center mt-3">
-                                                <!- ปุ่มรายการโปรด ->
-                                                <form action="/add-to-fav" method="POST" id="addToFav" style="display: inline;">
-                                                    <input type="hidden" name="productID" value="<%= item.productID %>">
-                                                    <input type="hidden" name="userEmail" value="<%= userEmail %>">
-                                                    <button type="submit" onclick="changeFavorites(this)" 
-                                                        class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                                                        <img class="w-6 h-6 <%= item.isFavorited ? '' : 'dark:invert dark:brightness-75' %>"
-                                                            src="<%= item.isFavorited ? '/images/favorite_variant2.png' : '/images/favorite_default.png' %>" 
-                                                            alt="เพิ่มในรายการโปรด">
-                                                    </button>
-                                                </form>
-                            
-                                                <!- ปุ่มตะกร้าสินค้า ->
-                                                <a href="/product/<%= item.productID %>">
-                                                <button onclick="changeShopping(this)" 
-                                                    class="p-2 rounded-full transition duration-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-                                                    <input type="hidden" name="productID" value="<%= item.productID %>">
-                                                    <input type="hidden" name="userEmail" value="<%= userEmail %>">
-                                                        <img class="w-7 h-7 dark:invert dark:brightness-75"
-                                                            src="/images/shopping_cart_default.png" 
-                                                            alt="ตะกร้าสินค้า">
-                                                </button>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    <% }); %>
-                                </div>
-                            
-                            </div>
-                        </div>
-                    <% } else { %>
-                        <div class="px-10 mt-10" id="non_showFavorites">
-                            <h1 class="text-3xl font-bold text-gray-900 mb-6 dark:text-white">ดูเหมือนว่าคุณยังไม่มีสินค้าที่ถูกใจ</h1>
-                        </div>
-                    <% } %>
-                    <!-- <div id="2-box1" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div>
-                    <div id="2-box2" class="bg-white w-[200px] h-[300px] min-w-[200px] min-h-[300px] hover:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] active:shadow-[8px_8px_20px_0px_rgba(0,0,0,0.5)] focus:shadow-[8px_8px_5px_0px_rgba(0,0,0,0.5)] transition-shadow duration-300 "></div> -->
-                <!-- </div>
-            </div>     -->
         </div>
     </div>
 </div>
@@ -287,67 +189,84 @@
 
 let lastSelectedCheckbox = null; 
 
-let selectedProducts = []; // ตัวแปรเก็บสินค้าที่เลือก
+let selectedProducts = [];
 
-// ฟังก์ชันสำหรับเลือกสินค้า
 function selectProduct(productID, boxNumber) {
-    const checkbox = document.getElementById(`checkbox${boxNumber}`);
+    const checkbox = document.getElementById(`checkbox1`);
     const box = document.getElementById(`${boxNumber}-${productID}`);
 
-    let decodedOptions = box.dataset.options.replace(/&#34;/g, '"'); //งง จู่ก็เป็นภาษาแปลกๆ
+    // ตรวจสอบว่ามีค่า box หรือไม่
+    console.log("box:", box);
+
+    // ตรวจสอบว่ามีค่า dataset.options หรือไม่
+    console.log("box.dataset.options:", box ? box.dataset.options : null);
+
+    // ถ้าไม่มี box หรือ box.dataset.options ให้หยุดการทำงาน
+    if (!box || !box.dataset.options) {
+        console.error("ข้อมูลไม่ครบถ้วนหรือไม่พบ box หรือ options");
+        // ข้ามการทำงานและไม่ทำอะไรเลย
+        return; 
+    }
+
+    let decodedOptions = box.dataset.options.replace(/&#34;/g, '"');
     let options = JSON.parse(decodedOptions);
 
-    if (checkbox.checked && selectedProducts.length === 1) {
-        // ลบคลาส scale-110 จากกล่องที่สอง
-        const secondBox = document.getElementById(`2-${selectedProducts[0].productID}`);
-        secondBox.classList.remove("scale-110");
-    }
-
-
-        // เช็คว่า checkbox ถ้าไม่ได้ถูกติ๊ก จะลบคลาส scale-110 จากกล่องที่ไม่ได้เลือก
-    if (boxNumber === 1) {
-        // ถ้า checkbox1 ถูกติ๊กไว้แล้ว และเป็นการเลือกกล่องใหม่ที่กล่องแรก
-        if (checkbox.checked && selectedProducts.length === 1) {
-            // ลบคลาส scale-110 จากกล่องที่สอง
-            const secondBox = document.getElementById(`2-${selectedProducts[0].productID}`);
-            secondBox.classList.remove("scale-110");
-        }
-    } else if (boxNumber === 2) {
-        // ถ้า checkbox2 ถูกติ๊กไว้แล้ว และเป็นการเลือกกล่องใหม่ที่กล่องสอง
-        if (checkbox.checked && selectedProducts.length === 1) {
-            // ลบคลาส scale-110 จากกล่องที่หนึ่ง
-            const firstBox = document.getElementById(`1-${selectedProducts[0].productID}`);
-            firstBox.classList.remove("scale-110");
-        }
-    }
-
-    // สลับสถานะการเลือก checkbox
+    // สลับสถานะ checkbox
     checkbox.checked = !checkbox.checked;
 
-    // ถ้า checkbox ถูกติ๊ก
     if (checkbox.checked) {
-        // เพิ่มคลาสให้กับ box
+        // เมื่อ checkbox ถูกติ๊ก
         box.classList.add("scale-110");
-        // เก็บข้อมูลสินค้าใน selectedProducts
+
+        // เก็บข้อมูลสินค้าลงใน selectedProducts
         selectedProducts.push({
             productID: productID,
             productName: box.dataset.productname,
             productBrand: box.dataset.productbrand,
-            options: JSON.parse(box.dataset.options)
+            options: options // เก็บ options ถ้ามี
         });
     } else {
-        // ถ้า checkbox ถูกยกเลิกการติ๊ก
+        // เมื่อ checkbox ถูกยกเลิกการติ๊ก
         box.classList.remove("scale-110");
+
         // ลบข้อมูลสินค้าจาก selectedProducts
         selectedProducts = selectedProducts.filter(product => product.productID !== productID);
     }
+
+    // การตรวจสอบและลบคลาส scale-110 ในกล่องอื่น ๆ
+    // if (selectedProducts.length > 1) {
+    //     // ลบคลาส scale-110 ในกล่องที่ถูกเลือกไว้ก่อนหน้า
+    //     const otherBox = document.getElementById(
+    //         `${boxNumber === 1 ? 2 : 1}-${selectedProducts[0].productID}`
+    //     );
+    //     otherBox.classList.remove("scale-110");
+    // }
+
+    // ตรวจสอบให้แน่ใจว่า selectedProducts เก็บได้ไม่เกิน 2 ตัว
+    if (selectedProducts.length > 2) {
+        // หากเกิน 2 ตัว ให้ลบตัวแรก
+        const firstProduct = selectedProducts.shift();
+        const firstBox = document.getElementById(`${boxNumber === 1 ? 2 : 1}-${firstProduct.productID}`);
+        firstBox.classList.remove("scale-110");
+        document.getElementById(`checkbox${boxNumber === 1 ? 2 : 1}`).checked = false; // ยกเลิกการติ๊กในกล่องที่สองหรือแรก
+    }
+
+    
+    if (selectedProducts.length >= 2) {
+    document.getElementById('checkbox1').disabled = true;
+} else {
+    document.getElementById('checkbox1').disabled = false;
 }
+
+    // รีเฟรชการแสดงผลเปรียบเทียบ
+    toggleCompare();
+}
+
 
 // ฟังก์ชันสำหรับเปิดหรือปิด popup และแสดงข้อมูลสินค้า
 
 function closePopup() {
     document.getElementById("checkbox1").checked = false;
-    document.getElementById("checkbox2").checked = false;
 
         // ลบคลาส scale-110 จาก box ทั้งสองตัว
     const compareBoxes = document.querySelectorAll('.productbox');
@@ -359,7 +278,6 @@ function closePopup() {
     popup.classList.add('hidden');
     selectedProducts = []; // รีเซ็ตสินค้าที่เลือก
     document.getElementById('compare-box1').innerHTML = '';
-    document.getElementById('compare-box2').innerHTML = '';
 }
 
 
@@ -481,3 +399,4 @@ function toggleCompare() {
     <!-- 2 -->
 </body>
 </html>
+
