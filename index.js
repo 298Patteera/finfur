@@ -47,7 +47,7 @@ app.use((req, res, next) => {
     res.locals.userEmail = req.session.userEmail || null;
 
     res.locals.orderDetail = req.session.orderDetail || null;
-    res.locals.orderList = req.session.orderDetail || null;
+    res.locals.orderList = req.session.orderList || null;
     res.locals.totalPrice = req.session.totalPrice || null;
     const checkoutPages = ["/checkout", "/debit", "/prompay", "/qr", "/upload", "/checkout-create-orderList"];
     if (req.session.orderDetail && !checkoutPages.includes(req.path)) {
@@ -576,7 +576,7 @@ app.delete("/delete-user-address", (req, res) => {
 
 //แก้ไขที่อยู่
 app.post("/edit-user-address", (req, res) => {
-    const phone = req.body.phone;
+    const { phone, name, address } = req.body; 
 
     const sql = `UPDATE userAddress SET name = ?, address = ? WHERE phone = ?`;
 
