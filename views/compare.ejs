@@ -297,10 +297,12 @@ function selectProduct(productID, boxNumber) {
     let decodedOptions = box.dataset.options.replace(/&#34;/g, '"'); //งง จู่ก็เป็นภาษาแปลกๆ
     let options = JSON.parse(decodedOptions);
 
-    if (checkbox.checked && (box != null)) {
-        // ลบคลาส scale-110 จาก box ทั้งหมดก่อน
-        box.classList.remove("scale-110");
+    if (checkbox.checked && selectedProducts.length === 1) {
+        // ลบคลาส scale-110 จากกล่องที่สอง
+        const secondBox = document.getElementById(`2-${selectedProducts[0].productID}`);
+        secondBox.classList.remove("scale-110");
     }
+
 
         // เช็คว่า checkbox ถ้าไม่ได้ถูกติ๊ก จะลบคลาส scale-110 จากกล่องที่ไม่ได้เลือก
     if (boxNumber === 1) {
