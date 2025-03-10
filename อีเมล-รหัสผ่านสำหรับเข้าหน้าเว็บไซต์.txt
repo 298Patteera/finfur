@@ -1,0 +1,22 @@
+————ฝั่ง Provider————
+1.อีเมล————
+mainAdmin@finfur.com
+รหัส————
+sheservev2
+
+2.อีเมล————
+lee@admin.com
+รหัส————
+popo
+
+————ฝั่ง Customer————
+
+1.อีเมล————
+shetest@gmail.com
+รหัส————
+sheservev2
+
+2.อีเมล————
+ssk@uchiha.com
+รหัส————
+itachi
