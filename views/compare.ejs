@@ -57,9 +57,10 @@
                                         <div id="1-<%= item.productID %>" 
                                             class="productbox p-5 bg-white dark:bg-gray-800 w-[220px] min-h-[340px] rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-xl"
                                             data-productid="<%= item.productID %>"
-                                            data-productName="<%= item.productName %>"
-                                            data-productBrand="<%= item.brand %>" 
-                                            >
+                                            data-productname="<%= item.productName %>"
+                                            data-productbrand="<%= item.brand %>"
+                                            data-options="<%= JSON.stringify(item.options) %>"
+                                        >
                                             
                                             
                                                 <img class="rounded-lg hover:shadow-md active:shadow-lg transition-shadow duration-300 ease-in-out dark:shadow-gray-500" 
@@ -218,29 +219,32 @@
 <!-- Pop-up กล่องที่จะแสดงเมื่อคลิกปุ่ม -->
 
 <!-- Pop-up กล่องที่จะแสดงเมื่อคลิกปุ่ม -->
-<div id="popup" class="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-80 hidden grid justify-center items-center">
-    <div>
-        <h3 class="mt-10 text-white text-2xl font-bold">เปรียบเทียบสินค้าใน รายการโปรด</h3>
-        <button  class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center shadow text-[7px] sm:text-[8px] md:text-[15px] text-black font-bold" onclick="closePopup()">X</button>
-    </div>
+<div id="popup" class="fixed inset-0 bg-black bg-opacity-80 hidden flex justify-center items-center z-50">
+    <div class="flex flex-col items-center">
+        <!-- ส่วนของหัวข้อและปุ่มปิด อยู่ในแถวเดียวกัน -->
+        <div class="flex justify-between items-center w-full mb-6">
+            <h3 class="text-white text-2xl font-bold">เปรียบเทียบสินค้าใน รายการโปรด</h3>
+            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow text-black font-bold" onclick="closePopup()">X</button>
+        </div>
 
-    <div class="p-6 rounded-lg flex gap-6 w-[80vw] h-[80vh] shadow-2xl">
-        <!-- กล่องที่ 1 -->
-        <div id="compare-box1" class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px]">
-            
-            <!-- ข้อมูลสินค้า 1 จะแสดงที่นี่ -->
+        <div class="p-6 rounded-lg flex gap-6 w-full h-full shadow-2xl">
+            <!-- กล่องที่ 1 -->
+            <div id="compare-box1" class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[600px] min-w-[250px] min-h-[400px] max-w-[400px]">
+                <!-- ข้อมูลสินค้า 1 จะแสดงที่นี่ -->
+            </div>
+            <!-- กล่องที่ 2 -->
+            <div id="compare-box2" class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[600px] min-w-[250px] min-h-[400px] max-w-[400px]">
+                <!-- ข้อมูลสินค้า 2 จะแสดงที่นี่ -->
+            </div>
         </div>
-        <!-- กล่องที่ 2 -->
-        <div id="compare-box2" class="bg-white flex-1 rounded-lg shadow-lg w-[400px] h-[500px] min-w-[250px] min-h-[350px] max-w-[400px]">
-            <!-- ข้อมูลสินค้า 2 จะแสดงที่นี่ -->
-        </div>
-    </div>
-    <div class="h-full mt-[15%]">
-        <button class="w-[220px] h-[70px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center teshadow" onclick="toggleCompare()">
-            เปรียบเทียบสินค้า
-        </button>
+        <!-- <div class="mt-auto">
+            <button class="w-[220px] h-[70px] bg-[#FFEF00] font-bold rounded-[20px] flex items-center justify-center shadow" onclick="toggleCompare()">
+                เปรียบเทียบสินค้า
+            </button>
+        </div> -->
     </div>
 </div>
+
         <script>
             function changeFavorites(button) {
             const icon = button.querySelector('img');
@@ -290,6 +294,9 @@ function selectProduct(productID, boxNumber) {
     const checkbox = document.getElementById(`checkbox${boxNumber}`);
     const box = document.getElementById(`${boxNumber}-${productID}`);
 
+    let decodedOptions = box.dataset.options.replace(/&#34;/g, '"'); //งง จู่ก็เป็นภาษาแปลกๆ
+    let options = JSON.parse(decodedOptions);
+
     if (checkbox.checked && (box != null)) {
         // ลบคลาส scale-110 จาก box ทั้งหมดก่อน
         box.classList.remove("scale-110");
@@ -323,7 +330,8 @@ function selectProduct(productID, boxNumber) {
         selectedProducts.push({
             productID: productID,
             productName: box.dataset.productname,
-            productBrand: box.dataset.productbrand
+            productBrand: box.dataset.productbrand,
+            options: JSON.parse(box.dataset.options)
         });
     } else {
         // ถ้า checkbox ถูกยกเลิกการติ๊ก
@@ -380,23 +388,73 @@ function toggleCompare() {
         // แสดง popup
         popup.classList.remove('hidden');
         
+        // ฟังก์ชันสำหรับแสดง options
+        function generateOptions(product) {
+            let optionsHTML = '';
+            if (product.options && product.options.length > 0) {
+                let groupedOptions = {};
+
+                //optionType เกบ optionName
+                product.options.forEach(option => {
+                    if (!groupedOptions[option.optionType]) {
+                        groupedOptions[option.optionType] = [];
+                    }
+                    groupedOptions[option.optionType].push(option.optionName);
+                });
+
+                //htmlcode for optionssss
+                Object.keys(groupedOptions).forEach(optionType => {
+                    optionsHTML += `
+                        <div class="mt-2">
+                            <h4 class="font-semibold text-sm text-gray-700">${optionType}</h4>
+                            <div class="flex gap-2 flex-wrap">
+                                ${groupedOptions[optionType].map(optionName => `
+                                    <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">${optionName}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            return optionsHTML;
+        }
+
+        //ปุ่มไป /product/:id
+        function generateButton(productID) {
+            return `
+                <a href="/product/${productID}" class="inline-block bg-blue-500 text-white py-2 px-4 rounded-md text-sm font-semibold mt-4 hover:bg-blue-600 transition duration-200">
+                    ดูรายละเอียด
+                </a>
+            `;
+        }
+
         // ดึงข้อมูลสินค้าและแสดงในกล่องเปรียบเทียบ
         document.getElementById('compare-box1').innerHTML = `
-            <h4>${selectedProducts[0].productName}</h4>
-            <p>แบรนด์: ${selectedProducts[0].productBrand}</p>
-            <img src="/images/allProduct/${selectedProducts[0].productID}.png" alt="${selectedProducts[0].productName}">
+        <div class="border p-3 rounded-lg shadow-lg bg-white max-w-full h-full overflow-y-auto">
+            <h4 class="text-xl font-semibold text-gray-800 mb-2">${selectedProducts[0].productName}</h4>
+            <p class="text-gray-600 mb-4 text-sm">แบรนด์: ${selectedProducts[0].productBrand}</p>
+            <img src="/images/allProduct/${selectedProducts[0].productID}.png" alt="${selectedProducts[0].productName}" class="w-3/4 h-auto rounded-md shadow-sm mb-2">
+            ${generateOptions(selectedProducts[0])}
+            ${generateButton(selectedProducts[0].productID)}
+        </div>
         `;
-        
+
         document.getElementById('compare-box2').innerHTML = `
-            <h4>${selectedProducts[1].productName}</h4>
-            <p>แบรนด์: ${selectedProducts[1].productBrand}</p>
-            <img src="/images/allProduct/${selectedProducts[1].productID}.png" alt="${selectedProducts[1].productName}">
+        <div class="border p-3 rounded-lg shadow-lg bg-white max-w-full h-full overflow-y-auto">
+            <h4 class="text-xl font-semibold text-gray-800 mb-2">${selectedProducts[1].productName}</h4>
+            <p class="text-gray-600 mb-4 text-sm">แบรนด์: ${selectedProducts[1].productBrand}</p>
+            <img src="/images/allProduct/${selectedProducts[1].productID}.png" alt="${selectedProducts[1].productName}" class="w-3/4 h-auto rounded-md shadow-sm mb-2">
+            ${generateOptions(selectedProducts[1])}
+            ${generateButton(selectedProducts[1].productID)}
+        </div>
         `;
     } else {
         // ถ้ายังเลือกไม่ครบ 2 ตัว
         alert('กรุณาเลือกสินค้า 2 ตัวเพื่อเปรียบเทียบ');
     }
 }
+
+
 
 // ฟังก์ชันสำหรับปิด popup
 

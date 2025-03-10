@@ -677,11 +677,14 @@ app.get("/compare", (req, res) => {
             pc.categoryName,
             CASE 
                 WHEN f.productID IS NOT NULL THEN 1 ELSE 0 
-            END AS isFavorited
+            END AS isFavorited,
+            po.optionType,
+            po.optionName
         FROM ProductList p
         JOIN FavoriteList f ON p.productID = f.productID
         JOIN subCategory sc ON p.categoryID = sc.categoryID AND p.subID = sc.subID
         JOIN productCategory pc ON sc.categoryID = pc.categoryID
+        LEFT JOIN productOption po ON p.productID = po.productID
         WHERE f.email = ?;
     `;
     const userEmail = res.locals.userEmail || null;
@@ -689,9 +692,23 @@ app.get("/compare", (req, res) => {
         if (err) {
             console.log("❗" + err.message);
         }
-        res.render("compare", { product: rows, userEmail });
+        const products = rows.reduce((formatData, row) => {
+            if (!formatData[row.productID]) {
+                formatData[row.productID] = { ...row, options: [] };
+            }
+            if (row.optionType && row.optionName) {
+                formatData[row.productID].options.push({
+                    optionType: row.optionType,
+                    optionName: row.optionName
+                });
+            }
+            return formatData;
+        }, {});
+        const productArray = Object.values(products);
+        res.render("compare", { product: productArray, userEmail });
     });
 });
+
 
 
 
