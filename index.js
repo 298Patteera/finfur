@@ -887,12 +887,13 @@ app.get("/provider-addOption", (req, res) => {
                     console.log("❗" + err.message);
                     return;
                 }
-
+    
                 db.all(prodIdNameQ, (err, iRows) => {
                     if (err) {
                         console.log("❗" + err.message);
                         return;
                     }
+                    res.render("provider-addOption", { product: rows, categories: categories, options: oRows, idName : iRows});
                 });
             });
         });
@@ -1856,7 +1857,7 @@ app.post('/upload', upload.single('slip'), (req, res) => {
 app.get('/prompay', (req, res) => {
     const amount = parseFloat(res.locals.totalPrice);
     // ส่งข้อมูล amount ไปยัง EJS
-    res.render('prompay', { amount });
+    res.render('prompay', { amount }); 
 });
 //prompay
 
