@@ -5,7 +5,9 @@ const port = 3000;
 const promptpay = require('promptpay-qr');
 const QRCode = require('qrcode');
 const multer = require('multer');
-const bcrypt = require('bcrypt'); 
+const sharp = require("sharp");
+const fs = require("fs");
+const bcrypt = require('bcrypt');
 
 // ตั้งค่า View Engine เป็น EJS
 app.set("view engine", "ejs");
@@ -1380,7 +1382,35 @@ app.post("/add-to-fav", (req, res) => {
     });
 });
 
+//อัปรูปสินค้า
+const tempUpload = multer({ dest: "tempUpload/" });
+// if (!fs.existsSync(tempUpload)) {
+//     fs.mkdirSync(tempUpload);
+// }
+const uploadsDir = path.join(__dirname, 'public/images/allProduct');
+app.post('/upload-productImage', tempUpload.single('productImage'), async (req, res) => {
+    try {
+        const productID = req.body.productID;
+        if (!productID) {
+            return res.status(400).send('Product ID is required');
+        }
+
+        const tempPath = req.file.path;
+        const targetPath = path.join(uploadsDir, `${productID}.png`);
+
+        await sharp(tempPath)
+            .toFile(targetPath);
+        fs.unlinkSync(tempPath);
+
+        res.status(200).json({ message: 'บันทึกรูปภาพสำเร็จ', imageUrl: `/images/allProduct/${productID}.png` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error image');
+    }
+});
+//เพิ่มสินค้า
 app.post("/add-to-productlist", (req, res) => {
+    console.log(req.body);
     const { productID, productName, categoryID, subID, price, brand, description, modifiedTimestamp } = req.body;
     const userEmail = res.locals.userEmail;
 
@@ -1427,6 +1457,8 @@ app.post("/add-to-productlist", (req, res) => {
         }
     });
 });
+
+
 
 app.post("/update-to-productlist", (req, res) => {
     const { productID, productName, price, brand, description, modifiedTimestamp } = req.body;
